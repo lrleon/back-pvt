@@ -31,10 +31,11 @@ class CorrelationGen
     end
   end
 
-  def initialize(name, subtype, unit, min = nil, max = nil)
+  def initialize(name, unit, min = nil, max = nil)
+    fail "correlation subtype has not been defined" unless $subtype
     @name = name
     @author = "Not defined"
-    @subtype = subtype
+    @subtype = $subtype.subtype_name
     @unit = unit
     @min = min
     @max = max
@@ -106,6 +107,7 @@ class CorrelationGen
     @pars << Parameter.new(name, unit, desc, min, max)
     @latex_symbol = $par_symbols[name]
     $pars_set.add name
+    $subtype.def_parameter name, unit
   end
 
   def add_synonym(par_name, syn_name, unit_name)
@@ -352,12 +354,76 @@ end
 
 require 'set'
 
+$subtype = nil
 $pars_set = Set.new
 $corr_list = []
 $curr_corr = nil
 
-def begin_correlation(name, subtype, unit, min = nil, max = nil)
-  $curr_corr = CorrelationGen.new(name, subtype, unit, min, max)
+class CorrelationSubtype
+
+  attr_reader :subtype_name, :type_name, :symbol
+
+  def initialize(subtype_name, type_name, latex_symbol)
+    @subtype_name = subtype_name
+    @type_name = type_name
+    @symbol = latex_symbol
+    @pars = {}
+  end
+
+  def def_parameter(par_name, unit_name)
+    return if @pars.has_key? par_name
+    @pars[par_name] = unit_name
+  end
+
+  def gen_subtype_class
+    s = "class #{@subtype_name} : public #{@type_name}\n"\
+        "{\n"\
+        "protected:\n"
+    @pars.each do |name, unit|
+      s += "Quantity<#{unit}> #{name};\n"\
+           "\n"\
+           "void set_#{name}(const Quantity<#{unit}> & __#{name})\n"\
+           "{\n"\
+           "  #{name} = __#{name};\n"\
+           "}\n"\
+           "\n"
+    end
+    s += "public:\n"\
+         "\n"\
+         "  #{@subtype_name}(const string & name, const Unit & result_unit,\n"\
+	 "       double min_val, double max_val)\n"\
+         "    : #{@type_name}(#{@subtype_name}, name, \"#{@symbol}\",\n"\
+         "        result_unit, min_val, max_val) {}\n"\
+	 "\n"\
+         "  #{@subtype_name}(const string & name, const Unit & unit,\n"\
+         "       double min_val)\n"\
+         "    : #{@type_name}(#{@subtype_name}, name, \"#{@symbol}\", unit,\n"\
+	 "      min_val, unit.max_val) {}\n"\
+	 "\n"\
+         "  #{@subtype_name}(const string & name, const Unit & unit)\n"\
+         "    : #{@type_name}(#{@subtype_name}, name, \"#{@symbol}\", unit,\n"\
+         "         unit.min_val, unit.max_val) {}\n"\
+         "\n"\
+         "  virtual ~#{@subtype_name}() = 0;\n"\
+	 "\n"\
+         "protected:\n"\
+         "\n"\
+         "using #{@type_name}::add_parameter;\n"\
+         "}\n;"\
+         "\n"\
+         "inline #{@subtype_name}::~#{@subtype_name}() {}"
+  end
+end
+
+def declare_correlation_subtype(subtype_name, type_name, latex_symbol)
+  if $subtype
+    fail "correlation subtype #{$subtype.subtype_name} has already been defined"
+  end
+  $subtype = CorrelationSubtype.new(subtype_name, type_name, latex_symbol)
+end
+
+def begin_correlation(name, unit, min = nil, max = nil)
+  $curr_corr = CorrelationGen.new(name, unit, min, max)
 end
 
 def set_hidden
@@ -540,6 +606,8 @@ if options[:header]
        "\n"\
        "# include <pvt-exceptions.H>\n"\
        "# include <correlations/correlation.H>\n"\
+       "\n"\
+       "#{$subtype.gen_subtype_class}\n"\
        "\n"\
        "#{gen_correlations}\n"\
        "\n"\

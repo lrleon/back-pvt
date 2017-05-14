@@ -1222,7 +1222,7 @@ auto tuned_direct_impl(const Correlation & corr_ptr, double c, double m,
 Declare_Correlation_Subtype(TmpCorrelation, TmpFunction, "");
 
     // correlations & functions associated to oil
-Declare_Correlation_Subtype(BubblePointPressure, OilCorrelation, "P_b");
+//Declare_Correlation_Subtype(BubblePointPressure, OilCorrelation, "P_b");
 Declare_Correlation_Subtype(SolutionGasOilRelation, OilCorrelation, "R_s");
 Declare_Correlation_Subtype(UndersaturatedOilVolumeFactor,
 			    OilCorrelation, "B_{oa}");
