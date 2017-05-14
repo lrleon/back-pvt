@@ -244,7 +244,19 @@ class CorrelationGen
         "\n"\
         "#{gen_pars_extraction}\n"\
         "\n"\
-         "     #{gen_call}\n"\
+        "     #{gen_call}\n"\
+        "\n"\
+        "Vtlquantity compute(bool check = true)\n"\
+        "{\n"\
+        " if (not check)\n"\
+        "    return call(#{pars_list});\n"
+    @pars_list.each do |par|
+      if par.name != 'p' && par.name != 't'
+        s += "  if (not 
+
+      end
+    end
+    s += "}\n"\
          "\n"
   end
 
