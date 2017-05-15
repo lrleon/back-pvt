@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+# -*- coding: iso-8859-1 -*-
+
+require 'fileutils'
+require 'optparse'
+require 'json'
+
+def gen_corrpars_class(corr_name, pars)
+  s = "struct #{corr_name}Pars\n"\
+      "{\n"
+  pars.each do |name, unit|
+    s += "Quantity<#{unit}> #{name};\n"\
+         "\n"\
+         "void set_#{name}(const Quantity<#{unit}> & __#{name})\n"\
+         "{\n"\
+         "  #{name} = __#{name};\n"\
+         "}\n"\
+         "\n"
+  end
+  s += "};\n" 
+end
+
+def gen_compound_corr(corr_name, info1, info2)
+  pars = info2[0]
+  info1[0].each { |name, unit| pars[name] = unit }
+
+  pars_class_name = corr_name + 'Pars'
+  
+  "#{gen_corrpars_class(pars_class_name, pars)}\n"\
+  "\n"\
+  "using #{corr_name} = CompoundCorrelation<#{info1[1]}, #{info2[1]}, #{pars_class_name}>;"  
+end
+
+options = {}
+options_parser = OptionParser.new do |opts|
+
+  opts.on('-1 NAME', '--subtype1 NAME', 
+          'first file name with correlations') do |file_name|
+    options[:file_name1] = file_name
+  end
+
+  opts.on('-2 NAME', '--subtype2 NAME', 
+          'second file name with correlations') do |file_name|
+    options[:file_name2] = file_name
+  end
+
+  opts.on('-n NAME', '--name NAME', 'Compound correlation name') do |corr_name|
+    options[:corr_name] = corr_name
+  end
+
+end
+
+options_parser.parse!
+
+corr_name = options[:corr_name]
+fail "Compound correlation name has not been specified" unless corr_name
+
+file1 = options[:file_name1]
+file2 = options[:file_name2]
+
+fail "not first correlation definition file has been given" unless file1
+fail "not second correlation definition file has been given" unless file2
+
+info1 = JSON.parse(`../../bin/gen-corr -f #{file1} -j`)
+info2 = JSON.parse(`../../bin/gen-corr -f #{file2} -j`)
+
+puts gen_compound_corr corr_name, info1, info2

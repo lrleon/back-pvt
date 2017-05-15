@@ -7,3 +7,6 @@
 ## 2. cómo decidir la mejor unidad en set_par?
 - Created at   2017-05-14 11:48:24 -0400
 
+## 3. corregir bug en transpose
+- Created at   2017-05-15 16:37:25 -0400
+

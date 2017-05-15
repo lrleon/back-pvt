@@ -1,2 +1,3 @@
 optimizar uso de memoria en atributos de correlación,2017-01-06 17:11:02 -0400,,Por ejemplo los nombres de tipo y subtipo y las descripciones de los parámetros
 cómo decidir la mejor unidad en set_par?,2017-05-14 11:48:24 -0400,,
+corregir bug en transpose,2017-05-15 16:37:25 -0400,,

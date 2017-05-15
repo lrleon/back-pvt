@@ -4,6 +4,7 @@
 require 'fileutils'
 require 'optparse'
 require 'calculus.rb'
+require 'json'
 
 load 'symbols'
 
@@ -11,7 +12,7 @@ class CorrelationGen
 
   class Parameter
 
-    attr_reader :name, :desc, :unit
+    attr_reader :name, :desc, :unit, :min, :max
 
     def initialize(name, unit, desc, min = nil, max = nil)
       @name = name
@@ -245,18 +246,22 @@ class CorrelationGen
         "#{gen_pars_extraction}\n"\
         "\n"\
         "     #{gen_call}\n"\
+        "}\n"\
         "\n"\
-        "Vtlquantity compute(bool check = true)\n"\
+        "VtlQuantity compute(bool check = true)\n"\
         "{\n"\
         " if (not check)\n"\
-        "    return call(#{pars_list});\n"
-    @pars_list.each do |par|
+        "    return call(#{pars_list});\n"\
+        "\n"
+    @pars.each do |par|
       if par.name != 'p' && par.name != 't'
-        s += "  if (not 
-
+        s += "  if (not (#{par.name} >= #{par.min} and #{par.name} <= #{par.max}))\n"\
+             "  ZENTHROW(OutOfParameterRange, \"parameter #{par.name} is not inside of [#{par.min}, #{par.max}]\");\n"
       end
     end
-    s += "}\n"\
+    s += "\n"\
+         "return call(#{pars_list});\n"\
+         "}\n"\
          "\n"
   end
 
@@ -272,7 +277,7 @@ class CorrelationGen
     s = "/** #{@name}\n\n"\
         "    Generated at #{Time.now}\n"\
         "\n"\
-        "    Zen Technologies Group\n\n"
+        "    Zen Technologies Group\n"
     s += @doc if @doc
     @internal_notes.each { |note| s += "#{note.ljust(60)}\n\n" }
     s += "\n"\
@@ -314,8 +319,7 @@ class CorrelationGen
          "#{gen_par_operator}\n"\
          "\n"
     s += gen_compute
-    s += "}\n"\
-         "};\n"\
+    s += "};\n"\
          "\n"\
          "extern #{extern_sign};\n"\
          "extern #{extern_sign_doubles};\n"\
@@ -365,6 +369,7 @@ class CorrelationGen
 end
 
 require 'set'
+require 'json'
 
 $subtype = nil
 $pars_set = Set.new
@@ -387,10 +392,8 @@ class CorrelationSubtype
     @pars[par_name] = unit_name
   end
 
-  def gen_subtype_class
-    s = "class #{@subtype_name} : public #{@type_name}\n"\
-        "{\n"\
-        "protected:\n"
+  def pars_declarations
+    s = ''
     @pars.each do |name, unit|
       s += "Quantity<#{unit}> #{name};\n"\
            "\n"\
@@ -400,30 +403,49 @@ class CorrelationSubtype
            "}\n"\
            "\n"
     end
-    s += "public:\n"\
-         "\n"\
-         "  #{@subtype_name}(const string & name, const Unit & result_unit,\n"\
-	 "       double min_val, double max_val)\n"\
-         "    : #{@type_name}(#{@subtype_name}, name, \"#{@symbol}\",\n"\
-         "        result_unit, min_val, max_val) {}\n"\
-	 "\n"\
-         "  #{@subtype_name}(const string & name, const Unit & unit,\n"\
-         "       double min_val)\n"\
-         "    : #{@type_name}(#{@subtype_name}, name, \"#{@symbol}\", unit,\n"\
-	 "      min_val, unit.max_val) {}\n"\
-	 "\n"\
-         "  #{@subtype_name}(const string & name, const Unit & unit)\n"\
-         "    : #{@type_name}(#{@subtype_name}, name, \"#{@symbol}\", unit,\n"\
-         "         unit.min_val, unit.max_val) {}\n"\
-         "\n"\
-         "  virtual ~#{@subtype_name}() = 0;\n"\
-	 "\n"\
-         "protected:\n"\
-         "\n"\
-         "using #{@type_name}::add_parameter;\n"\
-         "}\n;"\
-         "\n"\
-         "inline #{@subtype_name}::~#{@subtype_name}() {}"
+    s
+  end
+
+  def gen_subtype_class
+    "class #{@subtype_name} : public #{@type_name}\n"\
+    "{\n"\
+    "protected:\n"\
+    "#{pars_declarations}\n"\
+    "public:\n"\
+    "\n"\
+    "  #{@subtype_name}(const string & name, const Unit & result_unit,\n"\
+    "       double min_val, double max_val)\n"\
+    "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\",\n"\
+    "        result_unit, min_val, max_val) {}\n"\
+    "\n"\
+    "  #{@subtype_name}(const string & name, const Unit & unit,\n"\
+    "       double min_val)\n"\
+    "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\", unit,\n"\
+    "      min_val, unit.max_val) {}\n"\
+    "\n"\
+    "  #{@subtype_name}(const string & name, const Unit & unit)\n"\
+    "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\", unit,\n"\
+    "         unit.min_val, unit.max_val) {}\n"\
+    "\n"\
+    "  virtual ~#{@subtype_name}() = 0;\n"\
+    "\n"\
+    "protected:\n"\
+    "\n"\
+    "using #{@type_name}::add_parameter;\n"\
+    "}\n;"\
+    "\n\n"\
+    "inline #{@subtype_name}::~#{@subtype_name}() {}"
+  end
+
+  def gen_pars_set_class
+    "struct #{@subtype_name}Pars\n"\
+    "{\n"\
+    "#{pars_declarations}\n"\
+    "};\n"    
+  end
+
+  def to_json
+    [@pars, @subtype_name].to_json
   end
 end
 
@@ -555,6 +577,14 @@ options_parser = OptionParser.new do |opts|
     options[:corr_name] = corr_name
   end
 
+  opts.on('-P', '--pars-set', 'generate parameters class for global parameters') do
+    options[:pars] = true
+  end
+
+  opts.on('-j', '--json', 'generate json of parameters') do
+    options[:json] = true
+  end
+
   opts.on('-e NAME', '--eq NAME',
           'generate equation (if defined) for correlation NAME') do |corr_name|
     options[:eq] = corr_name
@@ -597,6 +627,11 @@ end
 
 load file
 
+if options[:json]
+  puts $subtype.to_json
+  exit
+end
+
 if options[:par_names]
   puts $pars_set.entries.join ', '
   exit
@@ -604,6 +639,11 @@ end
 
 if options[:equations]
   $corr_list.each { |corr| corr.make_eq($eq_dir) }
+  exit
+end
+
+if options[:pars]
+  puts $subtype.gen_pars_set_class
   exit
 end
 
@@ -616,6 +656,7 @@ if options[:header]
   puts "# ifndef #{guard_name}\n"\
        "# define #{guard_name}\n"\
        "\n"\
+       "# include <units.H>\n"\
        "# include <pvt-exceptions.H>\n"\
        "# include <correlations/correlation.H>\n"\
        "\n"\

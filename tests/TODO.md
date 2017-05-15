@@ -71,3 +71,6 @@
 ## 23. acelerar cplot mediante factorización de parámetros en familias de correlaciones
 - Created at   2017-05-13 09:28:03 -0400
 
+## 24. corregir bug en transpose
+- Created at   2017-05-15 16:38:09 -0400
+

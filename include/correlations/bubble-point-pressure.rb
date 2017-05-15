@@ -2,22 +2,6 @@
 
 declare_correlation_subtype("BubblePointPressure", "OilCorrelation", "P_b")
 
-begin_correlation("PbAlMarhoun", "psia", 130, 3573)
-add_title("AL-MARHOUN CORRELATION, CALCULATION OF BUBBLE POINT PRESSURE")
-add_author("Al-Marhoun")
-add_parameter("yg", "Sgg", "Gas specific gravity",  0.752, 1.367)
-add_parameter("yo", "Sg_do", "Oil specific gravity", "Quantity<Api>(44.6)", "Quantity<Api>(19.4)")
-add_synonym("yo", "api", "api")
-add_parameter("rsb", "SCF_STB", "Solution GOR at Pb", 26, 1602)
-add_parameter("t", "Rankine", "Temperature", "Quantity<Fahrenheit>(74)", "Quantity<Fahrenheit>(240)") 
-add_db("Based on 69 bottomhole fluid samples from 69 Middle East oil reservoirs.")
-add_ref("alMarhoun:1988")
-add_eq("P_b = 5.38088 \\cdot {10}^{-3} \\cdot {R_s}^{0.715082} \\cdot {\\gamma_g}^{-1.877840} \\cdot {\\gamma_0}^{3.143700} \\cdot T^{1.326570}")
-end_correlation()
-
-
-################################################################
-
 begin_correlation("PbAlShammasi", "psia", 31.7, 7127)
 add_title("AL-SHAMMASI CORRELATION, CALCULATION OF BUBBLE POINT PRESSURE")
 add_parameter("yg", "Sgg", "Gas specific gravity", 0.51, 3.44)
@@ -29,6 +13,21 @@ add_db("Based on a total of 1709 data sets (1661 data sets from 13 different pub
 add_ref("alShammasi:1999")
 add_author("Al-Shammasi")
 add_eq("P_b={\\gamma_o}^{5.527215}\\cdot\\,\\exp^{\\left({-1.841408\\,\\cdot\\,[\\gamma_o*\\gamma_g]}\\right)}\\cdot{\\left[R_s\\cdot(T + 460)\\cdot\\gamma_g\\right]}^{0.783716}")
+end_correlation()
+
+################################################################
+
+begin_correlation("PbAlMarhoun", "psia", 130, 3573)
+add_title("AL-MARHOUN CORRELATION, CALCULATION OF BUBBLE POINT PRESSURE")
+add_author("Al-Marhoun")
+add_parameter("yg", "Sgg", "Gas specific gravity",  0.752, 1.367)
+add_parameter("yo", "Sg_do", "Oil specific gravity", "Quantity<Api>(44.6)", "Quantity<Api>(19.4)")
+add_synonym("yo", "api", "api")
+add_parameter("rsb", "SCF_STB", "Solution GOR at Pb", 26, 1602)
+add_parameter("t", "Rankine", "Temperature", "Quantity<Fahrenheit>(74)", "Quantity<Fahrenheit>(240)") 
+add_db("Based on 69 bottomhole fluid samples from 69 Middle East oil reservoirs.")
+add_ref("alMarhoun:1988")
+add_eq("P_b = 5.38088 \\cdot {10}^{-3} \\cdot {R_s}^{0.715082} \\cdot {\\gamma_g}^{-1.877840} \\cdot {\\gamma_0}^{3.143700} \\cdot T^{1.326570}")
 end_correlation()
 
 ################################################################

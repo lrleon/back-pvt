@@ -1,7 +1,9 @@
 # coding: utf-8
 
-begin_correlation("BobAlmarhoun", "SaturatedOilVolumeFactor", "RB_STB",
-         1.032, 1.997)
+declare_correlation_subtype("SaturatedOilVolumeFactor", "SaturatedOilVolumeFactor",
+                            "B_{oa}")
+
+begin_correlation("BobAlmarhoun", "RB_STB", 1.032, 1.997)
 add_title("AL-MARHOUN CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on 69 bottomhole fluid samples from 69 Middle East oil reservoirs.")
 add_ref("alMarhoun:1988")
@@ -16,8 +18,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobAlShammasi", "SaturatedOilVolumeFactor", "RB_STB",
-         1.02, 2.916)
+begin_correlation("BobAlShammasi", "RB_STB", 1.02, 2.916)
 add_title("Al-SHAMMASI CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on a total of 1709 data sets (1661 data sets from 13 different published literature papers and 48 data sets originated from Kuwait reservoirs from unpublished sources).")
 add_db("The data available after excluding the duplicates and the repeated data sets for formation volume factor are 1345 data sets.")
@@ -32,8 +33,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobDeGhetto", "SaturatedOilVolumeFactor", "RB_STB",
-         1.057, 1.362)
+begin_correlation("BobDeGhetto", "RB_STB", 1.057, 1.362)
 add_title("DE GHETTO, PAONE & VILLA CORRELATION FOR EXTRA-HEAVY AND HEAVY OILS (VAZQUEZ & BEGGS CORRELATION), CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on 1200 measured data points of 63 heavy and extra-heavy oil samples obtained from the Mediterranean Basin, Africa and the Persian Gulf.")
 add_db("Oil samples have been divided in two different API gravity classes: extra-heavy oils for °API<=10, heavy oils for 10<°API<=22.3.")
@@ -50,8 +50,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobDindorukChristman", "SaturatedOilVolumeFactor",
-         "RB_STB", 1.0845, 2.7381)
+begin_correlation("BobDindorukChristman", "RB_STB", 1.0845, 2.7381)
 add_title("DINDORUK & CHRISTMAN CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on approximately 100 PVT reports from the Gulf of Mexico.")
 add_parameter("yg", "Sgg", "Gas specific gravity", 0.6017, 1.027)
@@ -66,8 +65,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobDoklaOsman", "SaturatedOilVolumeFactor", "RB_STB",
-         1.216, 2.493)
+begin_correlation("BobDoklaOsman", "RB_STB", 1.216, 2.493)
 add_title("DOKLA & OSMAN CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on 51 bottomhole samples from UAE reservoirs.")
 add_parameter("yg", "Sgg", "Gas specific gravity", 0.789, 1.29)
@@ -83,8 +81,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobGlaso", "SaturatedOilVolumeFactor", "RB_STB",
-         1.087, 2.588)
+begin_correlation("BobGlaso", "RB_STB", 1.087, 2.588)
 add_title("GLASO CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")        
 add_db("Based on 26 samples from the North Sea (collected from wells in the region 56 to 62°N) and 19 samples from the Middle East, Algeria, and several areas in the U.S.")
 add_parameter("yg", "Sgg", "Gas specific gravity", 0.650, 1.276)
@@ -100,8 +97,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobHanafy", "SaturatedOilVolumeFactor", "RB_STB",
-         1.032, 4.35)
+begin_correlation("BobHanafy", "RB_STB", 1.032, 4.35)
 add_title("HANAFY ET AL. CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on experimental PVT data of 324 fluid samples taken from 176 wells located in 75 fields. This data represents 15 productive zones of 123 reservoirs distributed along three different regions of Egypt, including the Gulf of Suez, Western Desert, and Sinai.")
 add_parameter("rs", "SCF_STB", "Solution GOR", 7, 4272)
@@ -111,8 +107,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobKartoatmodjo", "SaturatedOilVolumeFactor",
-         "RB_STB", 1.007, 2.144)
+begin_correlation("BobKartoatmodjo", "RB_STB", 1.007, 2.144)
 add_title("KARTOATMODJO & SCHMIDT CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on a set of 5392 data points, which represent 740 different crude oil samples.")
 add_db("The data bank was collected from PVT reports and literature. The first major source was from South East Asia, mainly Indonesia. The second source was North America, including the offshore area. The rest came from the Middle East and Latin America.")
@@ -130,7 +125,7 @@ end_correlation()
 ################################################################
 
 ## verificada con python
-begin_correlation("BobStanding", "SaturatedOilVolumeFactor", "RB_STB", 1.024, 2.15)
+begin_correlation("BobStanding", "RB_STB", 1.024, 2.15)
 add_title("STANDING CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on 105 experimentally determined bubble point pressures from 22 different Californian crude-oil-natural-gas mixtures.")
 add_parameter("yg", "Sgg", "Gas specific gravity", 0.59, 0.95)
@@ -147,7 +142,7 @@ end_correlation()
 ################################################################
 
 ## verificada con python
-begin_correlation("BobLasater", "SaturatedOilVolumeFactor", "RB_STB")
+begin_correlation("BobLasater", "RB_STB")
 add_title("LASATER CORRELATION (STANDING CORRELATION APPLIED FOR LASATER), CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Lasater correlation is based on data obtained from Canada, Western and Mid-Continental United States, and South America.")
 add_db("Standing correlation for formation volumes of bubble point liquids is based on data collected from 22 different Californian crude-oil-natural-gas mixtures (Western United States).")
@@ -167,8 +162,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobPetroskyFarshad", "SaturatedOilVolumeFactor",
-         "RB_STB", 1.1178, 1.6229)
+begin_correlation("BobPetroskyFarshad", "RB_STB", 1.1178, 1.6229)
 add_title("PETROSKY & FARSHAD CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on 81 laboratory PVT analyses. Fluid samples were obtained from reservoirs located offshore Texas and Louisiana.")
 add_db("Producing areas from Galveston Island, eastward, through Main Pass are represented.")
@@ -182,10 +176,9 @@ add_author("Petrosky & Farshad")
 add_ref("petrosky:1993")
 end_correlation()
 
-
 ################################################################
 
-begin_correlation("BobTotalCFP", "SaturatedOilVolumeFactor", "RB_STB")
+begin_correlation("BobTotalCFP", "RB_STB")
 add_title("TOTAL COMPAGNIE FRANÇAISE DES PÉTROLES (CFP) CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on 336 PVT analyses of crude oil from eastern Venezuela.")      
 add_parameter("yg", "Sgg", "Gas specific gravity")
@@ -197,11 +190,9 @@ add_ref("totalCFP:1983")
 add_ref("banzer:1996")
 end_correlation()
 
-
 ################################################################
 
-begin_correlation("BobVasquezBeggs", "SaturatedOilVolumeFactor", "RB_STB",
-         1.028, 2.226)
+begin_correlation("BobVasquezBeggs", "RB_STB", 1.028, 2.226)
 add_title("VAZQUEZ & BEGGS CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on more than 600 laboratory PVT analyses from fields all over the world.")
 add_parameter("yg", "Sgg", "Gas specific gravity", 0.511, 1.35)
@@ -218,8 +209,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobPerezML", "SaturatedOilVolumeFactor", "RB_STB",
-         1.032, 1.183)
+begin_correlation("BobPerezML", "RB_STB", 1.032, 1.183)
 add_title("PÉREZ, HENY & LAGO CORRELATION (EZEKWE-QUERIN-HUMPHREY CORRELATION USED BY PÉREZ, HENY & LAGO), CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_note("The correlation could not be verified because the original reference is not available. Date: August 22 2016.")
 add_parameter("yg", "Sgg", "Gas specific gravity", 0.571, 0.981)
@@ -238,8 +228,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobVelardeMcCain", "SaturatedOilVolumeFactor",
-         "RB_STB", 1.040, 2.082)
+begin_correlation("BobVelardeMcCain", "RB_STB", 1.040, 2.082)
 add_title("VELARDE, BLASINGAME & McCAIN CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on 195 PVT reports, including 2097 data sets.")
 add_parameter("yg", "Sgg", "Gas specific gravity", 0.561, 1.101)
@@ -256,8 +245,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobMillanArcia", "SaturatedOilVolumeFactor", "RB_STB",
-         1.014, 1.248)
+begin_correlation("BobMillanArcia", "RB_STB", 1.014, 1.248)
 add_title("MILLÁN-ARCIA CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Venezuelan heavy crudes were correlated.")
 add_parameter("api", "Api", "API oil gravity", 9, 20.2)
@@ -276,8 +264,7 @@ end_correlation()
 ################################################################
 
 ## verificada con python
-begin_correlation("BobManucciRosales", "SaturatedOilVolumeFactor",
-         "RB_STB", 1.050, 2.400)
+begin_correlation("BobManucciRosales", "RB_STB", 1.050, 2.400)
 add_title("MANUCCI & ROSALES CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Crude oils of eastern Venezuela were correlated, by using differential separation data from laboratory PVT analysis.")
 add_parameter("api", "Api", "API oil gravity", 14, 40)
@@ -292,7 +279,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobLopezCR", "SaturatedOilVolumeFactor", "RB_STB", 1.0298, 1.1659)
+begin_correlation("BobLopezCR", "RB_STB", 1.0298, 1.1659)
 add_title("LÓPEZ, CASTILLO & ROJAS CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on 48 PVT tests from saturated oil reservoirs located in Bare and Arecuna fields, from the Ayacucho Area of the Faja Petrolífera del Orinoco.")
 add_parameter("yg", "Sgg", "Gas specific gravity", 0.5086, 0.75)
@@ -307,7 +294,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BobSalazar", "SaturatedOilVolumeFactor", "RB_STB", 1.02, 1.1)
+begin_correlation("BobSalazar", "RB_STB", 1.02, 1.1)
 add_title("SALAZAR CORRELATION, CALCULATION OF SATURATED OIL FORMATION VOLUME FACTOR")
 add_db("Based on 136 PVT reports from different areas of the Faja Petrolífera del Orinoco: 60 from Ayacucho, 48 from Junín, 26 from Carabobo, and 2 from Boyacá.")
 add_parameter("yg", "Sgg", "Gas specific gravity", 0.584, 1.142)

@@ -160,6 +160,13 @@ public:
 
   bool check(double val) const { return check(VtlQuantity(unit, val)); }
 
+  template <class U, class Umin, class Umax>
+  static bool check(const Quantity<U> & val, const Quantity<Umin> & min,
+		    const Quantity<Umin> & max)
+  {
+    return val >= min and val <= max;
+  }
+
   void verify(const BaseQuantity & q) const
   {
     ostringstream s;
@@ -1224,9 +1231,9 @@ Declare_Correlation_Subtype(TmpCorrelation, TmpFunction, "");
     // correlations & functions associated to oil
 //Declare_Correlation_Subtype(BubblePointPressure, OilCorrelation, "P_b");
 Declare_Correlation_Subtype(SolutionGasOilRelation, OilCorrelation, "R_s");
-Declare_Correlation_Subtype(UndersaturatedOilVolumeFactor,
-			    OilCorrelation, "B_{oa}");
-Declare_Correlation_Subtype(SaturatedOilVolumeFactor, OilCorrelation, "B_{ob}");
+// Declare_Correlation_Subtype(UndersaturatedOilVolumeFactor,
+// 			    OilCorrelation, "B_{oa}");
+// Declare_Correlation_Subtype(SaturatedOilVolumeFactor, OilCorrelation, "B_{ob}");
 Declare_Correlation_Subtype(SaturatedOilViscosity, OilCorrelation, "\\mu_{ob}");
 Declare_Correlation_Subtype(UndersaturatedOilViscosity, OilCorrelation,
 			    "\\mu_{oa}");
