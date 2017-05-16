@@ -399,11 +399,22 @@ class CorrelationSubtype
   def pars_declarations
     s = ''
     @pars.each do |name, unit|
-      s += "Quantity<#{unit}> #{name};\n"\
+      s += "protected:\n"\
            "\n"\
-           "void set_#{name}(const Quantity<#{unit}> & __#{name})\n"\
+           "Quantity<#{unit}> #{name};\n"\
+           "\n"\
+           "public:\n"\
+           "\n"\
+           "void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
            "{\n"\
-           "  #{name} = __#{name};\n"\
+           "  this->#{name} = #{name};\n"\
+           "}\n"\
+           "\n"\
+           "private:\n"\
+           "\n"\
+           "static void __set_#{name}(#{@subtype_name} * ptr, double val, const Unit & unit)\n"\
+           "{\n"\
+           "  ptr->set_#{name}(VtlQuantity(unit, val));\n"\
            "}\n"\
            "\n"
     end
@@ -411,34 +422,50 @@ class CorrelationSubtype
   end
 
   def gen_subtype_class
-    "class #{@subtype_name} : public #{@type_name}\n"\
-    "{\n"\
-    "protected:\n"\
-    "#{pars_declarations}\n"\
-    "public:\n"\
-    "\n"\
-    "  #{@subtype_name}(const string & name, const Unit & result_unit,\n"\
-    "       double min_val, double max_val)\n"\
-    "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\",\n"\
-    "        result_unit, min_val, max_val) {}\n"\
-    "\n"\
-    "  #{@subtype_name}(const string & name, const Unit & unit,\n"\
-    "       double min_val)\n"\
-    "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\", unit,\n"\
-    "      min_val, unit.max_val) {}\n"\
-    "\n"\
-    "  #{@subtype_name}(const string & name, const Unit & unit)\n"\
-    "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\", unit,\n"\
-    "         unit.min_val, unit.max_val) {}\n"\
-    "\n"\
-    "  virtual ~#{@subtype_name}() = 0;\n"\
-    "\n"\
-    "protected:\n"\
-    "\n"\
-    "using #{@type_name}::add_parameter;\n"\
-    "}\n;"\
-    "\n\n"\
-    "inline #{@subtype_name}::~#{@subtype_name}() {}"
+    s = "class #{@subtype_name} : public #{@type_name}\n"\
+        "{\n"\
+        "\n"\
+        "#{pars_declarations}\n"\
+        "\n"\
+        "public:\n"\
+        "\n"\
+        "void set_par(const string & name, double val, const Unit & unit)\n"\
+        "{\n"\
+        "  static AHDispatcher<string,\n"\
+        "                      void (*)(#{@subtype_name}*, double, const Unit&)>\n"\
+        "    dispatcher = \n"\
+        "  {\n"
+    @pars.each_with_index do |p, i|
+      s += "\"#{p[0]}\", __set_#{p[0]}"
+      s += ",\n" unless i == @pars.length - 1
+    end
+    s += "};\n"\
+         "\n"\
+         "  dispatcher.run(name, this, val, unit);\n"\
+         "};\n"\
+         "\n"\
+         "  #{@subtype_name}(const string & name, const Unit & result_unit,\n"\
+         "       double min_val, double max_val)\n"\
+         "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\",\n"\
+         "        result_unit, min_val, max_val) {}\n"\
+         "\n"\
+         "  #{@subtype_name}(const string & name, const Unit & unit,\n"\
+         "       double min_val)\n"\
+         "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\", unit,\n"\
+         "      min_val, unit.max_val) {}\n"\
+         "\n"\
+         "  #{@subtype_name}(const string & name, const Unit & unit)\n"\
+         "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\", unit,\n"\
+         "         unit.min_val, unit.max_val) {}\n"\
+         "\n"\
+         "  virtual ~#{@subtype_name}() = 0;\n"\
+         "\n"\
+         "protected:\n"\
+         "\n"\
+         "using #{@type_name}::add_parameter;\n"\
+         "}\n;"\
+         "\n\n"\
+         "inline #{@subtype_name}::~#{@subtype_name}() {}"
   end
 
   def gen_pars_set_class
@@ -660,6 +687,7 @@ if options[:header]
   puts "# ifndef #{guard_name}\n"\
        "# define #{guard_name}\n"\
        "\n"\
+       "# include <ah-dispatcher.H>\n"\
        "# include <units.H>\n"\
        "# include <pvt-exceptions.H>\n"\
        "# include <correlations/correlation.H>\n"\
