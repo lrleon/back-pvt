@@ -1358,34 +1358,6 @@ void print_transpose()
     }
 }
 
-void print_notranspose()
-{
-  const size_t nrow = rows.size();
-  const size_t str_ncol = rows(0).first.size();
-  for (size_t j = 0; j < str_ncol; ++j)
-    {
-      printf("%s,", col_names(j).c_str());
-      for (size_t i = 0; i < nrow; ++i)
-	if (i != nrow - 1)	
-	  printf("%s,", rows(i).first(j).c_str());
-	else
-	  printf(rows(i).first(j).c_str());
-      printf("\n");
-    }
-
-  const size_t val_ncol = rows(0).second.size();
-  for (size_t j = str_ncol; j < str_ncol + val_ncol; ++j)
-    {
-      printf("%s,", col_names(j).c_str());
-      for (size_t i = 0; i < nrow; ++i)
-	if (i != nrow - 1)
-	  printf("%f,", rows(i).second(j));
-	else
-	  printf("%f", rows(i).second(j));
-      printf("\n");
-    }
-}
-
 # define Blackoil_Init()						\
   set_api(); /* Initialization of constant data */			\
   set_rsb();								\

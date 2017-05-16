@@ -1,8 +1,11 @@
 # coding: utf-8
 
+declare_correlation_subtype("UndersaturatedOilViscosity", "OilCorrelation,",
+              "c_{ob}");
+
 ## verificada con python
-begin_correlation("UoaKartoatmodjoSchmidt", "UndersaturatedOilViscosity", "CP",
-         0.168, 517.03)
+begin_correlation("UoaKartoatmodjoSchmidt", "CP",
+     0.168, 517.03)
 add_title("KARTOATMODJO & SCHMIDT CORRELATION FOR HEAVY, MEDIUM AND LIGHT OILS, CALCULATION OF UNDERSATURATED OIL VISCOSITY")
 add_db("Based on a total of 3588 data points collected from 661 different crude oil samples.")
 add_db("The first major source was from South East Asia, mainly Indonesia. The second source was North America, including the offshore area. The rest came from the Middle East and Latin America.")
@@ -15,11 +18,10 @@ add_author("Kartoatmodjo & Schmidt")
 add_ref("kartoatmodjo:1991")
 end_correlation()
 
-################################################################    
+################################################################
 
 ## verificada con python
-begin_correlation("UoaDeGhettoEtAl", "UndersaturatedOilViscosity",
-         "CP", 2.4, 354.6)
+begin_correlation("UoaDeGhettoEtAl", "CP", 2.4, 354.6)
 add_title("DE GHETTO, PAONE & VILLA CORRELATION FOR EXTRA-HEAVY (MODIFIED LABEDI CORRELATION) AND HEAVY (MODIFIED KARTOATMODJO & SCHMIDT CORRELATION) OILS, CALCULATION OF UNDERSATURATED OIL VISCOSITY")
 add_db("Based on 1200 measured data points of 63 heavy and extra-heavy oil samples obtained from the Mediterranean Basin, Africa and the Persian Gulf.")
 add_db("Oil samples have been divided in two different API gravity classes: extra-heavy oils for °API<=10, heavy oils for 10<°API<=22.3.")
@@ -36,7 +38,7 @@ end_correlation()
 ################################################################
 
 ## verificada con python
-begin_correlation("UoaBeal", "UndersaturatedOilViscosity", "CP", 0.16, 315)
+begin_correlation("UoaBeal", "CP", 0.16, 315)
 add_title("BEAL CORRELATION, CALCULATION OF UNDERSATURATED OIL VISCOSITY")
 add_db("Based on 52 viscosity observations taken from 26 crude oil samples, representing 20 individual oil pools, 11 of which are in California.")
 add_db("Half of the observations include viscosity data for the undersaturated crude oil above the bubble point, and the other half are viscosity observations at the bubble point.")
@@ -54,7 +56,7 @@ end_correlation()
 ################################################################
 
 ## verificada con python
-begin_correlation("UoaVasquezBeggs", "UndersaturatedOilViscosity", "CP", 0.117, 148)
+begin_correlation("UoaVasquezBeggs", "CP", 0.117, 148)
 add_title("VAZQUEZ & BEGGS CORRELATION, CALCULATION OF UNDERSATURATED OIL VISCOSITY")
 add_db("Based on more than 600 laboratory PVT analyses from fields all over the world, including more than 6000 measurements of undersaturated oil viscosity at various pressures.")
 add_internal_note("The development ranges are presented by Bánzer, who does not specify if the range for viscosity corresponds to uoBubble or uoa.")
@@ -70,7 +72,7 @@ end_correlation()
 ################################################################
 
 ## verificada con python
-begin_correlation("UoaKhan", "UndersaturatedOilViscosity", "CP", 0.13, 71.0)
+begin_correlation("UoaKhan", "CP", 0.13, 71.0)
 add_title("KHAN ET AL. CORRELATION, CALCULATION OF UNDERSATURATED OIL VISCOSITY")
 add_db("Based on 75 bottom hole samples taken from 62 Saudi Arabian oil reservoirs.")
 add_db("A total of 1503 data points were used for oil viscosity above the bubble point pressure.")
@@ -85,8 +87,7 @@ end_correlation()
 ################################################################
 
 ## verificada con python
-begin_correlation("UoaPetroskyFarshad", "UndersaturatedOilViscosity", "CP",
-         0.224, 4.090)
+begin_correlation("UoaPetroskyFarshad", "CP", 0.224, 4.090)
 add_title("PETROSKY & FARSHAD CORRELATION, CALCULATION OF UNDERSATURATED OIL VISCOSITY")
 add_db("Based on a set of 404 data points from 126 laboratory PVT analyses of Gulf of Mexico crude oils. For the ranges of carbon dioxide and nitrogen concentration in the mixture, 126 data points were considered.")
 add_db("Fluid samples were obtained from reservoirs located offshore Texas and Louisiana. Producing areas from Galveston Island, eastward, through Main Pass are represented.")
@@ -101,7 +102,7 @@ end_correlation()
 ################################################################
 
 ## verificada con python
-begin_correlation("UoaAbedini", "UndersaturatedOilViscosity", "CP", 0.316, 18.435)
+begin_correlation("UoaAbedini", "CP", 0.316, 18.435)
 add_title("ABEDINI, ABEDINI & ESLAMI CORRELATION, CALCULATION OF UNDERSATURATED OIL VISCOSITY")
 add_db("Based on PVT experimental data of five sample oils from Iranian oil reservoirs.")
 add_parameter("uobp", "CP", "Oil viscosity at Pb")
@@ -114,7 +115,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("UoaPerezML", "UndersaturatedOilViscosity", "CP")
+begin_correlation("UoaPerezML", "CP")
 add_title("PÉREZ, HENY & LAGO CORRELATION (MODIFIED LABEDI CORRELATION), CALCULATION OF UNDERSATURATED OIL VISCOSITY")
 add_parameter("uobp", "CP", "Oil viscosity at Pb")
 add_parameter("p", "psia", "Pressure")
@@ -128,8 +129,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("UoaDindorukChristman", "UndersaturatedOilViscosity", "CP",
-         0.211, 10.6)
+begin_correlation("UoaDindorukChristman", "CP", 0.211, 10.6)
 add_title("DINDORUK & CHRISTMAN CORRELATION, CALCULATION OF UNDERSATURATED OIL VISCOSITY")
 add_db("Based on more than 90 PVT reports from the Gulf of Mexico.")
 add_parameter("uobp", "CP", "Oil viscosity at Pb", 0.161, 8.7)

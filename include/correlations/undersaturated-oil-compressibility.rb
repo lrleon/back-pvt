@@ -1,8 +1,10 @@
 # coding: utf-8
 
+declare_correlation_subtype("UndersaturatedOilCompressibility", "OilCorrelation",
+			    "c_{oa}");
+
 # verificada con python!
-begin_correlation("CoaDeGhetto", "UndersaturatedOilCompressibility", "psia_1",
-                  3.02e-6, 42.9e-6)
+begin_correlation("CoaDeGhetto", "psia_1", 3.02e-6, 42.9e-6)
 add_title("DE GHETTO, PAONE & VILLA CORRELATION FOR EXTRA-HEAVY AND HEAVY OILS (MODIFIED VASQUEZ & BEGGS CORRELATION), CALCULATION OF UNDERSATURATED OIL ISOTHERMAL COMPRESSIBILITY")
 add_db("Based on 1200 measured data points of 63 heavy and extra-heavy oil samples obtained from the Mediterranean Basin, Africa and the Persian Gulf.")
 add_db("Oil samples have been divided in two different API gravity classes: extra-heavy oils for °API<=10, heavy oils for 10<°API<=22.3.")
@@ -20,8 +22,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("CoaHanafy", "UndersaturatedOilCompressibility", "psia_1",
-                  4.46e-6, 62.68e-6)
+begin_correlation("CoaHanafy", "psia_1", 4.46e-6, 62.68e-6)
 add_title("HANAFY ET AL. CORRELATION, CALCULATION OF UNDERSATURATED OIL ISOTHERMAL COMPRESSIBILITY")
 add_db("Based on experimental PVT data of 324 fluid samples taken from 176 wells located in 75 fields. This data represents 15 productive zones of 123 reservoirs distributed along three different regions of Egypt, including the Gulf of Suez, Western Desert, and Sinai.")
 add_parameter("rsb", "SCF_STB", "Solution GOR at Pb",  7,  4272)
@@ -32,8 +33,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("CoaKartoatmodjoSchmidt", "UndersaturatedOilCompressibility",
-                  "psia_1")
+begin_correlation("CoaKartoatmodjoSchmidt", "psia_1")
 add_title("KARTOATMODJO & SCHMIDT CORRELATION, CALCULATION OF UNDERSATURATED OIL ISOTHERMAL COMPRESSIBILITY")
 add_db("Based on a total of 3588 data points collected from 661 different crude oil samples.")
 add_db("The data bank was collected from PVT reports and literature. The first major source was from South East Asia, mainly Indonesia. The second source was North America, including the offshore area. The rest came from the Middle East and Latin America.")
@@ -55,8 +55,7 @@ end_correlation()
 ################################################################
 
 # verificada con python!
-begin_correlation("CoaPetroskyFarshad", "UndersaturatedOilCompressibility",
-                  "psia_1", 3.507e-6, 24.64e-6)
+begin_correlation("CoaPetroskyFarshad", "psia_1", 3.507e-6, 24.64e-6)
 add_title("PETROSKY & FARSHAD CORRELATION, CALCULATION OF UNDERSATURATED OIL ISOTHERMAL COMPRESSIBILITY")
 add_db("Based on 81 laboratory PVT analyses, using a total of 304 data points. Fluid samples were obtained from reservoirs located offshore Texas and Louisiana.")
 add_db("Producing areas from Galveston Island, eastward, through Main Pass are represented.")
@@ -74,7 +73,7 @@ end_correlation()
 ################################################################
 
 # verificada con python!
-begin_correlation("CoaVasquezBeggs", "UndersaturatedOilCompressibility",
+begin_correlation("CoaVasquezBeggs",
                   "psia_1")
 add_title("VAZQUEZ & BEGGS CORRELATION, CALCULATION OF UNDERSATURATED OIL ISOTHERMAL COMPRESSIBILITY")
 add_db("Based on more than 600 laboratory PVT analyses from fields all over the world.")
@@ -95,7 +94,7 @@ end_correlation()
 ################################################################
 
 # verificada con python!
-begin_correlation("CoaPerezML", "UndersaturatedOilCompressibility", "psia_1")
+begin_correlation("CoaPerezML", "psia_1")
 add_title("PÉREZ, HENY & LAGO CORRELATION (MODIFIED PETROSKY & FARSHAD CORRELATION), CALCULATION OF UNDERSATURATED OIL ISOTHERMAL COMPRESSIBILITY")
 add_parameter("yg", "Sgg", "Gas specific gravity",  0.571,  0.981)
 add_parameter("api", "Api", "API oil gravity",  6.4,  12.9)
@@ -113,8 +112,7 @@ end_correlation()
 ################################################################
 
 # verificada con python!
-begin_correlation("CoaMillanArcia", "UndersaturatedOilCompressibility",
-                  "psia_1")
+begin_correlation("CoaMillanArcia", "psia_1")
 add_title("MILLÁN-ARCIA CORRELATION, CALCULATION OF UNDERSATURATED OIL ISOTHERMAL COMPRESSIBILITY")
 add_db("Venezuelan heavy crudes were correlated.")
 add_parameter("api", "Api", "API oil gravity",  9.0,  20.2)

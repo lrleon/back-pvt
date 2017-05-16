@@ -1,8 +1,9 @@
-
 # coding: utf-8
 
+declare_correlation_subtype("SaturatedOilDensity", "OilFunction", "\\rho_{ob}");
+
 # verificada con python!
-begin_correlation("PobBradley", "SaturatedOilDensity", "Lb_ft3")
+begin_correlation("PobBradley", "Lb_ft3")
 add_title("CALCULATION OF SATURATED OIL DENSITY")
 add_parameter("yg", "Sgg", "Gas specific gravity")
 add_parameter("rs", "SCF_STB", "Solution GOR")

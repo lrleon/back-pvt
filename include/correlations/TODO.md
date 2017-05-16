@@ -10,3 +10,6 @@
 ## 3. corregir bug en transpose
 - Created at   2017-05-15 16:37:25 -0400
 
+## 4. añadir en pct-correlations los nuevos archivos
+- Created at   2017-05-16 08:53:10 -0400
+

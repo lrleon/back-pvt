@@ -1,6 +1,8 @@
 # coding: utf-8
 
-begin_correlation("GpaspMcCain", "AdditionalGasProduced", "SCF_STB", 10, 1300)
+declare_correlation_subtype(, "AdditionalGasProduced", "GasCorrelation", "G_{pa}")
+
+begin_correlation("GpaspMcCain", "SCF_STB", 10, 1300)
 add_title("CALCULATION OF ADDITIONAL GAS PRODUCED FOR TWO STAGES OF SEPARATION")
 add_parameter("tsep", "Fahrenheit", "Primary separator temperature", 60, 120)
 add_parameter("psep", "psia", "Primary separator pressure", 100, 700)
@@ -19,7 +21,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("Gpasp2McCain", "AdditionalGasProduced", "SCF_STB", 20, 4000)
+begin_correlation("Gpasp2McCain", "SCF_STB", 20, 4000)
 add_title("CALCULATION OF ADDITIONAL GAS PRODUCED FOR THREE STAGES OF SEPARATION")
 add_parameter("tsep", "Fahrenheit", "Primary separator temperature", 60, 120)
 add_parameter("tsep2", "Fahrenheit", "Second separator temperature", 60, 120)

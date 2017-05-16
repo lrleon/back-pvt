@@ -1,8 +1,10 @@
-
 # coding: utf-8
 
+declare_correlation_subtype("UndersaturatedOilDensity", "OilFunction",
+                            "\\rho_{oa}")
+
 # verificada con python!
-begin_correlation("PoaBradley", "UndersaturatedOilDensity", "Lb_ft3")
+begin_correlation("PoaBradley", "Lb_ft3")
 add_title("CALCULATION OF UNDERSATURATED OIL DENSITY")
 add_db("Calculation of oil density at pressures above the bubble point.")
 add_parameter("pobp", "Lb_ft3", "Oil density at Pb")
