@@ -113,6 +113,7 @@ class CorrelationGen
 
   def add_synonym(par_name, syn_name, unit_name)
     @synonyms << [par_name, syn_name, unit_name]
+    $subtype.def_synonym par_name, syn_name, unit_name
   end
 
   def add_variable(name, type)
@@ -382,18 +383,24 @@ $curr_corr = nil
 
 class CorrelationSubtype
 
-  attr_reader :subtype_name, :type_name, :symbol
+  attr_reader :subtype_name, :type_name, :symbol, :synonyms
 
   def initialize(subtype_name, type_name, latex_symbol)
     @subtype_name = subtype_name
     @type_name = type_name
     @symbol = latex_symbol
     @pars = {}
+    @synonyms = {}
   end
 
   def def_parameter(par_name, unit_name)
     return if @pars.has_key? par_name
     @pars[par_name] = unit_name
+  end
+
+  def def_synonym(par_name, syn_name, unit_name)
+    return if @synonyms.has_key? par_name
+    @synonyms[par_name] = [syn_name, unit_name]
   end
 
   def pars_declarations
@@ -407,8 +414,16 @@ class CorrelationSubtype
            "\n"\
            "void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
            "{\n"\
-           "  this->#{name} = #{name};\n"\
-           "}\n"\
+           "  this->#{name} = #{name};\n"
+      syns = @synonyms[name]
+      if syns
+        if @pars.has_key? syns[0]
+          s += "  this->#{syns[0]} = #{name};\n"
+        else
+          s += "  this->#{syns[0]} = Quantity<#{syns[1]}>(#{name})"
+        end
+      end 
+      s += "}\n"\
            "\n"\
            "private:\n"\
            "\n"\
