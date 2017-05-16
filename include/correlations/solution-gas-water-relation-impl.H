@@ -3,7 +3,8 @@
 
 # include <correlations/solution-gas-water-relation.H>
 # include <correlations/water-density.H>
-# include <correlations/spivey-dry.H>
+# include <correlations/vapor-pressure.H>
+# include <correlations/methane-solubility.H>
 
 void RswSpiveyMN::precondition(const Quantity<Celsius> & t,
 			       const Quantity<mPascal> & p) const

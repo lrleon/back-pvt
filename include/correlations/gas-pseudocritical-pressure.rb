@@ -1,6 +1,9 @@
 # coding: utf-8
 
-begin_correlation("PpchcStanding" , "HydrocarbonGasPseudocriticalPressure", "psia", 586, 678)
+declare_correlation_subtype("HydrocarbonGasPseudocriticalPressure",
+              "GasCorrelation", "P_{pcHC}");
+
+begin_correlation("PpchcStanding", "psia", 586, 678)
 add_parameter("yghc", "Sgg", "Gas gravity of the hydrocarbon portion", 0.55, 1.67) 
 add_title("STANDING CORRELATION, CALCULATION OF PSEUDOCRITICAL PRESSURE OF THE DRY GAS HYDROCARBON PORTION")
 add_db("Calculation of pseudocritical pressure of the dry gas hydrocarbon portion.")
@@ -20,7 +23,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("PpchcSutton" , "HydrocarbonGasPseudocriticalPressure", "psia", 500, 700)
+begin_correlation("PpchcSutton", "psia", 500, 700)
 add_parameter("yghc", "Sgg", "Gas gravity of the hydrocarbon portion", 0.571, 1.679)
 add_title("SUTTON CORRELATION, CALCULATION OF PSEUDOCRITICAL PRESSURE OF THE NATURAL GAS HYDROCARBON PORTION")
 add_db("Calculation of pseudocritical pressure of the natural gas hydrocarbon portion.")
@@ -34,7 +37,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("PpchcGuoGhalambor", "HydrocarbonGasPseudocriticalPressure", "psia")
+begin_correlation("PpchcGuoGhalambor", "psia")
 add_parameter("yghc", "Sgg", "Gas gravity of the hydrocarbon portion")
 add_parameter("n2", "MoleFraction", "N2 concentration", "Quantity<MolePercent>(0)", "Quantity<MolePercent>(5)") 
 add_parameter("h2s", "MoleFraction", "H2S concentration", "Quantity<MolePercent>(0)", "Quantity<MolePercent>(3)") 
@@ -47,7 +50,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("PpcAhmed", "HydrocarbonGasPseudocriticalPressure", "psia")
+begin_correlation("PpcAhmed", "psia")
 add_parameter("yghc", "Sgg", "Gas gravity of the hydrocarbon portion")
 add_parameter("n2", "MoleFraction", "N2 concentration")
 add_parameter("co2", "MoleFraction", "CO2 concentration")
@@ -62,8 +65,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("PpchcStandingHeavierFractions",
-         "HydrocarbonGasPseudocriticalPressure", "psia", 620, 675)
+begin_correlation("PpchcStandingHeavierFractions", "psia", 620, 675)
 add_parameter("yghc", "Sgg", "Gas gravity of the hydrocarbon portion", 0.58, 1.3)
 add_title("STANDING CORRELATION, CALCULATION OF PSEUDOCRITICAL PRESSURE OF THE WET OR \\\"CONDENSATE\\\" GAS HYDROCARBON PORTION")
 add_db("Calculation of pseudocritical pressure of the wet or \\\"condensate\\\" gas hydrocarbon portion.")
@@ -77,8 +79,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("PpchcElsharkawyEtAl",
-                  "HydrocarbonGasPseudocriticalPressure", "psia")
+begin_correlation("PpchcElsharkawyEtAl", "psia")
 add_parameter("yghc", "Sgg", "Gas gravity of the hydrocarbon portion", 0.61, 1.89)
 add_title("ELSHARKAWY ET AL. CORRELATION, CALCULATION OF PSEUDOCRITICAL PRESSURE OF THE CONDENSATE GAS HYDROCARBON PORTION")
 add_db("Calculation of pseudocritical pressure of the \\\"condensate\\\" gas hydrocarbon portion.")

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-declare_correlation_subtype("DeadOilViscosity", "OilCorrelation", "\\mu_{od}");
+declare_correlation_subtype("DeadOilViscosity", "OilCorrelation", "\\\\mu_{od}");
 
 ## verificada con python
 begin_correlation("UodBeal", "CP", 0.865, 1550)

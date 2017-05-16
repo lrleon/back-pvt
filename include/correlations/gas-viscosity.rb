@@ -1,6 +1,8 @@
 # coding: utf-8
 
-begin_correlation("UgCarrKB", "GasViscosity", "CP")
+declare_correlation_subtype("GasViscosity", "GasCorrelation", "\\\\mu_{g}")
+
+begin_correlation("UgCarrKB", "CP")
 add_title("CARR, KOBAYASHI & BURROWS CORRELATION, CALCULATION OF GAS VISCOSITY")
 add_parameter("t", "Fahrenheit", "Temperature", 100, 300)
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.2, 3) 
@@ -26,7 +28,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("UgLeeGE", "GasViscosity", "mP")
+begin_correlation("UgLeeGE", "mP")
 add_title("LEE, GONZALEZ & EAKIN CORRELATION, CALCULATION OF GAS VISCOSITY")
 add_parameter("t", "Rankine", "Temperature", "Quantity<Fahrenheit>(100)", "Quantity<Fahrenheit>(340)") 
 add_parameter("p", "psia", "Pressure", 100, 8000)
@@ -41,7 +43,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("UgDeanStiel", "GasViscosity", "CP")
+begin_correlation("UgDeanStiel", "CP")
 add_title("DEAN & STIEL CORRELATION, CALCULATION OF GAS VISCOSITY")
 add_author("Dean & Stiel")
 add_parameter("t", "Rankine", "Temperature")

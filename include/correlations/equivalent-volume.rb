@@ -1,6 +1,8 @@
 # coding: utf-8
 
-begin_correlation("VeqspMcCain", "EquivalentVolume", "SCF_STB", 650, 4500)
+declare_correlation_subtype("EquivalentVolume", "GasCorrelation", "V_{eq}");
+
+begin_correlation("VeqspMcCain", "SCF_STB", 650, 4500)
 add_title("CALCULATION OF EQUIVALENT VOLUME FOR TWO STAGES OF SEPARATION")
 add_parameter("tsep", "Fahrenheit", "Primary separator temperature", 60, 120)
 add_parameter("psep", "psia", "Primary separator pressure", 100, 700)
@@ -19,7 +21,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("Veqsp2McCain", "EquivalentVolume", "SCF_STB", 550, 5000)
+begin_correlation("Veqsp2McCain", "SCF_STB", 550, 5000)
 add_title("CALCULATION OF EQUIVALENT VOLUME FOR THREE STAGES OF SEPARATION")
 add_parameter("tsep", "Fahrenheit", "Primary separator temperature", 60, 120)
 add_parameter("tsep2", "Fahrenheit", "Second separator temperature", 60, 120)

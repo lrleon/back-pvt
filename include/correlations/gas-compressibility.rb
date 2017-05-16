@@ -1,6 +1,9 @@
 # coding: utf-8
 
-begin_correlation("ZfactorSarem", "GasCompressibility", "Zfactor")
+declare_correlation_subtype("GasCompressibility", "GasCorrelation",
+              "Z\\\\ factor");
+
+begin_correlation("ZfactorSarem", "Zfactor")
 add_title("SAREM FIT METHOD, CALCULATION OF THE GAS COMPRESSIBILITY FACTOR")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.05, 2.95)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0.1, 14.9)
@@ -14,7 +17,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("ZfactorHallYarborough", "GasCompressibility", "Zfactor")
+begin_correlation("ZfactorHallYarborough", "Zfactor")
 add_title("HALL & YARBOROUGH FIT METHOD, CALCULATION OF THE GAS COMPRESSIBILITY FACTOR")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.2, 3)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0.1, 24)
@@ -32,7 +35,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("ZfactorDranchukPR", "GasCompressibility", "Zfactor")
+begin_correlation("ZfactorDranchukPR", "Zfactor")
 add_title("DRANCHUK, PURVIS & ROBINSON FIT METHOD, CALCULATION OF THE GAS COMPRESSIBILITY FACTOR")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.05, 3)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0.2, 30)
@@ -49,7 +52,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("ZfactorDranchukAK", "GasCompressibility", "Zfactor")
+begin_correlation("ZfactorDranchukAK", "Zfactor")
 add_title("DRANCHUK & ABOU-KASSEM FIT METHOD, CALCULATION OF THE GAS COMPRESSIBILITY FACTOR")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 0.7, 3)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0, 30)
@@ -69,7 +72,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("ZfactorGopal", "GasCompressibility", "Zfactor")
+begin_correlation("ZfactorGopal", "Zfactor")
 add_title("GOPAL FIT METHOD, CALCULATION OF THE GAS COMPRESSIBILITY FACTOR")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.05, 3)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0.2, 15)
@@ -85,7 +88,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("ZfactorBrillBeggs", "GasCompressibility", "Zfactor")
+begin_correlation("ZfactorBrillBeggs", "Zfactor")
 add_title("BRILL & BEGGS FIT METHOD, CALCULATION OF THE GAS COMPRESSIBILITY FACTOR")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.2, 2.4)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0, 13)
@@ -99,7 +102,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("ZfactorPapay", "GasCompressibility", "Zfactor")
+begin_correlation("ZfactorPapay", "Zfactor")
 add_title("PÁPAY FIT METHOD, CALCULATION OF THE GAS COMPRESSIBILITY FACTOR")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.2, 3)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0.2, 15)

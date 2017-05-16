@@ -1,6 +1,8 @@
 # coding: utf-8
 
-begin_correlation("UwMaoDuan", "WaterViscosity", "Paxs")
+declare_correlation_subtype("WaterViscosity", "WaterCorrelation", "\\\\mu_{w}")
+
+begin_correlation("UwMaoDuan", "Paxs")
 add_parameter("t", "Kelvin", "Temperature", 273, 623)
 add_parameter("nacl", "Molality_NaCl", "Dissolved salt concentration", 0, 6) 
 add_parameter("ppw", "Gr_cm3", "Pure water density")
@@ -16,7 +18,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("UwVanWingen", "WaterViscosity", "CP", 0.1, 2)
+begin_correlation("UwVanWingen", "CP", 0.1, 2)
 add_parameter("t", "Fahrenheit", "Temperature", 0, 350)
 add_title("VAN WINGEN CORRELATION, CALCULATION OF WATER VISCOSITY")
 add_author("Van Wingen")
@@ -28,7 +30,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("UwMatthewsRussel", "WaterViscosity", "CP", 0.1, 2.1)
+begin_correlation("UwMatthewsRussel", "CP", 0.1, 2.1)
 add_parameter("t", "Fahrenheit", "Temperature", 40, 400)
 add_parameter("p", "psia", "Pressure", 14.7, 10000)
 add_parameter("nacl", "Dissolved_Salt_Percent", "Dissolved salt concentration", 0, 26)
@@ -44,7 +46,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("UwMcCain", "WaterViscosity", "CP")
+begin_correlation("UwMcCain", "CP")
 add_parameter("t", "Fahrenheit", "Temperature", 100, 400)
 add_parameter("p", "psia", "Pressure", 14.7, 14000)
 add_parameter("nacl", "Dissolved_Salt_Percent", "Dissolved salt concentration", 0, 26)
@@ -57,7 +59,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("UwMcCoy", "WaterViscosity", "CP")
+begin_correlation("UwMcCoy", "CP")
 add_parameter("t", "Kelvin", "Temperature")
 add_parameter("nacl", "Dissolved_Salt_Percent", "Dissolved salt concentration")
 add_title("McCOY CORRELATION, CALCULATION OF WATER VISCOSITY")

@@ -2,7 +2,6 @@
 # define SATURATED_WATER_ISOTHERMAL_COMPRESSIBILITY_IMPL_H
 
 # include <correlations/saturated-water-isothermal-compressibility.H>
-# include <correlations/spivey-dry.H>
 # include "water-density.H"
 # include "undersaturated-water-isothermal-compressibility.H"
 

@@ -1,5 +1,8 @@
 # coding: utf-8
-begin_correlation("Pg", "GasDensity", "Lb_ft3")
+
+declare_correlation_subtype("GasDensity", "GasFunction", "\\rho_{g}")
+
+begin_correlation("Pg", "Lb_ft3")
 add_title("CALCULATION OF GAS DENSITY")
 add_parameter("yg", "Sgg", "Gas specific gravity")
 add_parameter("t", "Rankine", "Temperature")

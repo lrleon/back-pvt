@@ -2,9 +2,9 @@
 # define UNDERSATURATED_WATER_ISOTHERMAL_COMPRESSIBILITY_IMPL_H
 
 # include <correlations/undersaturated-water-isothermal-compressibility.H>
-# include <correlations/spivey-dry.H>
-# include "water-density.H"
-
+# include <correlations/water-density.H>
+# include <correlations/vapor-pressure.H>
+# include <correlations/methane-solubility.H>
 
 void CwaSpiveyMN::precondition(const Quantity<Celsius> & t,
 			       const Quantity<mPascal> & p) const

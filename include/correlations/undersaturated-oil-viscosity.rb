@@ -1,6 +1,6 @@
 # coding: utf-8
 
-declare_correlation_subtype("UndersaturatedOilViscosity", "OilCorrelation,",
+declare_correlation_subtype("UndersaturatedOilViscosity", "OilCorrelation",
               "c_{ob}");
 
 ## verificada con python

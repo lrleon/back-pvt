@@ -1,4 +1,6 @@
 *.o
+*~
+#*
 Makefile
 *.a
 *.so

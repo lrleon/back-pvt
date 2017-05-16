@@ -255,8 +255,12 @@ class CorrelationGen
         "\n"
     @pars.each do |par|
       if par.name != 'p' && par.name != 't'
-        s += "  if (not (#{par.name} >= #{par.min} and #{par.name} <= #{par.max}))\n"\
-             "  ZENTHROW(OutOfParameterRange, \"parameter #{par.name} is not inside of [#{par.min}, #{par.max}]\");\n"
+        s += "  if (not (#{par.name} >= #{par.min}))\n"\
+             "    ZENTHROW(OutOfParameterRange, "\
+             "\"parameter #{par.name} is less than #{par.min}\");\n" if par.min
+        s += "  if (not (#{par.name} <= #{par.max}))\n"\
+             "    ZENTHROW(OutOfParameterRange, "\
+             "\"parameter #{par.name} is greater than #{par.max}\");\n" if par.max
       end
     end
     s += "\n"\

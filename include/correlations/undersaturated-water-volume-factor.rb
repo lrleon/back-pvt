@@ -1,6 +1,9 @@
 # coding: utf-8
 
-begin_correlation("BwaSpiveyMN", "UndersaturatedWaterVolumeFactor", "Rm3_Sm3") # TODO: la unidad debe ser Scm3/Scm3
+declare_correlation_subtype("UndersaturatedWaterVolumeFactor",
+              "WaterCorrelation", "B_{wa}")
+
+begin_correlation("BwaSpiveyMN", "Rm3_Sm3") # TODO: la unidad debe ser Scm3/Scm3
 add_title("SPIVEY, McCAIN & NORTH CORRELATION, CALCULATION OF WATER FORMATION VOLUME FACTOR ")
 add_db("The volumetric properties of oilfield brines were obtained by combining the correlations developed by Spivey, McCain & North (2004), for density of methane-free sodium chloride brine and solubility of methane in sodium chloride brines, with published correlations for specific volume and partial molar volume of methane in brine.")
 add_parameter("t", "Celsius", "Temperature", 0, 275) 
@@ -17,7 +20,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BwaMcCain", "UndersaturatedWaterVolumeFactor", "RB_STB")
+begin_correlation("BwaMcCain", "RB_STB")
 add_title("McCain CORRELATION, CALCULATION OF WATER FORMATION VOLUME FACTOR (FOR PRESSURES ABOVE THE BUBBLE POINT)")
 add_db("Based on the equation presented by McCain (1990).")
 add_parameter("p", "psia", "Pressure")

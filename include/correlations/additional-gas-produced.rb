@@ -1,6 +1,6 @@
 # coding: utf-8
 
-declare_correlation_subtype(, "AdditionalGasProduced", "GasCorrelation", "G_{pa}")
+declare_correlation_subtype("AdditionalGasProduced", "GasCorrelation", "G_{pa}")
 
 begin_correlation("GpaspMcCain", "SCF_STB", 10, 1300)
 add_title("CALCULATION OF ADDITIONAL GAS PRODUCED FOR TWO STAGES OF SEPARATION")

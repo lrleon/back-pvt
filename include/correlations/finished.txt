@@ -1,0 +1,8 @@
+considerar impl como método estático,2017-01-07 11:59:40 -0400,2017-01-07 12:25:36 -0400,,2017-01-07 12:25:39 -0400
+Añadir noexcept a impl,2017-01-07 12:25:55 -0400,2017-01-08 13:16:44 -0400,,2017-01-08 13:16:48 -0400
+correlaciones con símbolos faltantes: SaturatedWaterVolumeFactor, UndersaturatedWaterVolumeFactor,2017-01-08 13:17:19 -0400, UndersaturatedWaterIsothermalCompressibility,2017-01-08 13:17:22 -0400
+Los subtipos de correlación deben tener la posibilidad de ser hidden,2016-11-08 17:52:46 -0400,2017-01-08 13:17:04 -0400,,2017-01-08 13:23:04 -0400
+mejorar performamce de target_name(),2017-01-06 16:20:16 -0400,,,2017-01-08 13:23:07 -0400
+Alertar sobre lo sinónimos de parámetros; es el medio que tiene el sistema para identificar correlaciones automáticamente,2016-11-12 14:05:50 -0400,2017-01-08 13:17:10 -0400,,2017-01-08 13:23:41 -0400
+Revisar los rangos de salida de correlaciones Boa,2016-11-01 09:40:08 -0400,2017-01-08 13:27:36 -0400,,2017-01-08 13:27:43 -0400
+mejorar performance de target_name,2017-01-08 13:23:32 -0400,2017-01-10 09:46:16 -0400,,2017-01-10 09:46:19 -0400

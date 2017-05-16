@@ -1,6 +1,6 @@
 # coding: utf-8
 
-declare_correlation_subtype("SaturatedOilVolumeFactor", "SaturatedOilVolumeFactor",
+declare_correlation_subtype("SaturatedOilVolumeFactor", "OilCorrelation",
                             "B_{oa}")
 
 begin_correlation("BobAlmarhoun", "RB_STB", 1.032, 1.997)

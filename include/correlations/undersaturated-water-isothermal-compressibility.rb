@@ -1,6 +1,9 @@
 # coding: utf-8
 
-begin_correlation("CwaSpiveyMN", "UndersaturatedWaterIsothermalCompressibility", "mPa_1")
+declare_correlation_subtype("UndersaturatedWaterIsothermalCompressibility",
+                            "WaterCorrelation", "c_{wa}");
+
+begin_correlation("CwaSpiveyMN", "mPa_1")
 add_title("SPIVEY, McCAIN & NORTH, CALCULATION OF WATER ISOTHERMAL COMPRESSIBILITY (FOR PRESSURES ABOVE THE BUBBLE POINT)")
 add_db("The volumetric properties of oilfield brines were obtained by combining the correlations developed by Spivey, McCain & North (2004), for density of methane-free sodium chloride brine and solubility of methane in sodium chloride brines, with published correlations for specific volume and partial molar volume of methane in brine.")
 add_parameter("t", "Celsius", "Temperature", 0, 275) 
@@ -16,8 +19,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("CwaDodsonStanding",
-                  "UndersaturatedWaterIsothermalCompressibility", "psia_1")
+begin_correlation("CwaDodsonStanding", "psia_1")
 add_title("DODSON & STANDING CORRELATION, CALCULATION OF WATER ISOTHERMAL COMPRESSIBILITY (FOR PRESSURES ABOVE THE BUBBLE POINT)")
 add_db("Based on PVT and solubility data for mixtures of natural gas and water, and for mixtures of natural gas and two typical oil-field brines.")
 add_parameter("t", "Fahrenheit", "Temperature", 100, 250) 
@@ -35,7 +37,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("CwaOsif", "UndersaturatedWaterIsothermalCompressibility", "psia_1")
+begin_correlation("CwaOsif", "psia_1")
 add_title("OSIF CORRELATION, CALCULATION OF WATER ISOTHERMAL COMPRESSIBILITY (FOR PRESSURES ABOVE THE BUBBLE POINT)")
 add_db("Based on 420 observations.")
 add_parameter("t", "Fahrenheit", "Temperature", 200, 270) 

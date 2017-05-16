@@ -1,6 +1,8 @@
 # coding: utf-8
 
-begin_correlation("Bg", "GasVolumeFactor", "RCF_SCF")
+declare_correlation_subtype("GasVolumeFactor", "GasFunction", "B_{g}");
+
+begin_correlation("Bg", "RCF_SCF")
 add_title("CALCULATION OF GAS FORMATION VOLUME FACTOR")
 add_parameter("t", "Rankine", "Temperature")
 add_parameter("p", "psia", "Pressure")

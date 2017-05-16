@@ -1,7 +1,9 @@
 # coding: utf-8
 
-begin_correlation("TpchcStanding", "HydrocarbonGasPseudocriticalTemperature", "Rankine",
-         345, 670)
+declare_correlation_subtype("HydrocarbonGasPseudocriticalTemperature",
+                            "GasCorrelation", "\\\\gamma_{gHC}")
+
+begin_correlation("TpchcStanding", "Rankine", 345, 670)
 add_parameter('yghc', 'Sgg', "Gas gravity of the hydrocarbon portion", 0.55, 1.67)
 add_title("STANDING CORRELATION, CALCULATION OF PSEUDOCRITICAL TEMPERATURE OF THE DRY GAS HYDROCARBON PORTION")
 add_db("Calculation of pseudocritical temperature of the dry gas hydrocarbon portion.")
@@ -20,8 +22,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("TpchcStandingHeavierFractions",
-         "HydrocarbonGasPseudocriticalTemperature", "Rankine", 350, 495)
+begin_correlation("TpchcStandingHeavierFractions", "Rankine", 350, 495)
 add_parameter('yghc', 'Sgg', "Gas gravity of the hydrocarbon portion", 0.58, 1.3)
 add_title("STANDING CORRELATION, CALCULATION OF PSEUDOCRITICAL TEMPERATURE OF THE WET OR \\\"CONDENSATE\\\" GAS HYDROCARBON PORTION")
 add_db("Calculation of pseudocritical temperature of the wet or \\\"condensate\\\" gas hydrocarbon portion.")
@@ -39,8 +40,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("TpchcSutton",
-                  "HydrocarbonGasPseudocriticalTemperature", "Rankine", 330 , 575)
+begin_correlation("TpchcSutton", "Rankine", 330 , 575)
 add_parameter('yghc', 'Sgg', "Gas gravity of the hydrocarbon portion", 0.571, 1.679)
 add_title("SUTTON CORRELATION, CALCULATION OF PSEUDOCRITICAL TEMPERATURE OF THE NATURAL GAS HYDROCARBON PORTION")
 add_db("Calculation of pseudocritical temperature of the natural gas hydrocarbon portion.")
@@ -53,8 +53,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("TpchcElsharkawyEtAl",
-         "HydrocarbonGasPseudocriticalTemperature", "Rankine")
+begin_correlation("TpchcElsharkawyEtAl", "Rankine")
 add_parameter("yghc", "Sgg", "Gas gravity of the hydrocarbon portion", 0.61, 1.89)
 add_title("ELSHARKAWY ET AL. CORRELATION, CALCULATION OF PSEUDOCRITICAL TEMPERATURE OF THE CONDENSATE GAS HYDROCARBON PORTION")
 add_db("Calculation of pseudocritical temperature of the \\\"condensate\\\" gas hydrocarbon portion.")

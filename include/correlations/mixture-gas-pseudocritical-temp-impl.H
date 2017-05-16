@@ -3,10 +3,9 @@
 
 # include <correlations/mixture-gas-pseudocritical-temp.H>
 
-void TpcmKayMixingRule::precondition
-(const Quantity<MoleFraction> & n2,
- const Quantity<MoleFraction> & co2,
- const Quantity<MoleFraction> & h2s) const
+void TpcmKayMixingRule::precondition(const Quantity<MoleFraction> & n2,
+				     const Quantity<MoleFraction> & co2,
+				     const Quantity<MoleFraction> & h2s) const
 {
   if (n2.raw() + co2.raw() +
       h2s.raw() >= 1)

@@ -1,7 +1,7 @@
 # coding: utf-8
 
 declare_correlation_subtype("OilInterfacialTension", "OilCorrelation",
-                            "\\sigma_{go}")
+                            "\\\\sigma_{go}")
 
 # verificada con python!
 begin_correlation("SgoBakerSwerdloff", "dynes_cm", 0, 40)

@@ -2,7 +2,9 @@
 # define SATURATED_WATER_VOLUME_FACTOR_IMPL_H
 
 # include <correlations/saturated-water-volume-factor.H>
-# include <correlations/spivey-dry.H>
+# include <correlations/vapor-pressure.H>
+# include <correlations/water-volume-factor.H>
+
 
 void BwbSpiveyMN::precondition(const Quantity<Celsius> & t,
 			       const Quantity<mPascal> & p) const

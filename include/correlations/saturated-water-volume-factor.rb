@@ -1,6 +1,9 @@
 # coding: utf-8
 
-begin_correlation("BwbSpiveyMN", "SaturatedWaterVolumeFactor", "Rm3_Sm3") # TODO: la unidad debe ser Scm3/Scm3
+declare_correlation_subtype("SaturatedWaterVolumeFactor", "WaterCorrelation",
+			  "B_{wb}")
+
+begin_correlation("BwbSpiveyMN", "Rm3_Sm3") # TODO: la unidad debe ser Scm3/Scm3
 add_title("SPIVEY, McCAIN & NORTH CORRELATION, CALCULATION OF WATER FORMATION VOLUME FACTOR ")
 add_db("The volumetric properties of oilfield brines were obtained by combining the correlations developed by Spivey, McCain & North (2004), for density of methane-free sodium chloride brine and solubility of methane in sodium chloride brines, with published correlations for specific volume and partial molar volume of methane in brine.")
 add_parameter("t", "Celsius", "Temperature", 0, 275) 
@@ -17,7 +20,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BwbMcCain", "SaturatedWaterVolumeFactor", "RB_STB")
+begin_correlation("BwbMcCain", "RB_STB")
 add_title("McCain CORRELATION, CALCULATION OF WATER FORMATION VOLUME FACTOR (FOR PRESSURES BELOW OR EQUAL TO THE BUBBLE POINT)")
 add_db("Based on graphs, presented by McCain (1990), of the change in volume as a function of reservoir temperature and pressure.")
 add_parameter("t", "Fahrenheit", "Temperature", 90, 260)
@@ -31,7 +34,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("BwbMcCoy", "SaturatedWaterVolumeFactor", "RB_STB")
+begin_correlation("BwbMcCoy", "RB_STB")
 add_title("McCOY CORRELATION, CALCULATION OF WATER FORMATION VOLUME FACTOR (FOR PRESSURES BELOW OR EQUAL TO THE BUBBLE POINT)")
 add_parameter("t", "Fahrenheit", "Temperature")
 add_parameter("p", "psia", "Pressure")

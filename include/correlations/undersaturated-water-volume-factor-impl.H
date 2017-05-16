@@ -2,8 +2,8 @@
 # define UNDERSATURATED_WATER_VOLUME_FACTOR_IMPL_H
 
 # include <correlations/undersaturated-water-volume-factor.H>
-# include <correlations/spivey-dry.H>
-
+# include <correlations/vapor-pressure.H>
+# include <correlations/water-volume-factor.H>
 
 void BwaSpiveyMN::precondition(const Quantity<Celsius> & t,
 			       const Quantity<mPascal> & p) const

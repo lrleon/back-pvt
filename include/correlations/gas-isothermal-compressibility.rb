@@ -1,6 +1,9 @@
 # coding: utf-8
 
-begin_correlation("CgSarem", "GasIsothermalCompressibility", "psia_1")
+declare_correlation_subtype("GasIsothermalCompressibility", "GasCorrelation",
+			  "c_{g}")
+
+begin_correlation("CgSarem", "psia_1")
 add_title("SAREM FIT METHOD, CALCULATION OF GAS ISOTHERMAL COMPRESSIBILITY")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.05, 2.95)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0.1, 14.9)
@@ -17,7 +20,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("CgHallYarborough", "GasIsothermalCompressibility", "psia_1")
+begin_correlation("CgHallYarborough", "psia_1")
 add_title("HALL & YARBOROUGH FIT METHOD, CALCULATION OF GAS ISOTHERMAL COMPRESSIBILITY")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.2, 3.0)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0.1, 24.0)
@@ -37,7 +40,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("CgMattarBA", "GasIsothermalCompressibility", "psia_1")
+begin_correlation("CgMattarBA", "psia_1")
 add_title("MATTAR, BRAR & AZIZ FIT METHOD, CALCULATION OF GAS ISOTHERMAL COMPRESSIBILITY")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.05, 3)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0.2, 30)
@@ -57,7 +60,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("CgGopal", "GasIsothermalCompressibility", "psia_1")
+begin_correlation("CgGopal", "psia_1")
 add_title("GOPAL FIT METHOD, CALCULATION OF GAS ISOTHERMAL COMPRESSIBILITY")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.05, 3)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0.2, 15)
@@ -76,7 +79,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("CgBrillBeggs", "GasIsothermalCompressibility", "psia_1")
+begin_correlation("CgBrillBeggs", "psia_1")
 add_title("BRILL & BEGGS FIT METHOD, CALCULATION OF GAS ISOTHERMAL COMPRESSIBILITY")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.2, 2.4)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0, 13)
@@ -93,7 +96,7 @@ end_correlation()
 
 ################################################################
 
-begin_correlation("CgPapay", "GasIsothermalCompressibility", "psia_1") 
+begin_correlation("CgPapay", "psia_1") 
 add_title("PÁPAY FIT METHOD, CALCULATION OF GAS ISOTHERMAL COMPRESSIBILITY ")
 add_parameter("tpr", "PseudoReducedTemperature", "Gas pseudoreduced temperature", 1.2, 3)
 add_parameter("ppr", "PseudoReducedPressure", "Gas pseudoreduced pressure", 0.2, 15)

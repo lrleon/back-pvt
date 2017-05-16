@@ -1,7 +1,7 @@
 # coding: utf-8
 
 declare_correlation_subtype("SaturatedOilViscosity", "OilCorrelation",
-                            "\\mu_{ob}");
+                            "\\\\mu_{ob}");
 
 ## verificada con python
 begin_correlation("UobBeggsRobinson", "CP")
