@@ -398,12 +398,14 @@ class CorrelationSubtype
     @pars[par_name] = unit_name
   end
 
-  def def_synonym(par_name, syn_name, unit_name)
+  def def_synonym(syn_name, par_name, unit_name)
     return if @synonyms.has_key? par_name
-    @synonyms[par_name] = [syn_name, unit_name]
+    @synonyms[syn_name] = [par_name, unit_name]
   end
 
   def pars_declarations
+    puts "@pars = #{@pars}"
+    puts "@synonyms = #{@synonyms}"
     s = ''
     @pars.each do |name, unit|
       s += "protected:\n"\
@@ -415,14 +417,10 @@ class CorrelationSubtype
            "void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
            "{\n"\
            "  this->#{name} = #{name};\n"
-      syns = @synonyms[name]
-      if syns
-        if @pars.has_key? syns[0]
-          s += "  this->#{syns[0]} = #{name};\n"
-        else
-          s += "  this->#{syns[0]} = Quantity<#{syns[1]}>(#{name})"
-        end
-      end 
+      syn = @synonyms[name]
+      puts "For #{name} #{syn}" if syn
+      puts "name synonyms = #{name} #{@synonyms[name]}" if @pars.has_key?(@synonyms[name])
+      s += "  this->#{syn[0]} = #{name};\n" if syn && @pars.has_key?(syn[0])
       s += "}\n"\
            "\n"\
            "private:\n"\
@@ -432,6 +430,13 @@ class CorrelationSubtype
            "  ptr->set_#{name}(VtlQuantity(unit, val));\n"\
            "}\n"\
            "\n"
+    end
+    @synonyms.each do |name, unit|
+      if !@pars.has_key? name
+        s += "void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
+             "{\n"\
+             "  
+      end
     end
     s
   end

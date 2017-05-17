@@ -1226,55 +1226,5 @@ auto tuned_direct_impl(const Correlation & corr_ptr, double c, double m,
   return c + m*r;
 }
 
-//Declare_Correlation_Subtype(TmpCorrelation, TmpFunction, "");
-
-    // correlations & functions associated to oil
-//Declare_Correlation_Subtype(BubblePointPressure, OilCorrelation, "P_b");
-//Declare_Correlation_Subtype(SolutionGasOilRelation, OilCorrelation, "R_s");
-// Declare_Correlation_Subtype(UndersaturatedOilVolumeFactor,
-// 			    OilCorrelation, "B_{oa}");
-// Declare_Correlation_Subtype(SaturatedOilVolumeFactor, OilCorrelation, "B_{ob}");
-//Declare_Correlation_Subtype(SaturatedOilViscosity, OilCorrelation, "\\mu_{ob}");
-//Declare_Correlation_Subtype(UndersaturatedOilViscosity, OilCorrelation, "\\mu_{oa}");
-//Declare_Correlation_Subtype(SaturatedOilCompressibility, OilCorrelation, "c_{ob}");
-//Declare_Correlation_Subtype(UndersaturatedOilCompressibility, OilCorrelation, "c_{oa}");
-//Declare_Correlation_Subtype(SaturatedOilDensity, OilFunction, "\\rho_{ob}");
-//Declare_Correlation_Subtype(UndersaturatedOilDensity, OilFunction, "\\rho_{oa}");
-//Declare_Correlation_Subtype(OilInterfacialTension, OilCorrelation, "\\sigma_{go}");
-//Declare_Correlation_Subtype(DeadOilViscosity, OilCorrelation, "\\mu_{od}");
-
-    // correlations & functions associated to gas
-//Declare_Correlation_Subtype(HydrocarbonGasPseudocriticalPressure, GasCorrelation, "P_{pcHC}");
-//Declare_Correlation_Subtype(MixtureGasPseudocriticalPressure, GasCorrelation, "P_{pcM}");
-//Declare_Correlation_Subtype(GasViscosity, GasCorrelation, "\\mu_{g}");
-//Declare_Correlation_Subtype(GasDensity, GasFunction, "\\rho_{g}")
-//Declare_Correlation_Subtype(GasVolumeFactor, GasFunction, "B_{g}");
-//Declare_Correlation_Subtype(GasCompressibility, GasCorrelation, "Z\\ factor");
-//Declare_Correlation_Subtype(HydrocarbonGasPseudocriticalTemperature, GasCorrelation, "T_{pcHC}");
-//Declare_Correlation_Subtype(MixtureGasPseudocriticalTemperature, GasCorrelation, "T_{pcM}");
-//Declare_Correlation_Subtype(GasSpecificGravity, GasCorrelation, "\\gamma_g");
-//Declare_Correlation_Subtype(HydrocarbonGasSpecificGravity, GasCorrelation, "\\gamma_{gHC}");
-//Declare_Correlation_Subtype(GasIsothermalCompressibility, GasCorrelation, "c_{g}");
-//Declare_Correlation_Subtype(GasPseudoreducedPressure, GasFunction, "P_{pr}");
-//Declare_Correlation_Subtype(GasPseudoreducedTemperature, GasFunction, "T_{pr}");
-
-    // correlations & functions associated to water
-//Declare_Correlation_Subtype(WaterDensity, WaterCorrelation, "\\rho_{w}");
-//Declare_Correlation_Subtype(PureWaterDensity, WaterCorrelation, "\\rho_{pw}");
-//Declare_Correlation_Subtype(WaterViscosity, WaterCorrelation, "\\mu_{w}");
-//Declare_Correlation_Subtype(WaterVolumeFactor, WaterCorrelation, "B_{w}");
-//Declare_Correlation_Subtype(SaturatedWaterVolumeFactor, WaterCorrelation, "B_{wb}");
-//Declare_Correlation_Subtype(UndersaturatedWaterVolumeFactor, WaterCorrelation, "B_{wa}");
-//Declare_Correlation_Subtype(WaterInterfacialTension, WaterCorrelation, "\\sigma_{gw}");
-//Declare_Correlation_Subtype(WaterIsothermalCompressibility, WaterCorrelation, "c_{w}");
-//Declare_Correlation_Subtype(SaturatedWaterIsothermalCompressibility, WaterCorrelation, "c_{wb}");
-//Declare_Correlation_Subtype(UndersaturatedWaterIsothermalCompressibility, WaterCorrelation, "c_{wa}");
-//Declare_Correlation_Subtype(SolutionGasWaterRelation, WaterCorrelation, "R_{sw}");
-//Declare_Correlation_Subtype(VaporPressure, WaterCorrelation, "P_{v}");
-//Declare_Correlation_Subtype(WetGasVolumeFactor, GasFunction, "B_{wg}");
-//Declare_Correlation_Subtype(WetGasSpecificGravity, GasCorrelation, "Y_{wgR}");
-//Declare_Correlation_Subtype(EquivalentVolume, GasCorrelation, "V_{eq}");
-//Declare_Correlation_Subtype(AdditionalGasProduced, GasCorrelation, "G_{pa}");
-//Declare_Correlation_Subtype(ProducingGasOilRatio, GasFunction, "GOR");
 
 # endif // CORRELATION_H
