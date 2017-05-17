@@ -5,10 +5,13 @@ require 'fileutils'
 require 'optparse'
 require 'json'
 
+pvt = ENV['PVT']
+
 def gen_corrpars_class(corr_name, pars)
   s = "struct #{corr_name}Pars\n"\
       "{\n"
-  pars.each do |name, unit|
+  pars.each do |name, p|
+    unit = p[0]
     s += "Quantity<#{unit}> #{name};\n"\
          "\n"\
          "void set_#{name}(const Quantity<#{unit}> & __#{name})\n"\
@@ -61,7 +64,20 @@ file2 = options[:file_name2]
 fail "not first correlation definition file has been given" unless file1
 fail "not second correlation definition file has been given" unless file2
 
-info1 = JSON.parse(`../../bin/gen-corr -f #{file1} -j`)
-info2 = JSON.parse(`../../bin/gen-corr -f #{file2} -j`)
+info1 = JSON.parse(`"#{pvt}"/bin/gen-corr -f #{file1} -j`)
+info2 = JSON.parse(`"#{pvt}"/bin/gen-corr -f #{file2} -j`)
 
-puts gen_compound_corr corr_name, info1, info2
+name1 = File.basename file1, '.rb'
+name2 = File.basename file2, '.rb'
+
+guard_name = "#{corr_name.upcase}_COMPOUND.H"
+
+puts "# ifndef #{guard_name}\n"\
+     "# define #{guard_name}\n"\
+     "\n"\
+     "# include <correlations/#{name1}.H>\n"\
+     "# include <correlations/#{name2}.H>\n"\
+     "\n"\
+     "#{gen_compound_corr(corr_name, info1, info2)}\n"\
+     "\n"\
+     "# endif"

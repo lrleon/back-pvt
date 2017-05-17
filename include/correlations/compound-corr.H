@@ -3,7 +3,7 @@
 
 # include "correlation.H"
 
-template <class CorrelationType1, class CorrelationType2, class ParsSet>
+template <class CorrelationType1, class CorrelationType2>
 class CompoundCorrelation : protected ParsSet
 {
   double min_val = 0;

@@ -6,7 +6,9 @@ require 'optparse'
 require 'calculus.rb'
 require 'json'
 
-load 'symbols'
+pvt = ENV['PVT']
+
+load "#{pvt}/include/correlations/symbols"
 
 class CorrelationGen
 
@@ -527,7 +529,7 @@ class CorrelationSubtype
   end
 
   def to_json
-    [@pars, @subtype_name].to_json
+    [@pars, @synonyms, @subtype_name].to_json
   end
 end
 
@@ -699,7 +701,7 @@ $eq_dir = options[:dir] || '../eqs'
 fail 'correlations file not specified' if file.nil?
 
 require 'bibtex'
-$biblio = options[:biblio] || "refs.bib"
+$biblio = options[:biblio] || "#{pvt}/include/correlations/refs.bib"
 $bib_db = BibTeX.open($biblio)
 
 def add_ref(tag)
