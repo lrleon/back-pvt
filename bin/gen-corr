@@ -113,7 +113,7 @@ class CorrelationGen
 
   def add_synonym(par_name, syn_name, unit_name)
     @synonyms << [par_name, syn_name, unit_name]
-    $subtype.def_synonym par_name, syn_name, unit_name
+    $subtype.def_synonym syn_name, par_name, unit_name
   end
 
   def add_variable(name, type)
@@ -395,19 +395,23 @@ class CorrelationSubtype
 
   def def_parameter(par_name, unit_name)
     return if @pars.has_key? par_name
-    @pars[par_name] = unit_name
+    @pars[par_name] = [unit_name, []]
   end
 
   def def_synonym(syn_name, par_name, unit_name)
-    return if @synonyms.has_key? par_name
+    fail "ERROR in def of synonym #{syn_name}: parameter #{par_name} has not been defined" unless @pars.has_key? par_name
+    return if @synonyms.has_key? syn_name
     @synonyms[syn_name] = [par_name, unit_name]
+    @pars[par_name][1] << syn_name
   end
 
   def pars_declarations
     puts "@pars = #{@pars}"
     puts "@synonyms = #{@synonyms}"
     s = ''
-    @pars.each do |name, unit|
+    @pars.each do |name, p|
+      unit = p[0]
+      synonyms = p[1]
       s += "protected:\n"\
            "\n"\
            "Quantity<#{unit}> #{name};\n"\
@@ -417,10 +421,13 @@ class CorrelationSubtype
            "void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
            "{\n"\
            "  this->#{name} = #{name};\n"
-      syn = @synonyms[name]
-      puts "For #{name} #{syn}" if syn
-      puts "name synonyms = #{name} #{@synonyms[name]}" if @pars.has_key?(@synonyms[name])
-      s += "  this->#{syn[0]} = #{name};\n" if syn && @pars.has_key?(syn[0])
+      synonyms.each do |syn_name|
+        s += "  this->#{syn_name} = #{name};\n" if @pars.has_key? syn_name
+      end
+      if @synonyms.has_key? name
+        par_name, syn_unit = @synonyms[name]
+        s += "  this->#{par_name} = #{name};"
+      end
       s += "}\n"\
            "\n"\
            "private:\n"\
@@ -431,11 +438,14 @@ class CorrelationSubtype
            "}\n"\
            "\n"
     end
-    @synonyms.each do |name, unit|
-      if !@pars.has_key? name
-        s += "void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
+    @synonyms.each do |syn_name, p|
+      par_name = p[0]
+      syn_unit = p[1]
+      if !@pars.has_key? syn_name
+        s += "void set_#{syn_name}(const Quantity<#{syn_unit}> & #{syn_name})\n"\
              "{\n"\
-             "  
+             "  #{par_name} = Quantity<#{syn_unit}>(#{syn_name});\n"\
+             "}\n"
       end
     end
     s

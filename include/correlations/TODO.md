@@ -13,3 +13,6 @@
 ## 4. añadir en pct-correlations los nuevos archivos
 - Created at   2017-05-16 08:53:10 -0400
 
+## 5. static __set debe manejar sinónimos
+- Created at   2017-05-16 21:30:52 -0400
+
