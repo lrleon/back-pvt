@@ -46,3 +46,9 @@
 - Comment      
 - Finished     
 
+## 9. static __set debe manejar sinónimos
+- Created at   2017-05-16 21:30:52 -0400
+- Completed at 2017-05-17 09:40:25 -0400
+- Comment      
+- Finished     
+

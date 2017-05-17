@@ -406,8 +406,6 @@ class CorrelationSubtype
   end
 
   def pars_declarations
-    puts "@pars = #{@pars}"
-    puts "@synonyms = #{@synonyms}"
     s = ''
     @pars.each do |name, p|
       unit = p[0]
@@ -452,9 +450,26 @@ class CorrelationSubtype
   end
 
   def gen_subtype_class
+    names = Set.new(@pars.map { |name,_| name})    
     s = "class #{@subtype_name} : public #{@type_name}\n"\
         "{\n"\
         "\n"\
+        "const DynSetTree<string> names =\n"\
+        "{\n"
+    @synonyms.each do |syn_name, p|
+      par_name = p[0]
+      s += "\"#{syn_name}\",\n" unless names.include? syn_name
+    end
+    names.each_with_index do |name, i|
+      s += "\"#{name}\""
+      s += ",\n" if i < names.length - 1
+    end
+    s += "};\n"\
+         "\n"\
+         "public:\n"\
+         "\n"\
+         "bool has_name(const string & name) const { return names.has(name); }\n"\
+         "\n"\
         "#{pars_declarations}\n"\
         "\n"\
         "public:\n"\
@@ -465,6 +480,12 @@ class CorrelationSubtype
         "                      void (*)(#{@subtype_name}*, double, const Unit&)>\n"\
         "    dispatcher = \n"\
         "  {\n"
+    @synonyms.each do |syn_name, p|
+      par_name = p[0]
+      if !@pars.has_key? syn_name
+        s += "\"#{syn_name}\", __set_#{par_name},\n"
+      end
+    end
     @pars.each_with_index do |p, i|
       s += "\"#{p[0]}\", __set_#{p[0]}"
       s += ",\n" unless i == @pars.length - 1
