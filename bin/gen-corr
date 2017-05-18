@@ -4,7 +4,6 @@
 require 'fileutils'
 require 'optparse'
 require 'calculus.rb'
-require 'json'
 
 load 'symbols'
 
@@ -391,6 +390,7 @@ class CorrelationSubtype
     @symbol = latex_symbol
     @pars = {}
     @synonyms = {}
+    @methods
   end
 
   def def_parameter(par_name, unit_name)
@@ -447,6 +447,19 @@ class CorrelationSubtype
       end
     end
     s
+  end
+
+  def compute_methods
+    methods = {}
+    @pars.each do |name, p|
+      unit, synonyms = p
+      methods[name] = unit
+    end
+    @synonyms.each do |syn_name, p|
+      _, syn_unit = p
+      methods[syn_name] = syn_unit unless @pars.has_key? syn_name
+    end
+    methods
   end
 
   def gen_subtype_class
@@ -527,7 +540,7 @@ class CorrelationSubtype
   end
 
   def to_json
-    [@pars, @subtype_name].to_json
+    [compute_methods, @subtype_name].to_json
   end
 end
 

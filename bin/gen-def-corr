@@ -5,32 +5,6 @@ require 'fileutils'
 require 'optparse'
 require 'json'
 
-def gen_corrpars_class(corr_name, pars)
-  s = "struct #{corr_name}Pars\n"\
-      "{\n"
-  pars.each do |name, unit|
-    s += "Quantity<#{unit}> #{name};\n"\
-         "\n"\
-         "void set_#{name}(const Quantity<#{unit}> & __#{name})\n"\
-         "{\n"\
-         "  #{name} = __#{name};\n"\
-         "}\n"\
-         "\n"
-  end
-  s += "};\n" 
-end
-
-def gen_compound_corr(corr_name, info1, info2)
-  pars = info2[0]
-  info1[0].each { |name, unit| pars[name] = unit }
-
-  pars_class_name = corr_name + 'Pars'
-  
-  "#{gen_corrpars_class(pars_class_name, pars)}\n"\
-  "\n"\
-  "using #{corr_name} = CompoundCorrelation<#{info1[1]}, #{info2[1]}, #{pars_class_name}>;"  
-end
-
 options = {}
 options_parser = OptionParser.new do |opts|
 
@@ -63,5 +37,58 @@ fail "not second correlation definition file has been given" unless file2
 
 info1 = JSON.parse(`../../bin/gen-corr -f #{file1} -j`)
 info2 = JSON.parse(`../../bin/gen-corr -f #{file2} -j`)
+
+def gen_compound_corr(corr_name, info1, info2)
+  names = []
+  methods1, class1 = info1
+  methods2, class2 = info2
+  s = "struct #{corr_name} :\n"\
+      "  protected CompoundCorrelation<#{class1}, #{class2}>\n"\
+      "{\n"
+  methods1.each do |name, unit|
+    names << [name, unit]
+    s += "  void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
+         "  {\n"\
+         "    #{class1}::set_#{name}(#{name});\n"
+    s += "    #{class2}::set_#{name}(#{name});\n" if methods2.has_key? name
+    s += "  }\n"\
+         "\n"\
+         "private:\n"\
+         "\n"\
+         "  static void __set_#{name}(#{corr_name} * ptr, double val, const Unit & unit)\n"\
+         "  {\n"\
+         "    ptr->set_#{name}(VtlQuantity(unit, val));\n"\
+         "  }\n"\
+         "\n"\
+         "public:\n"\
+         "\n"
+  end
+  methods2.each do |name, unit|
+    if !methods1.has_key? name
+      names << [name, unit]
+      s += "  void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
+           "  {\n"\
+           "    #{class1}::set_#{name}(#{name});\n"\
+           "  }\n"
+    end
+  end
+  s += "void set_par(const string & name, double val, const Unit & unit)\n"\
+       "{\n"\
+       "  static AHDispatcher<string,\n"\
+       "                      void (*)(#{corr_name}*, double, const Unit&)>\n"\
+       "    dispatcher = \n"\
+       "  {\n"
+  names.each_with_index do |item, i|
+    name, unit = item
+    s += "#{name}, __set_#{name}"
+    s += ",\n" unless i == names.length - 1
+  end
+  s += "};\n"\
+         "\n"\
+         "  dispatcher.run(name, this, val, unit);\n"\
+         "}\n"\
+         "\n"\
+         "};\n"
+end
 
 puts gen_compound_corr corr_name, info1, info2

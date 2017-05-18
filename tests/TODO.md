@@ -74,3 +74,6 @@
 ## 24. corregir bug en transpose
 - Created at   2017-05-15 16:38:09 -0400
 
+## 25. macros para referencias biblio
+- Created at   2017-05-18 08:44:20 -0400
+
