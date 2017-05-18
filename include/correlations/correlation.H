@@ -1182,7 +1182,7 @@ decltype(auto)
 # define Correlation_Singleton(name)					\
   public:								\
 									\
-  static const name & get_instance()					\
+  static name & get_instance()					\
   {									\
     static name instance;						\
     return instance;							\

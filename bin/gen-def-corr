@@ -5,6 +5,8 @@ require 'fileutils'
 require 'optparse'
 require 'json'
 
+pvt = ENV['PVT']
+
 options = {}
 options_parser = OptionParser.new do |opts|
 
@@ -35,13 +37,14 @@ file2 = options[:file_name2]
 fail "not first correlation definition file has been given" unless file1
 fail "not second correlation definition file has been given" unless file2
 
-info1 = JSON.parse(`../../bin/gen-corr -f #{file1} -j`)
-info2 = JSON.parse(`../../bin/gen-corr -f #{file2} -j`)
+info1 = JSON.parse(`"#{pvt}"/bin/gen-corr -f #{file1} -j`)
+info2 = JSON.parse(`"#{pvt}"/bin/gen-corr -f #{file2} -j`)
+
 
 def gen_compound_corr(corr_name, info1, info2)
-  names = []
   methods1, class1 = info1
   methods2, class2 = info2
+  names = []
   s = "struct #{corr_name} :\n"\
       "  protected CompoundCorrelation<#{class1}, #{class2}>\n"\
       "{\n"
@@ -72,7 +75,8 @@ def gen_compound_corr(corr_name, info1, info2)
            "  }\n"
     end
   end
-  s += "void set_par(const string & name, double val, const Unit & unit)\n"\
+  s += "\n"\
+       "void set_par(const string & name, double val, const Unit & unit)\n"\
        "{\n"\
        "  static AHDispatcher<string,\n"\
        "                      void (*)(#{corr_name}*, double, const Unit&)>\n"\
@@ -91,4 +95,17 @@ def gen_compound_corr(corr_name, info1, info2)
          "};\n"
 end
 
-puts gen_compound_corr corr_name, info1, info2
+guard_name = "#{corr_name.upcase}_COMPOUND.H"
+puts "# ifndef #{guard_name}\n"\
+     "# define #{guard_name}\n"\
+     "\n"\
+     "# include <correlations/#{info1[1]}.H>\n"\
+     "# include <correlations/#{info2[1]}.H>\n"\
+     "\n"\
+     "#{gen_compound_corr(corr_name, info1, info2)}\n"\
+     "\n"\
+     "# endif"
+
+
+
+
