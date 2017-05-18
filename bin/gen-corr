@@ -250,7 +250,7 @@ class CorrelationGen
         "     #{gen_call}\n"\
         "}\n"\
         "\n"\
-        "VtlQuantity compute(bool check = true)\n"\
+        "virtual VtlQuantity invoke(bool check = true) const\n"\
         "{\n"\
         " if (not check)\n"\
         "    return call(#{pars_list});\n"\
@@ -524,14 +524,18 @@ class CorrelationSubtype
          "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\", unit,\n"\
          "         unit.min_val, unit.max_val) {}\n"\
          "\n"\
-         "  virtual ~#{@subtype_name}() = 0;\n"\
+         "virtual VtlQuantity invoke(bool check = true) const\n"\
+         "{\n"\
+         "  if (check or !check)\n"\
+         "    ZENTHROW(WrongCall, "\
+         "\"Invalid call to #{@subtype_name}::compute()\");\n"\
+         "}\n"\
          "\n"\
          "protected:\n"\
          "\n"\
          "using #{@type_name}::add_parameter;\n"\
          "}\n;"\
-         "\n\n"\
-         "inline #{@subtype_name}::~#{@subtype_name}() {}"
+         "\n"
   end
 
   def gen_pars_set_class

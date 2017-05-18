@@ -1139,46 +1139,6 @@ Declare_Correlation_Type(GasCorrelation);
 Declare_Correlation_Type(GasFunction);
 Declare_Correlation_Type(WaterCorrelation);
 
-# define Declare_Correlation_Subtype(subtype_name, type_name, symbol)	\
-  struct subtype_name : public type_name				\
-  {									\
-    subtype_name(const string & name, const Unit & result_unit,		\
-		 double min_val, double max_val)			\
-      : type_name(#subtype_name, name, symbol, result_unit,		\
-		  min_val, max_val) {}					\
-									\
-    subtype_name(const string & name, const Unit & unit, double min_val) \
-      : type_name(#subtype_name, name, symbol, unit,			\
-		  min_val, unit.max_val) {}				\
-									\
-    subtype_name(const string & name, const Unit & unit)		\
-      : type_name(#subtype_name, name, symbol, unit, unit.min_val,	\
-		  unit.max_val) {}					\
-    virtual ~subtype_name() = 0;					\
-									\
-  protected:								\
-									\
-    using type_name::add_parameter;					\
-  };									\
-									\
-  inline subtype_name::~subtype_name() {}
-
-template <typename F> struct compute_arity;
-
-template <typename Ret, typename ...Args> struct compute_arity<Ret(Args...)>
-{
-  static constexpr std::size_t value = sizeof...(Args);
-};
-
-template <typename Func, typename T, std::size_t ... Is>
-decltype(auto)
-  call_compute(Func&& f, const DynList<T>& pars, std::index_sequence<Is...>)
-{
-  std::vector<T> v = to_vector(pars);
- 
-  return std::forward<Func>(f)(v.at(Is)...);
-}
- 
 # define Correlation_Singleton(name)					\
   public:								\
 									\

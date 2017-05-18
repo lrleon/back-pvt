@@ -36,6 +36,8 @@ DEFINE_ZEN_EXCEPTION(WrongCombinationInputValues,
 		     "Wrong combination of input values. "
 		     "Refer to the method description.")
 
+DEFINE_ZEN_EXCEPTION(WrongCall, "wrong call to virtual function");
+
 #endif
 
 
