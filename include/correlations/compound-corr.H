@@ -16,12 +16,36 @@ class CompoundCorrelation : public Pars<Corr1, Corr2>
 
 public:
 
+  DynList<string> names() const
+  {
+    DynList<string> ret = this->corr1_me()->names.keys();
+    ret.append(this->corr2_me()->names.keys());
+    return ret;
+  }
+
   const Unit * result_unit = nullptr; // it will be the result unit of
 				      // the first defined correlation
 
+private:
+
+  static double no_convert(double val) { return val; }
+
+  Unit_Convert_Fct_Ptr convert_corr2 = no_convert;
+
+public:
+
   CompoundCorrelation(Corr1 * ptr1, Corr2 * ptr2, const Quantity<psia> & pivot)
     : Pars<Corr1, Corr2>(ptr1, ptr2), pivot(pivot),
-    result_unit(&ptr1->unit) {}
+    result_unit(&ptr1->unit)
+  {
+    if (&ptr1->unit != &ptr2->unit)
+      {
+	convert_corr2 = search_conversion(ptr2->unit, *result_unit);
+	if (convert_corr2 == nullptr)
+	  ZENTHROW(UnitConversionNotFound, "Conversion from " + ptr2->unit.name +
+		   " to " + result_unit->name + " not found");
+      }
+  }
 
   CompoundCorrelation(Corr1 * ptr1, Corr2 * ptr2, const Quantity<psia> & pivot,
 		      double c1, double m1, double c2, double m2)
@@ -52,7 +76,10 @@ public:
   if (p_val <= pivot)							\
     val = c1 + m1*this->corr1_me()->compute_by_names(pars, check);	\
   else									\
-    val = c2 + m2*this->corr2_me()->compute_by_names(pars, check);	\
+    {									\
+      val = c2 + m2*this->corr2_me()->compute_by_names(pars, check);	\
+      val = convert_corr2(val.raw());					\
+    }									\
   if (val < min_val)							\
     return VtlQuantity(val.unit, min_val);				\
   if (val > max_val)							\
@@ -84,14 +111,14 @@ public:
 # undef DRY_CALL_CORR
 # undef DRY_COMPUTE
   
-  VtlQuantity compute(bool check = true) const
+  VtlQuantity compute(const Quantity<psia> & p, bool check = true)
   {
-    VtlQuantity p_val = this->p;
+    this->set_p(p);
     VtlQuantity val;
-    if (p_val <= pivot)
-      val = c1 + m1*this->corr1_me()->compute(check);
+    if (p <= pivot)
+      val = c1 + m1*this->corr1_me()->compute(check).raw();
     else
-      val = c2 + m2*this->corr2_me()->compute(check);
+      val = c2 + m2*this->corr2_me()->compute(check).raw();
     if (val < min_val)
       return VtlQuantity(val.unit, min_val);
     if (val > max_val)

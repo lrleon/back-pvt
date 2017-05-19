@@ -468,6 +468,7 @@ class CorrelationSubtype
     names = Set.new(@pars.map { |name,_| name})    
     s = "class #{@subtype_name} : public #{@type_name}\n"\
         "{\n"\
+        "public:\n"\
         "\n"\
         "const DynSetTree<string> names =\n"\
         "{\n"
@@ -480,8 +481,6 @@ class CorrelationSubtype
       s += ",\n" if i < names.length - 1
     end
     s += "};\n"\
-         "\n"\
-         "public:\n"\
          "\n"\
          "bool has_name(const string & name) const { return names.has(name); }\n"\
          "\n"\
@@ -529,6 +528,7 @@ class CorrelationSubtype
          "  if (check or !check)\n"\
          "    ZENTHROW(WrongCall, "\
          "\"Invalid call to #{@subtype_name}::compute()\");\n"\
+         "  return VtlQuantity::null_quantity;\n"\
          "}\n"\
          "\n"\
          "protected:\n"\

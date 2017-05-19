@@ -118,65 +118,11 @@ def gen_pars_set_class(corr_name, info1, info2)
          "};\n"
 end
 
-def gen_compound_corr(corr_name, info1, info2)
-  methods1, class1 = info1
-  methods2, class2 = info2
-  names = []
-  s = "template <class Corr1, class Corr2, template <class, class> class Pars>\n"\
-      "struct #{corr_name} : \n"\
-      "  public Pars<#{class1}, #{class2}>\n"\
-      "{\n"
-  methods1.each do |name, unit|
-    names << [name, unit]
-    s += "  void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
-         "  {\n"\
-         "    #{class1}::set_#{name}(#{name});\n"
-    s += "    #{class2}::set_#{name}(#{name});\n" if methods2.has_key? name
-    s += "  }\n"\
-         "\n"\
-         "private:\n"\
-         "\n"\
-         "  static void __set_#{name}(#{corr_name} * ptr, double val, const Unit & unit)\n"\
-         "  {\n"\
-         "    ptr->set_#{name}(VtlQuantity(unit, val));\n"\
-         "  }\n"\
-         "\n"\
-         "public:\n"\
-         "\n"
-  end
-  methods2.each do |name, unit|
-    if !methods1.has_key? name
-      names << [name, unit]
-      s += "  void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
-           "  {\n"\
-           "    #{class1}::set_#{name}(#{name});\n"\
-           "  }\n"
-    end
-  end
-  s += "\n"\
-       "void set_par(const string & name, double val, const Unit & unit)\n"\
-       "{\n"\
-       "  static AHDispatcher<string,\n"\
-       "                      void (*)(#{corr_name}*, double, const Unit&)>\n"\
-       "    dispatcher = \n"\
-       "  {\n"
-  names.each_with_index do |item, i|
-    name, unit = item
-    s += "#{name}, __set_#{name}"
-    s += ",\n" unless i == names.length - 1
-  end
-  s += "};\n"\
-         "\n"\
-         "  dispatcher.run(name, this, val, unit);\n"\
-         "}\n"\
-         "\n"\
-         "};\n"
-end
-
 guard_name = "#{corr_name.upcase}_COMPOUND_H"
 puts "# ifndef #{guard_name}\n"\
      "# define #{guard_name}\n"\
      "\n"\
+     "# include <correlations/pvt-correlations.H>\n"\
      "# include <correlations/compound-corr.H>\n"\
      "# include <correlations/#{File.basename(file1, '.rb')}.H>\n"\
      "# include <correlations/#{File.basename(file2, '.rb')}.H>\n"\
