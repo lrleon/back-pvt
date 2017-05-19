@@ -40,13 +40,91 @@ fail "not second correlation definition file has been given" unless file2
 info1 = JSON.parse(`"#{pvt}"/bin/gen-corr -f #{file1} -j`)
 info2 = JSON.parse(`"#{pvt}"/bin/gen-corr -f #{file2} -j`)
 
+def gen_pars_set_class(corr_name, info1, info2)
+  methods1, class1 = info1
+  methods2, class2 = info2
+  names = []
+  corr_name = corr_name + 'Pars'
+  s = "template <class Corr1, class Corr2>\n"\
+      "class #{corr_name}\n"\
+      "{\n"\
+      "\n"\
+      "  Corr1* corr1_ptr = nullptr;\n"\
+      "\n"\
+      "  Corr2* corr2_ptr = nullptr;\n"\
+      "\n"\
+      "public:\n"\
+      "\n"\
+      "  #{corr_name}(Corr1 * ptr1, Corr2 * ptr2)\n"\
+      "    : corr1_ptr(ptr1), corr2_ptr(ptr2) {}\n"\
+      "\n"\
+      "  Corr1 * corr1_me() const { return corr1_ptr; }\n"\
+      "\n"\
+      "  Corr2 * corr2_me() const { return corr2_ptr; }\n"\
+      "\n"
+  methods1.each do |name, unit|
+    names << [name, unit]
+    s += "  void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
+         "  {\n"\
+         "    corr1_me()->set_#{name}(#{name});\n"
+    s += "    corr2_me()->set_#{name}(#{name});\n" if methods2.has_key? name
+    s += "  }\n"\
+         "\n"\
+         "private:\n"\
+         "\n"\
+         "  static void __set_#{name}(#{corr_name} * ptr, double val, const Unit & unit)\n"\
+         "  {\n"\
+         "    ptr->set_#{name}(VtlQuantity(unit, val));\n"\
+         "  }\n"\
+         "\n"\
+         "public:\n"\
+         "\n"
+  end
+  methods2.each do |name, unit|
+    if !methods1.has_key? name
+      names << [name, unit]
+      s += "  void set_#{name}(const Quantity<#{unit}> & #{name})\n"\
+           "  {\n"\
+           "    corr2_me()->set_#{name}(#{name});\n"\
+           "  }\n"\
+           "private:\n"\
+           "\n"\
+           "  static void __set_#{name}(#{corr_name} * ptr, double val, const Unit & unit)\n"\
+         "  {\n"\
+         "    ptr->set_#{name}(VtlQuantity(unit, val));\n"\
+         "  }\n"\
+         "\n"\
+         "public:\n"\
+         "\n"
+    end
+  end
+  s += "\n"\
+       "void set_par(const string & name, double val, const Unit & unit)\n"\
+       "{\n"\
+       "  static AHDispatcher<string,\n"\
+       "                      void (*)(#{corr_name}*, double, const Unit&)>\n"\
+       "    dispatcher = \n"\
+       "  {\n"
+  names.each_with_index do |item, i|
+    name, unit = item
+    s += "\"#{name}\", __set_#{name}"
+    s += ",\n" unless i == names.length - 1
+  end
+  s += "};\n"\
+         "\n"\
+         "  dispatcher.run(name, this, val, unit);\n"\
+         "}\n"\
+         "\n"\
+         "};\n"
+end
 
 def gen_compound_corr(corr_name, info1, info2)
   methods1, class1 = info1
   methods2, class2 = info2
   names = []
-  s = "struct #{corr_name} :\n"\
-      "  protected CompoundCorrelation<#{class1}, #{class2}>\n"\
+  s = "template <class Corr1, class Corr2, template <class, class> class Pars>\n"\
+      "struct #{corr_name} : \n"\
+      "  public Pars<#{class1}, #{class2}>\n"\
       "{\n"
   methods1.each do |name, unit|
     names << [name, unit]
@@ -95,15 +173,18 @@ def gen_compound_corr(corr_name, info1, info2)
          "};\n"
 end
 
-guard_name = "#{corr_name.upcase}_COMPOUND.H"
+guard_name = "#{corr_name.upcase}_COMPOUND_H"
 puts "# ifndef #{guard_name}\n"\
      "# define #{guard_name}\n"\
      "\n"\
-     "# include <correlations/#{info1[1]}.H>\n"\
-     "# include <correlations/#{info2[1]}.H>\n"\
+     "# include <correlations/compound-corr.H>\n"\
+     "# include <correlations/#{File.basename(file1, '.rb')}.H>\n"\
+     "# include <correlations/#{File.basename(file2, '.rb')}.H>\n"\
      "\n"\
-     "#{gen_compound_corr(corr_name, info1, info2)}\n"\
+     "#{gen_pars_set_class(corr_name, info1, info2)}\n"\
      "\n"\
+     "using #{corr_name} =\n"\
+     "  CompoundCorrelation<#{info1[1]}, #{info2[1]}, #{corr_name}Pars>;"\
      "# endif"
 
 

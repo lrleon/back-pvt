@@ -71,9 +71,12 @@
 ## 23. acelerar cplot mediante factorización de parámetros en familias de correlaciones
 - Created at   2017-05-13 09:28:03 -0400
 
-## 24. corregir bug en transpose
-- Created at   2017-05-15 16:38:09 -0400
-
-## 25. macros para referencias biblio
+## 24. macros para referencias biblio
 - Created at   2017-05-18 08:44:20 -0400
+
+## 25. considerar en set_ que todos los pars estén completos
+- Created at   2017-05-18 20:07:39 -0400
+
+## 26. falta unidad resultado en compound
+- Created at   2017-05-18 20:13:44 -0400
 

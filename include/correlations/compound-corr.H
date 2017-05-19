@@ -4,9 +4,8 @@
 # include <pvt-units.H>
 # include "correlation.H"
 
-template <class CorrelationType1, class CorrelationType2>
-class CompoundCorrelation : protected CorrelationType1,
-			    protected CorrelationType2
+template <class Corr1, class Corr2, template <class, class> class Pars>
+class CompoundCorrelation : public Pars<Corr1, Corr2>
 {
   double min_val = 0;
   double max_val = numeric_limits<double>::max();
@@ -20,13 +19,19 @@ public:
   const Unit * result_unit = nullptr; // it will be the result unit of
 				      // the first defined correlation
 
-  CompoundCorrelation(const Quantity<psia> & pivot) : pivot(pivot) {}
+  CompoundCorrelation(Corr1 * ptr1, Corr2 * ptr2, const Quantity<psia> & pivot)
+    : Pars<Corr1, Corr2>(ptr1, ptr2), pivot(pivot),
+    result_unit(&ptr1->unit) {}
 
-  CompoundCorrelation(const Quantity<psia> & pivot,
-		      double c1, double m1,
-		      double c2, double m2)
-    : CompoundCorrelation(pivot),
-      c1(c1), m1(m1), c2(c2), m2(m2) {}
+  CompoundCorrelation(Corr1 * ptr1, Corr2 * ptr2, const Quantity<psia> & pivot,
+		      double c1, double m1, double c2, double m2)
+    : CompoundCorrelation(ptr1, ptr2, pivot)
+  {
+    this->c1 = c1;
+    this->m1 = m1;
+    this->c2 = c2;
+    this->m2 = m2;
+  }
 
   void set_min(double min_val) { this->min_val = min_val; }
 
@@ -45,9 +50,9 @@ public:
 # define DRY_CALL_CORR()						\
   VtlQuantity val;							\
   if (p_val <= pivot)							\
-    val = c1 + m1*CorrelationType1::compute_by_names(pars, check);	\
+    val = c1 + m1*this->corr1_me()->compute_by_names(pars, check);	\
   else									\
-    val = c2 + m2*CorrelationType2::compute_by_names(pars, check);	\
+    val = c2 + m2*this->corr2_me()->compute_by_names(pars, check);	\
   if (val < min_val)							\
     return VtlQuantity(val.unit, min_val);				\
   if (val > max_val)							\
@@ -84,9 +89,9 @@ public:
     VtlQuantity p_val = this->p;
     VtlQuantity val;
     if (p_val <= pivot)
-      val = c1 + m1*CorrelationType1::compute(check);
+      val = c1 + m1*this->corr1_me()->compute(check);
     else
-      val = c2 + m2*CorrelationType2::compute(check);
+      val = c2 + m2*this->corr2_me()->compute(check);
     if (val < min_val)
       return VtlQuantity(val.unit, min_val);
     if (val > max_val)

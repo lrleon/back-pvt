@@ -1762,3 +1762,15 @@
 - Comment      
 - Finished     
 
+## 295. corregir bug en transpose
+- Created at   2017-05-15 16:38:09 -0400
+- Completed at 2017-05-18 20:06:51 -0400
+- Comment      
+- Finished     
+
+## 296. falta unidad resultado en compound
+- Created at   2017-05-18 20:14:58 -0400
+- Completed at 
+- Comment      
+- Finished     
+
