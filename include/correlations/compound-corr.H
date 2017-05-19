@@ -114,11 +114,12 @@ public:
   VtlQuantity compute(const Quantity<psia> & p, bool check = true)
   {
     this->set_p(p);
-    VtlQuantity val;
+    VtlQuantity val(*result_unit);
+
     if (p <= pivot)
-      val = c1 + m1*this->corr1_me()->compute(check).raw();
+      val = c1 + m1*this->corr1_me()->compute(check);
     else
-      val = c2 + m2*this->corr2_me()->compute(check).raw();
+      val = c2 + m2*this->corr2_me()->compute(check);
     if (val < min_val)
       return VtlQuantity(val.unit, min_val);
     if (val > max_val)

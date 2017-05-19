@@ -1,8 +1,8 @@
 
 # include <tclap/CmdLine.h>
 
-# include <correlations/saturated-oil-formation-volume-factor.H>
-# include <correlations/undersaturated-oil-formation-volume-factor.H>
+# include <correlations/pvt-correlations.H>
+
 # include "bo-corr.H"
 
 using namespace TCLAP;
@@ -10,12 +10,12 @@ using namespace TCLAP;
 CmdLine cmd = { "test-compound-call", ' ', "0" };
 
 ValueArg<string> bob_corr_par = { "b", "bob", "bob correlation", false,
-			      "BobAlShammasi", "bob-correlation", cmd };
-SaturatedOilVolumeFactor * bob_corr = &BobAlShammasi::get_instance();
+				  "BobAlShammasi", "bob-correlation", cmd };
+SaturatedOilVolumeFactor * bob_corr = nullptr;
 
 ValueArg<string> boa_corr_par = { "a", "boa", "bob correlation", false,
-			      "BobAlShammasi", "bob-correlation", cmd };
-UndersaturatedOilVolumeFactor * boa_corr = &BoaPetroskyFarshad::get_instance();
+				  "BobAlShammasi", "bob-correlation", cmd };
+UndersaturatedOilVolumeFactor * boa_corr = nullptr;
 
 ValueArg<double> c_bob = { "", "c-bob", "c-bob", false, 0, "c-bob", cmd };
 
@@ -35,15 +35,24 @@ Declare_Par(pb, 780);
 Declare_Par(psep, 100);
 Declare_Par(tsep, 100);
 Declare_Par(rs, 500);
-Declare_Par(rsb, 1100);
+Declare_Par(rsb, 500);
 Declare_Par(yg, 1);
-Declare_Par(yo, Quantity<Api>(api).raw());
-Declare_Par(bobp, BobAlShammasi::get_instance().call(yg, api, rsb, t).raw());
-Declare_Par(coa, CoaPetroskyFarshad::get_instance().
-	    call(yg, api, rsb, t, pb).raw());
+Declare_Par(yo, 0);
+Declare_Par(bobp, 0);
+Declare_Par(coa, 0);
+
+void init_dft_values()
+{
+  bob_corr = &BobAlShammasi::get_instance();
+  boa_corr = &BoaPetroskyFarshad::get_instance();
+  yo = Quantity<Sg_do>(Quantity<Api>(api)).raw();
+  bobp = BobAlShammasi::get_instance().call(yg, yo, rsb, t).raw();
+  coa = CoaPetroskyFarshad::get_instance().call(yg, api, rsb, t, pb).raw();
+}
 
 int main()
 {
+  init_dft_values();
   BoCorr corr(&BobAlShammasi::get_instance(), &BoaDeGhetto::get_instance(), 1000);
 
   cout << "Bob pars:" << endl;
@@ -58,6 +67,7 @@ int main()
   corr.set_rs(rs);
   corr.set_rsb(rsb);
   corr.set_yo(yo);
+  corr.set_yg(yg);
   corr.set_bobp(bobp);
   corr.set_t(t);
 

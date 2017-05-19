@@ -8,5 +8,5 @@ int main()
   corr_ptr->set_api(10);
   corr_ptr->set_rsb(1000);
   corr_ptr->set_t(100);
-  cout << "Pb = " << corr_ptr->invoke(false) << endl;
+  cout << "Pb = " << corr_ptr->compute(false) << endl;
 }

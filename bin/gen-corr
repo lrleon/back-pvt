@@ -250,7 +250,7 @@ class CorrelationGen
         "     #{gen_call}\n"\
         "}\n"\
         "\n"\
-        "virtual VtlQuantity invoke(bool check = true) const\n"\
+        "virtual VtlQuantity compute(bool check = true) const\n"\
         "{\n"\
         " if (not check)\n"\
         "    return call(#{pars_list});\n"\
@@ -523,7 +523,7 @@ class CorrelationSubtype
          "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\", unit,\n"\
          "         unit.min_val, unit.max_val) {}\n"\
          "\n"\
-         "virtual VtlQuantity invoke(bool check = true) const\n"\
+         "virtual VtlQuantity compute(bool check = true) const\n"\
          "{\n"\
          "  if (check or !check)\n"\
          "    ZENTHROW(WrongCall, "\
