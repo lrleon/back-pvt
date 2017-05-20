@@ -24,4 +24,5 @@ acelerar cplot mediante factorización de parámetros en familias de correlacion
 macros para referencias biblio,2017-05-18 08:44:20 -0400,,
 considerar en set_ que todos los pars estén completos,2017-05-18 20:07:39 -0400,,
 falta unidad resultado en compound,2017-05-18 20:13:44 -0400,,
-veificar que operador suma híbrido por lhs exista para Quantity,2017-05-19 19:11:47 -0400,,
+veificar que operador suma híbrido por lhs exista para Quantity,2017-05-19 19:11:47 -0400,2017-05-20 10:48:42 -0400,
+tplot: eliminar nombres de t y p arrays,2017-05-20 10:48:33 -0400,,

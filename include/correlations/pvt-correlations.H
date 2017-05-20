@@ -3,6 +3,7 @@
 
 # include "bubble-point-pressure.H"
 # include "solution-gas-oil-relation.H"
+# include "undersaturated-solution-gas-oil-relation.H"
 # include "saturated-oil-formation-volume-factor.H"
 # include "undersaturated-oil-formation-volume-factor.H"
 # include "saturated-oil-compressibility.H"
@@ -46,6 +47,7 @@
 
 # include "bubble-point-pressure-impl.H"
 # include "solution-gas-oil-relation-impl.H"
+# include "undersaturated-solution-gas-oil-relation-impl.H"
 # include "saturated-oil-formation-volume-factor-impl.H"
 # include "undersaturated-oil-formation-volume-factor-impl.H"
 # include "saturated-oil-compressibility-impl.H"
@@ -142,6 +144,8 @@ struct CorrelationInstantiater
     RsLopezCR::get_instance();
     RsSalazar::get_instance();
     RsSalazarDetachedFromPb::get_instance();
+
+    RsAbovePb::get_instance();
 
     BobAlmarhoun::get_instance();
     BobAlShammasi::get_instance();

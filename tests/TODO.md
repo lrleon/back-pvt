@@ -82,4 +82,8 @@
 
 ## 27. veificar que operador suma híbrido por lhs exista para Quantity
 - Created at   2017-05-19 19:11:47 -0400
+- Completed at 2017-05-20 10:48:42 -0400
+
+## 28. tplot: eliminar nombres de t y p arrays
+- Created at   2017-05-20 10:48:33 -0400
 

@@ -347,17 +347,4 @@ add_internal_note("The correlation was verified by using the original reference.
 set_hidden()
 end_correlation()
 
-################################################################
-
-begin_correlation("RsAbovePb", "SCF_STB")
-add_title("Faked constant for internal computations above bubble point")
-add_parameter("pb", "psia", "Bubble point pressure")
-add_parameter("p", "psia", "Pressure")
-add_parameter("rsb", "SCF_STB", "Solution GOR at Pb")
-add_precondition("p", "pb")
-set_hidden()
-end_correlation()
-
-################################################################
-
 

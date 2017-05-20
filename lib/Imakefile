@@ -67,17 +67,17 @@ libpvt.so: pvt.cc
 	$(RM) -f aux1.o
 
 libpvt-op.a: pvt.cc
-	$(RM) -f $@;		\	@@\
+	$(RM) -f $@;			\	@@\
 	$(CXX) -c -std=c++14 $(INCLUDES) $(OPT) pvt.cc -o aux2.o;\	@@\
-	ar clq libpvt-op.a aux2.o; \	@@\
-	ranlib libpvt-op.a; \	@@\
+	ar clq libpvt-op.a aux2.o; 	\	@@\
+	ranlib libpvt-op.a; 		\	@@\
 	$(RM) -f aux2.o
 
 libpvtp.a: pvt.cc
-	$(RM) -f $@;		\	@@\
+	$(RM) -f $@;			\	@@\
 	$(CXX) -c -std=c++14 $(INCLUDES) -pg -g -O0 pvt.cc -o aux3.o;\	@@\
-	ar clq libpvtp.a aux3.o; \	@@\
-	ranlib libpvtp.a; \	@@\
+	ar clq libpvtp.a aux3.o; 	\	@@\
+	ranlib libpvtp.a; 		\	@@\
 	$(RM) -f aux3.o
 
 all:: libpvt-op.a libpvtp.a

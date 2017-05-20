@@ -14,7 +14,7 @@
 using json = nlohmann::json;
 
 # include <correlations/pvt-correlations.H>
-# include <correlations/defined-correlation.H>
+# include <correlations/compound-corr.H>
 
 using namespace std;
 using namespace TCLAP;
@@ -25,7 +25,7 @@ void error_msg(const string & msg)
   abort();
 }
 
-CmdLine cmd = { "plot-corr", ' ', "0" };
+CmdLine cmd = { "tplot", ' ', "0" };
 
 // indicates that correlation parameter ranges must be verified
 SwitchArg check_arg = { "", "check", "check correlation ranges", cmd };
@@ -242,32 +242,34 @@ build_stack_of_property_units(const FixedStack<pair<string, const Unit*>> & h)
 
 // helper to handle parameter passing to correlations
 
-// construct a VtlQuantity from a parameter by name
+// construct a VtlQuantity from a parameter by name // RM
 inline VtlQuantity par(const Correlation::NamedPar & par)
 {
   return VtlQuantity(*get<3>(par), get<2>(par));
 }
 
 // construct a parameter by name name from an amount (VtlQuantity or
-// Quantity <Unit>)
+// Quantity <Unit>) // RM
 inline Correlation::NamedPar npar(const string & name, const BaseQuantity & p)
 {
   return Correlation::NamedPar(true, name, p.raw(), &p.unit);
 }
 
+// RM
 inline Correlation::NamedPar
 npar(const string & name, double v, const Unit * unit)
 {
   return Correlation::NamedPar(true, name, v, unit);
 }
 
+// RM
 inline Correlation::NamedPar npar(const string & name,
 				  const Correlation::NamedPar & par)
 {
   return Correlation::NamedPar(true, name, get<2>(par), get<3>(par));
 }
 
-// macro that constructs a parameter by name with name par from a VtlQuantity
+// macro that constructs a parameter by name with name par from a VtlQuantity // RM
 # define NPAR(par) npar(#par, par)
 
 // Declare a command line argument for a double type.
@@ -286,7 +288,6 @@ inline Correlation::NamedPar npar(const string & name,
 # define Declare_Command_Line_Arg(name, UnitName, desc)		\
   ValueArg<double> name##_arg = { "", #name, #name, false, 0,	\
 				  desc " in " #name, cmd };	\
-  Correlation::NamedPar name##_par;				\
   VtlQuantity name;
 
 // Declare a command line argument for a double type plus a validation
@@ -299,10 +300,16 @@ inline Correlation::NamedPar npar(const string & name,
   {									\
     if (not name##_arg.isSet())						\
       error_msg("mandatory parameter " #name " has not been set");	\
-    auto name##_unit = test_par_unit_change(#name, UnitName::get_instance()); \
-    name##_par = npar(#name, name##_arg.getValue(), name##_unit);	\
-    name.set(par(name##_par));						\
+    name.set(name##_arg.getValue(), &UnitName::get_instance());		\
   }
+
+// Sets a correlation parameter
+# define Set_Par(NAME)						\
+  template <class Corr>						\
+  void set##NAME(Corr * corr_ptr, const VtlQuantity & NAME)	\
+  {								\
+    corr_ptr->set_##NAME(NAME);					\
+  }  
 
 // Declare a command line argument for a double type plus a validation
 // function with name set_name(). The validation does not make the
@@ -313,8 +320,7 @@ inline Correlation::NamedPar npar(const string & name,
   void set_##name()							\
   {									\
     auto name##_unit = test_par_unit_change(#name, UnitName::get_instance()); \
-    name##_par = npar(#name, name##_arg.getValue(), name##_unit);	\
-    name.set(par(name##_par));						\
+    name.set(name##_arg.getValue(), name##_unit);			\
   }
 
 Command_Arg_Value(api, Api, "api");
@@ -529,14 +535,14 @@ namespace TCLAP
 // Given a RangeDesc, put in the correlation parameters list l the
 // range values Each value is a named correlation parameter; i.e. a
 // tuple <true, name, value, unit>
-size_t set_range(const RangeDesc & range, const string & name,
-		 const Unit & unit, DynList<Correlation::NamedPar> & l)
+size_t set_range(const RangeDesc & range, const Unit & unit,
+		 DynList<VtlQuantity> & l)
 {
   assert(l.is_empty());
   const auto & step = range.step();
   double val = range.min;
   for (size_t i = 0; i < range.n; ++i, val += step)
-    l.append(make_tuple(true, name, val, &unit));
+    l.append(VtlQuantity(unit, val));
 
   return range.n;
 }
@@ -604,13 +610,13 @@ namespace TCLAP
   template<> struct ArgTraits<ArrayDesc> { typedef StringLike ValueCategory; };
 }
 
-size_t set_array(const ArrayDesc & rowset, const string & name,
-		 const Unit & unit, DynList<Correlation::NamedPar> & l)
+size_t set_array(const ArrayDesc & rowset, const Unit & unit,
+		 DynList<VtlQuantity> & l)
 {
   assert(l.is_empty() and not rowset.values.is_empty());
   const auto & values = rowset.values;
   for (auto it = values.get_it(); it.has_curr(); it.next())
-    l.append(make_tuple(true, name, it.get_curr(), &unit));
+    l.append(VtlQuantity(unit, it.get_curr()));
   return values.size();
 }
 
@@ -633,20 +639,20 @@ ValueArg<string> sort_type = { "", "sort", "sorting type", false,
     { "", #prefix "_array", #prefix " values", false, ArrayDesc(),	\
       #prefix " values", cmd };						\
 									\
-  DynList<Correlation::NamedPar> prefix##_values;			\
+  DynList<VtlQuantity> prefix##_values;					\
   size_t prefix##_num_items = 0;					\
 									\
   const Unit * prefix##_unit = nullptr;					\
 									\
   size_t set_##prefix##_range()					\
   {									\
-    return set_range(prefix##_range.getValue(), #prefix,		\
+    return set_range(prefix##_range.getValue(),				\
 		     *prefix##_unit, prefix##_values);			\
   }									\
 									\
   size_t set_##prefix##_array()					\
   {									\
-    return set_array(prefix##_array.getValue(), #prefix,		\
+    return set_array(prefix##_array.getValue(),				\
 		     *prefix##_unit, prefix##_values);			\
   }
 
@@ -658,7 +664,8 @@ Command_Line_Range(p, "pressure");
 
 SwitchArg transpose_par = { "", "transpose", "transpose grid", cmd };
 
-using TPPair = pair<Correlation::NamedPar, Correlation::NamedPar>;
+//                    t,           p
+using TPPair = pair<VtlQuantity, VtlQuantity>;
 
 // This list is only used with --tp_pair option and --permute is not set
 DynList<TPPair> tp_values;
@@ -667,12 +674,12 @@ void sort_by_t()
 {
   in_place_sort(tp_values, [] (const TPPair & p1, const TPPair & p2)
 		{
-		  const double & t1 = get<2>(p1.first);
-		  const double & t2 = get<2>(p2.first);
+		  const VtlQuantity & t1 = p1.first;
+		  const VtlQuantity & t2 = p2.first;
 		  if (t1 != t2)
 		    return t1 < t2;
-		  const double & pr1 = get<2>(p1.second);
-		  const double & pr2 = get<2>(p2.second);
+		  const VtlQuantity & pr1 = p1.second;
+		  const VtlQuantity & pr2 = p2.second;
 		  return pr1 < pr2;
 		});
 }
@@ -681,12 +688,12 @@ void sort_by_p()
 {
   in_place_sort(tp_values, [] (const TPPair & p1, const TPPair & p2)
 		{
-		  const double & pr1 = get<2>(p1.second);
-		  const double & pr2 = get<2>(p2.second);
+		  const VtlQuantity & pr1 = p1.second;
+		  const VtlQuantity & pr2 = p2.second;
 		  if (pr1 != pr2)
 		    return pr1 < pr2;
-		  const double & t1 = get<2>(p1.first);
-		  const double & t2 = get<2>(p2.first);
+		  const VtlQuantity & t1 = p1.first;
+		  const VtlQuantity & t2 = p2.first;
 		  return t1 < t2;
 		});
 }
@@ -761,9 +768,8 @@ void set_ranges()
   if (not permute.getValue())
     {
       for (auto & p : pairs)
-	tp_values.append(pair<Correlation::NamedPar, Correlation::NamedPar>
-			 (make_tuple(true, "t", p.t, t_unit),
-			  make_tuple(true, "p", p.p, p_unit)));
+	tp_values.append(pair<VtlQuantity, VtlQuantity>
+			 (VtlQuantity(*t_unit, p.t), VtlQuantity(*p_unit, p.p)));
       cout << "pairs" << endl;
       tp_values.for_each([] (auto & p)
         {
@@ -786,13 +792,14 @@ void set_ranges()
   p_num_items = pheap.size();
 
   while (not theap.is_empty())
-    t_values.append(make_tuple(true, "t", theap.get(), t_unit));
+    t_values.append(VtlQuantity(*t_unit, theap.get()));
 
   while (not pheap.is_empty())
-    p_values.append(make_tuple(true, "p", pheap.get(), p_unit));
+    p_values.append(VtlQuantity(*p_unit, pheap.get()));
 }
 
-DefinedCorrelation
+template <class Corr1, class Corr2>
+CompoundCorrelation 
 define_correlation(const VtlQuantity & pb,
 		   const Correlation * below_corr_ptr, double cb, double mb,
 		   const Correlation * above_corr_ptr,

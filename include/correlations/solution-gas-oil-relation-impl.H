@@ -22,7 +22,6 @@ RsAlMarhoun::impl(const double & yg,
   return rs;
 }
 
-
 inline double
 RsAlShammasi::impl(const double & yg,
 		  const double & p,
@@ -484,14 +483,6 @@ void RsAbovePb::precondition(const Quantity<psia> & p,
 	<< pb;
       ZENTHROW(WrongValueUndersaturatedCondition, s.str());
     }
-}
-
-double
-RsAbovePb::impl(const double &,
-		const double &,
-		const double & rsb) noexcept
-{
-  return rsb;
 }
 
 
