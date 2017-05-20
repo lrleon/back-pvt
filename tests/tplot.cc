@@ -770,11 +770,6 @@ void set_ranges()
       for (auto & p : pairs)
 	tp_values.append(pair<VtlQuantity, VtlQuantity>
 			 (VtlQuantity(*t_unit, p.t), VtlQuantity(*p_unit, p.p)));
-      cout << "pairs" << endl;
-      tp_values.for_each([] (auto & p)
-        {
-	  cout << get<2>(p.first) << ", " << get<2>(p.second) << endl;
-	});
 
       sort_dispatcher.run(sort_type.getValue());
 

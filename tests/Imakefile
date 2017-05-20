@@ -26,8 +26,36 @@ bo-corr.H: $(TOP)/include/correlations/saturated-oil-formation-volume-factor.rb\
 	-2 $(TOP)/include/correlations/undersaturated-oil-formation-volume-factor.rb\
 	-n BoCorr | clang-format -style=Mozilla > $@
 
+rs-corr.H: $(TOP)/include/correlations/correlations/solution-gas-oil-relation.rb\
+	$(TOP)/include/correlations/correlations/undersaturated-solution-gas-oil-relation.rb
+	$(RM)  $@;	\	@@\
+	$(GENCORR) -1 $(TOP)/include/correlations/solution-gas-oil-relation.rb \
+	-2 $(TOP)/include/correlations/undersaturated-solution-gas-oil-relation.rb\
+	-n RsCorr | clang-format -style=Mozilla > $@
+
+co-corr.H: $(TOP)/include/correlations/saturated-oil-compressibility.rb\
+	$(TOP)/include/correlations/undersaturated-oil-compressibility.rb
+	$(RM)  $@;	\	@@\
+	$(GENCORR) -1 $(TOP)/include/correlations/saturated-oil-compressibility.rb \
+	-2 $(TOP)/include/correlations/undersaturated-oil-compressibility.rb\
+	-n CoCorr | clang-format -style=Mozilla > $@
+
+uo-corr.H: $(TOP)/include/correlations/saturated-oil-viscosity.rb\
+	$(TOP)/include/correlations/undersaturated-oil-viscosity.rb
+	$(RM)  $@;	\	@@\
+	$(GENCORR) -1 $(TOP)/include/correlations/saturated-oil-viscosity.rb \
+	-2 $(TOP)/include/correlations/undersaturated-oil-viscosity.rb\
+	-n UoCorr | clang-format -style=Mozilla > $@
+
+po-corr.H: $(TOP)/include/correlations/saturated-oil-density.rb\
+	$(TOP)/include/correlations/undersaturated-oil-density.rb
+	$(RM)  $@;	\	@@\
+	$(GENCORR) -1 $(TOP)/include/correlations/saturated-oil-density.rb \
+	-2 $(TOP)/include/correlations/undersaturated-oil-density.rb\
+	-n UoCorr | clang-format -style=Mozilla > $@
+
 clean::
-	$(RM) bo-corr.H
+	$(RM) rs-corr.H bo-corr.H co-corr.H uo-corr.H bo-corr.H 
 
 test-compound-call.o: bo-corr.H
 
