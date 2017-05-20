@@ -115,6 +115,11 @@ def gen_pars_set_class(corr_name, info1, info2)
          "  dispatcher.run(name, this, val, unit);\n"\
          "}\n"\
          "\n"\
+         "void set_par(const Correlation::NamedPar & par)\n"\
+         "{\n"\
+         "  this->set_par(get<1>(par), get<2>(par), *get<3>(par));\n"\
+         "}\n"\
+         "\n"\
          "};\n"
 end
 

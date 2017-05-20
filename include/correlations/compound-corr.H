@@ -23,6 +23,12 @@ public:
     return ret;
   }
 
+  bool has_parameter(const Quantity<psia> & p, const string & name) const
+  {
+    return p <= pivot ? this->corr1_me().names.has(name) :
+      this->corr2_me().names.has(name);
+  }
+
   const Unit * result_unit = nullptr; // it will be the result unit of
 				      // the first defined correlation
 

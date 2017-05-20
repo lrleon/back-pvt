@@ -793,41 +793,10 @@ void set_ranges()
     p_values.append(VtlQuantity(*p_unit, pheap.get()));
 }
 
-template <class Corr1, class Corr2>
-CompoundCorrelation<Corr1, Corr2>
-define_correlation(const VtlQuantity & pb,
-		   const Corr1 * below_corr_ptr, double cb, double mb,
-		   const Corr2 * above_corr_ptr, double ca =, double ma = 1)
-{
-  DefinedCorrelation ret("p", pb.unit);
-  ret.add_tuned_correlation(below_corr_ptr, psia::get_instance().min(), pb,
-			    cb, mb);
-  ret.add_tuned_correlation(above_corr_ptr, pb.next(),
-			    psia::get_instance().max(), ca, ma);
-  return ret;
-}
+# define Declare_Compound_Correlation(CorrType, NAME, corr1, corr2, pivot, \
+				      c1, m1, c2, m2)		   \
+  CorrType NAME(corr1, corr2, pivot, c1, m1, c2, m2)
 
-DefinedCorrelation
-define_correlation(const VtlQuantity & pb,
-		   const Correlation * below_corr_ptr, 
-		   const Correlation * above_corr_ptr)
-{
-  DefinedCorrelation ret("p", pb.unit);
-  ret.add_tuned_correlation(below_corr_ptr, psia::get_instance().min(), pb,
-			    0, 1);
-  ret.add_tuned_correlation(above_corr_ptr, pb.next(),
-			    psia::get_instance().max(), 0, 1);
-  return ret;
-}
-
-void
-test_parameter(const DynList<pair<string, DynList<string>>> & required,
-	       const Correlation::NamedPar & par, ParList & pars_list)
-{
-  if (required.exists([&par] (const auto & p) { return p.first == get<1>(par) or
-      p.second.exists([&par] (const auto & s) { return s == get<1>(par); }); }))
-    pars_list.insert(par);
-}
 
 template <class Corr>
 void test_parameter(Corr & corr, const Correlation::NamedPar & par)
@@ -862,20 +831,18 @@ void store_exception(const string & corr_name, const exception & e)
    parameters previously inserted in the list are deleted and false is
    returned
 */
-inline bool insert_in_pars_list(ParList&) { return true; }
+inline bool set_par_in_correlation() { return true; }
 
-template <typename ... Args> inline
-bool insert_in_pars_list(ParList & pars_list, 
-			 const Correlation::NamedPar & par, Args & ... args)
+template <class Corr, typename ... Args> inline
+bool set_par_in_correlation(Corr * corr_ptr,
+			    const Correlation::NamedPar & par, Args & ... args)
 {
   if (get<2>(par) == Invalid_Value)
     return false;
  
-  pars_list.insert(par);
-  if (insert_in_pars_list(pars_list, args...))
+  corr_ptr->set_par(par);
+  if (set_par_in_correlation(corr_ptr, args...))
     return true;
-
-  pars_list.remove(par); // If recursive insertion fails ==> remove pair
 
   return false;
 }
@@ -898,51 +865,41 @@ bool insert_in_pars_list(ParList & pars_list,
    var then assigns it the result of correlation call
    corr_name::get_instance().impl(args...);
 */
-template <typename ... Args> inline
-VtlQuantity tcompute(const Correlation * corr_ptr,
-		     double c, double m, bool check,
-		     ParList & pars_list, Args ... args)
+template <class Corr, typename ... Args> inline
+VtlQuantity tcompute(Corr * corr_ptr, double c, double m,
+		     bool check, Args ... args)
 {
   try
     {
-      if (not insert_in_pars_list(pars_list, args...))
+      if (not set_par_in_correlation(corr_ptr, args...))
 	return VtlQuantity();
 
-      auto ret = corr_ptr->tuned_compute_by_names(pars_list, c, m, check);
-      remove_from_container(pars_list, args...);
-      return ret;
+      return corr_ptr->compute(c, m, check);
     }
   catch (UnitConversionNotFound) {}
   catch (exception & e)
     {
       if (report_exceptions)
 	store_exception(corr_ptr->name, e);
-   
-      remove_from_container(pars_list, args ...);
     }
   return VtlQuantity();
 }
 
-template <typename ... Args> inline
-VtlQuantity compute(const Correlation * corr_ptr, bool check,
-		    ParList & pars_list, Args ... args)
+template <class Corr, typename ... Args> inline
+VtlQuantity compute(Corr * corr_ptr, bool check, Args ... args)
 {
   try
     {
-      if (not insert_in_pars_list(pars_list, args...))
+      if (not set_par_in_correlation(corr_ptr, args...))
 	return VtlQuantity();
 
-      auto ret = corr_ptr->compute_by_names(pars_list, check);
-      remove_from_container(pars_list, args...);
-      return ret;
+      return corr_ptr->compute(check);
     }
   catch (UnitConversionNotFound) {}  
   catch (exception & e)
     {
       if (report_exceptions)
 	store_exception(corr_ptr->name, e);
-   
-      remove_from_container(pars_list, args ...);
     }
   return VtlQuantity();
 }
@@ -957,6 +914,8 @@ bool valid_args(const VtlQuantity & par, Args ... args)
   return valid_args(args...);
 } 
 
+// Builds a string describing the correlation signature call. Used for
+// errors' report
 template <typename ... Args> inline
 string correlation_call(const Correlation * corr_ptr, Args ... args)
 {
@@ -976,23 +935,19 @@ string correlation_call(const Correlation * corr_ptr, Args ... args)
   return s.str();
 }
 
-template <typename ... Args> inline
-VtlQuantity compute_exc(const Correlation * corr_ptr, bool check,
-			ParList & pars_list, Args ... args)
+template <class Corr, typename ... Args> inline
+VtlQuantity compute_exc(Corr * corr_ptr, bool check, Args ... args)
 {
   try
     {
-      if (not insert_in_pars_list(pars_list, args...))
+      if (not set_par_in_correlation(corr_ptr, args...))
 	return VtlQuantity();
 
-      auto ret = corr_ptr->compute_by_names(pars_list, check);
-      remove_from_container(pars_list, args...);
-      return ret;
+      return corr_ptr->compute(check);
     }
   catch (UnitConversionNotFound) {}
   catch (exception & e)
     {
-      remove_from_container(pars_list, args ...);
       cout << "ERROR initializing " << correlation_call(corr_ptr, args...)
 	   << "@ " << e.what();
       abort();
@@ -1014,36 +969,32 @@ VtlQuantity compute_exc(const Correlation * corr_ptr, bool check,
       store_exception(corr_name::get_instance().name, e);	\
     }
 
-inline bool
-insert_in_pars_list(const DefinedCorrelation&, const VtlQuantity&, ParList&)
+template <class Corr> inline
+bool set_par_in_correlation(Corr&, const VtlQuantity&)
 {
   return true;
 }
 
-template <typename ... Args> inline
-bool insert_in_pars_list(const DefinedCorrelation & corr,
-			 const VtlQuantity & p_q,
-			 ParList & pars_list,
-			 const Correlation::NamedPar & par,
-			 Args & ... args)
+template <class Corr, typename ... Args> inline
+bool set_par_in_correlation(const Corr & corr, const VtlQuantity & p_q,
+			    const Correlation::NamedPar & par, Args & ... args)
 {
   if (get<2>(par) == Invalid_Value)
     {
       const string & par_name = get<1>(par);   
-      if (corr.search_parameters(p_q).contains(par_name))
+      if (corr.has(p_q, par_name))
 	return false; // here the correlation would receive
       // Invalid_Value and would fail
     }
- 
-  pars_list.insert(par);
-  if (insert_in_pars_list(corr, p_q, pars_list, args...))
-    return true;
 
-  pars_list.remove(par); // If recursive insertion fails ==> remove par
+  corr.set_par(par);
+  if (set_par_in_correlation(corr, p_q, args...))
+    return true;
 
   return false;
 }
 
+// TODO: 20 de mayo 
 template <typename ... Args> inline
 VtlQuantity dcompute(const DefinedCorrelation & corr, bool check,
 		     const VtlQuantity & p_q,

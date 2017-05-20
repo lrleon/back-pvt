@@ -268,6 +268,12 @@ class CorrelationGen
     s += "\n"\
          "return call(#{pars_list});\n"\
          "}\n"\
+         "\n"\
+         "virtual VtlQuantity compute(double c, double m,\n"\
+         "                            bool check = true) const\n"\
+         "{\n"\
+         "  return c + m*compute(check);\n"\
+         "}"\
          "\n"
   end
 
@@ -509,6 +515,11 @@ class CorrelationSubtype
          "  dispatcher.run(name, this, val, unit);\n"\
          "};\n"\
          "\n"\
+         "void set_par(const Correlation::NamedPar & par)\n"\
+         "{\n"\
+         "  this->set_par(get<1>(par), get<2>(par), *get<3>(par));\n"\
+         "}\n"\
+         "\n"\
          "  #{@subtype_name}(const string & name, const Unit & result_unit,\n"\
          "       double min_val, double max_val)\n"\
          "    : #{@type_name}(\"#{@subtype_name}\", name, \"#{@symbol}\",\n"\
@@ -524,6 +535,14 @@ class CorrelationSubtype
          "         unit.min_val, unit.max_val) {}\n"\
          "\n"\
          "virtual VtlQuantity compute(bool check = true) const\n"\
+         "{\n"\
+         "  if (check or !check)\n"\
+         "    ZENTHROW(WrongCall, "\
+         "\"Invalid call to #{@subtype_name}::compute()\");\n"\
+         "  return VtlQuantity::null_quantity;\n"\
+         "}\n"\
+         "\n"\
+         "virtual VtlQuantity compute(double, double, bool check = true) const\n"\
          "{\n"\
          "  if (check or !check)\n"\
          "    ZENTHROW(WrongCall, "\
