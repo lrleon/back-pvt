@@ -19,19 +19,19 @@ GENCORR = $(TOP)/bin/gen-def-corr
 	$(RM) $*.H; 	\	@@\
 	$(GENCORR) -f $*.rb -H | clang-format -style=Mozilla > $@
 
-bo-corr.H: $(TOP)/include/correlations/saturated-oil-formation-volume-factor.rb\
-	$(TOP)/include/correlations/undersaturated-oil-formation-volume-factor.rb
-	$(RM)  $@;	\	@@\
-	$(GENCORR) -1 $(TOP)/include/correlations/saturated-oil-formation-volume-factor.rb \
-	-2 $(TOP)/include/correlations/undersaturated-oil-formation-volume-factor.rb\
-	-n BoCorr | clang-format -style=Mozilla > $@
-
-rs-corr.H: $(TOP)/include/correlations/correlations/solution-gas-oil-relation.rb\
-	$(TOP)/include/correlations/correlations/undersaturated-solution-gas-oil-relation.rb
+rs-corr.H: $(TOP)/include/correlations/solution-gas-oil-relation.rb\
+	$(TOP)/include/correlations/undersaturated-solution-gas-oil-relation.rb
 	$(RM)  $@;	\	@@\
 	$(GENCORR) -1 $(TOP)/include/correlations/solution-gas-oil-relation.rb \
 	-2 $(TOP)/include/correlations/undersaturated-solution-gas-oil-relation.rb\
 	-n RsCorr | clang-format -style=Mozilla > $@
+
+bo-corr.H: $(TOP)/include/correlations/saturated-oil-formation-volume-factor.rb\
+	$(TOP)/include/correlations/undersaturated-oil-formation-volume-factor.rb
+	$(RM)  $@;	\	@@\
+	$(GENCORR) -1 $(TOP)/include/correlations/saturated-oil-formation-volume-factor.rb\
+	-2 $(TOP)/include/correlations/undersaturated-oil-formation-volume-factor.rb\
+	-n BoCorr | clang-format -style=Mozilla > $@
 
 co-corr.H: $(TOP)/include/correlations/saturated-oil-compressibility.rb\
 	$(TOP)/include/correlations/undersaturated-oil-compressibility.rb
@@ -54,10 +54,26 @@ po-corr.H: $(TOP)/include/correlations/saturated-oil-density.rb\
 	-2 $(TOP)/include/correlations/undersaturated-oil-density.rb\
 	-n UoCorr | clang-format -style=Mozilla > $@
 
-clean::
-	$(RM) rs-corr.H bo-corr.H co-corr.H uo-corr.H bo-corr.H 
+bw-corr.H: $(TOP)/include/correlations/saturated-water-volume-factor.rb\
+	$(TOP)/include/correlations/undersaturated-water-volume-factor.rb
+	$(RM)  $@;	\	@@\
+	$(GENCORR) -1 $(TOP)/include/correlations/saturated-water-volume-factor.rb \
+	-2 $(TOP)/include/correlations/undersaturated-water-volume-factor.rb\
+	-n BwCorr | clang-format -style=Mozilla > $@
 
-test-compound-call.o: bo-corr.H
+cw-corr.H: $(TOP)/include/correlations/saturated-water-isothermal-compressibility.rb\
+	$(TOP)/include/correlations/undersaturated-water-isothermal-compressibility.rb
+	$(RM)  $@;	\	@@\
+	$(GENCORR) -1 $(TOP)/include/correlations/saturated-water-isothermal-compressibility.rb \
+	-2 $(TOP)/include/correlations/undersaturated-water-isothermal-compressibility.rb\
+	-n BwCorr | clang-format -style=Mozilla > $@
+
+clean::
+	$(RM) rs-corr.H bo-corr.H co-corr.H uo-corr.H po-corr.H cw-corr.H bw-corr.H 
+
+test-compound-call.o:  bo-corr.H
+
+tplot.o: rs-corr.H bo-corr.H co-corr.H uo-corr.H po-corr.H cw-corr.H bw-corr.H 
 
 CORRS = $(shell ls $(DIR)*.rb)
 HCORRS = $(CORRS:.rb=.H)

@@ -794,11 +794,10 @@ void set_ranges()
 }
 
 template <class Corr1, class Corr2>
-CompoundCorrelation 
+CompoundCorrelation<Corr1, Corr2>
 define_correlation(const VtlQuantity & pb,
-		   const Correlation * below_corr_ptr, double cb, double mb,
-		   const Correlation * above_corr_ptr,
-		   double ca = 0, double ma = 1)
+		   const Corr1 * below_corr_ptr, double cb, double mb,
+		   const Corr2 * above_corr_ptr, double ca =, double ma = 1)
 {
   DefinedCorrelation ret("p", pb.unit);
   ret.add_tuned_correlation(below_corr_ptr, psia::get_instance().min(), pb,
