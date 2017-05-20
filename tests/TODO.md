@@ -80,3 +80,6 @@
 ## 26. falta unidad resultado en compound
 - Created at   2017-05-18 20:13:44 -0400
 
+## 27. veificar que operador suma híbrido por lhs exista para Quantity
+- Created at   2017-05-19 19:11:47 -0400
+
