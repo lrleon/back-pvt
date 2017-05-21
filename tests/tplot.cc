@@ -1024,29 +1024,8 @@ VtlQuantity dcompute(Corr & corr, bool check, const VtlQuantity & p_q,
   return VtlQuantity();
 }
 
-// TODO: 20 de mayo 
-/// Returns the list of parameters required by the set of correlations
-/// that are in l 
-ParList load_constant_parameters(const DynList<const Correlation*> & l)
-{
-  ParList pars_list;
-  auto required_pars = DefinedCorrelation::parameter_list(l);
-				  
-  test_parameter(required_pars, api_par, pars_list);
-  test_parameter(required_pars, rsb_par, pars_list);
-  test_parameter(required_pars, yg_par, pars_list);
-  test_parameter(required_pars, tsep_par, pars_list);
-  test_parameter(required_pars, psep_par, pars_list);
-  test_parameter(required_pars, n2_par, pars_list);
-  test_parameter(required_pars, co2_par, pars_list);
-  test_parameter(required_pars, h2s_par, pars_list);
-  test_parameter(required_pars, nacl_par, pars_list);
-
-  return pars_list;
-}
-
 template <class Corr>
-void load_constant_parameters(Corr & corr)
+void set_constant_parameters(Corr & corr)
 {
   test_parameter(corr, api);
   test_parameter(corr, rsb);
@@ -1057,6 +1036,13 @@ void load_constant_parameters(Corr & corr)
   test_parameter(corr, co2);
   test_parameter(corr, h2s);
   test_parameter(corr, nacl);
+}
+
+template <class Container>
+void load_constant_parameters(const Container & l)
+{
+  for (auto it = l.get_it(); it.has_curr(); it.next())
+    set_constant_parameters(*it.get_curr());
 }
 
 void insert_in_row(FixedStack<const VtlQuantity*> &, size_t&) {}
@@ -1289,6 +1275,7 @@ void print_transpose()
     }
 }
 
+// TODO: 20 de mayo 
 # define Simple_Init()						\
   set_api(); /* Initialization of constant data */			\
   set_rsb();								\
