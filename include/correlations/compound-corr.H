@@ -23,6 +23,12 @@ public:
     return ret;
   }
 
+  auto search_correlation(const Quantity<psia> & p) const
+  {
+    return static_cast<const Correlation*>(p < pivot ? this->corr1_me() :
+					   this->corr2_me());
+  }
+
   bool has_parameter(const Quantity<psia> & p, const string & name) const
   {
     return p <= pivot ? this->corr1_me().names.has(name) :

@@ -976,7 +976,7 @@ bool set_par_in_correlation(Corr&, const VtlQuantity&)
 }
 
 template <class Corr, typename ... Args> inline
-bool set_par_in_correlation(const Corr & corr, const VtlQuantity & p_q,
+bool set_par_in_correlation(Corr & corr, const VtlQuantity & p_q,
 			    const Correlation::NamedPar & par, Args & ... args)
 {
   if (get<2>(par) == Invalid_Value)
@@ -984,7 +984,7 @@ bool set_par_in_correlation(const Corr & corr, const VtlQuantity & p_q,
       const string & par_name = get<1>(par);   
       if (corr.has(p_q, par_name))
 	return false; // here the correlation would receive
-      // Invalid_Value and would fail
+                      // Invalid_Value and would fail
     }
 
   corr.set_par(par);
@@ -994,20 +994,16 @@ bool set_par_in_correlation(const Corr & corr, const VtlQuantity & p_q,
   return false;
 }
 
-// TODO: 20 de mayo 
-template <typename ... Args> inline
-VtlQuantity dcompute(const DefinedCorrelation & corr, bool check,
-		     const VtlQuantity & p_q,
-		     ParList & pars_list, Args ... args)
+template <class Corr, typename ... Args> inline
+VtlQuantity dcompute(Corr & corr, bool check, const VtlQuantity & p_q,
+		     Args ... args)
 {
-  if (not insert_in_pars_list(corr, p_q, pars_list, args...))
+  if (not set_in_par_correlation(corr, p_q, args...))
     return VtlQuantity();
  
   try
     {
-      auto ret = corr.compute_by_names(pars_list, check);
-      remove_from_container(pars_list, args ...);
-      return ret;
+      return corr.compute(check);
     }
   catch (UnitConversionNotFound) {}
   catch (exception & e)
@@ -1015,7 +1011,7 @@ VtlQuantity dcompute(const DefinedCorrelation & corr, bool check,
       if (report_exceptions)
 	{
 	  auto triggering_corr_ptr = corr.search_correlation(p_q);
-	  string names = corr.correlations().
+	  string names = corr.names().template 
 	    foldl<string>("", [triggering_corr_ptr] (auto & acu, auto ptr)
 			  {
 			    if (triggering_corr_ptr == ptr)
@@ -1024,50 +1020,11 @@ VtlQuantity dcompute(const DefinedCorrelation & corr, bool check,
 			  });
 	  store_exception("{ " + names + "}", e);
 	}
-
-      remove_from_container(pars_list, args ...);
     }
   return VtlQuantity();
 }
 
-template <typename ... Args> inline
-VtlQuantity tcompute(const Correlation * corr_ptr,
-		     double c, double m, bool check, Args ... args)
-{ // static for creating it once and thus to gain time. But beware!
-  // The function is not reentrant and can not be used in a
-  // multithreaded environment
-  static ParList pars_list;
-  return tcompute(corr_ptr, c, m, check, pars_list, args...);
-}
-
-template <typename ... Args> inline
-VtlQuantity compute(const Correlation * corr_ptr, bool check, Args ... args)
-{ // static for creating it once and thus to gain time. But beware!
-  // The function is not reentrant and can not be used in a
-  // multithreaded environment
-  static ParList pars_list;
-  return compute(corr_ptr, check, pars_list, args...);
-}
-
-template <typename ... Args> inline
-VtlQuantity compute_exc(const Correlation * corr_ptr, bool check, Args ... args)
-{ // static for creating it once and thus to gain time. But beware!
-  // The function is not reentrant and can not be used in a
-  // multithreaded environment
-  static ParList pars_list;
-  return compute_exc(corr_ptr, check, pars_list, args...);
-}
-
-template <typename ... Args> inline
-VtlQuantity dcompute(const DefinedCorrelation & corr, bool check,
-		     const VtlQuantity & p_q, Args ... args)
-{ // static for creating it once and thus to gain time. But beware!
-  // The function is not reentrant and can not be used in a
-  // multithreaded environment
-  static ParList pars_list;
-  return dcompute(corr, check, pars_list, p_q, args...);
-}
-
+// TODO: 20 de mayo 
 /// Returns the list of parameters required by the set of correlations
 /// that are in l 
 ParList load_constant_parameters(const DynList<const Correlation*> & l)
@@ -1091,15 +1048,15 @@ ParList load_constant_parameters(const DynList<const Correlation*> & l)
 template <class Corr>
 void load_constant_parameters(Corr & corr)
 {
-  test_parameter(corr, api_par);
-  test_parameter(corr, rsb_par);
-  test_parameter(corr, yg_par);
-  test_parameter(corr, tsep_par);
-  test_parameter(corr, psep_par);
-  test_parameter(corr, n2_par);
-  test_parameter(corr, co2_par);
-  test_parameter(corr, h2s_par);
-  test_parameter(corr, nacl_par);
+  test_parameter(corr, api);
+  test_parameter(corr, rsb);
+  test_parameter(corr, yg);
+  test_parameter(corr, tsep);
+  test_parameter(corr, psep);
+  test_parameter(corr, n2);
+  test_parameter(corr, co2);
+  test_parameter(corr, h2s);
+  test_parameter(corr, nacl);
 }
 
 void insert_in_row(FixedStack<const VtlQuantity*> &, size_t&) {}
