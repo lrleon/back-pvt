@@ -87,3 +87,6 @@
 ## 28. tplot: eliminar nombres de t y p arrays
 - Created at   2017-05-20 10:48:33 -0400
 
+## 29. considerar que las correlaciones no sean singletones a efectos de que el nuevo pase de parámetros sea reentrante
+- Created at   2017-05-21 11:12:15 -0400
+

@@ -16,6 +16,14 @@ using json = nlohmann::json;
 # include <correlations/pvt-correlations.H>
 # include <correlations/compound-corr.H>
 
+# include "bo-corr.H"
+# include "bw-corr.H"
+# include "co-corr.H"
+# include "cw-corr.H"
+# include "po-corr.H"
+# include "rs-corr.H"
+# include "uo-corr.H"
+
 using namespace std;
 using namespace TCLAP;
 
@@ -353,8 +361,9 @@ Command_Arg_Optional_Value(nacl, Molality_NaCl, "nacl");
 //
 // The mandatory parameter indicates that the correlation is required
 // on the command line.
+template <class Corr>
 void set_correlation(ValueArg<string> & corr_name_arg,
-		     const string & target_name, const Correlation *& corr_ptr,
+		     const string & target_name, Corr *& corr,
 		     bool mandatory)
 {
   if (mandatory and not corr_name_arg.isSet())
@@ -364,12 +373,13 @@ void set_correlation(ValueArg<string> & corr_name_arg,
   if (not corr_name_arg.isSet())
     return;
   const string & corr_name = corr_name_arg.getValue();
-  corr_ptr = Correlation::search_by_name(corr_name);
+  const Correlation * corr_ptr = Correlation::search_by_name(corr_name);
   if (corr_ptr == nullptr)
     error_msg("Correlation for " + target_name + " " +
 	      corr_name + " not found");
   if (corr_ptr->target_name() != target_name)
     error_msg("Correlation " + corr_ptr->name + " is not for " + target_name);
+  corr = static_cast<Corr*&>(corr_ptr);
 }
 
 // Declare a command line argument for receiving the a correlation target_name.
@@ -384,20 +394,20 @@ void set_correlation(ValueArg<string> & corr_name_arg,
 // - target_name_corr: a pointer to the correlation (it would be
 //  validated by the set_target_name_corr() routine that is generated
 //  by another macro 
-# define Declare_Corr_Arg(target_name)					\
+# define Declare_Corr_Arg(CorrType, target_name)			\
   ValueArg<string> target_name##_corr_arg =				\
     { "", #target_name, "correlation for " #target_name, false, "",	\
       "correlation for " #target_name, cmd };				\
   									\
-  const Correlation * target_name##_corr = nullptr;
+  CorrType * target_name##_corr = nullptr;
 
 // Declare a command line argument for receiving a correlation
 // target_name plus the mandatory validation function
 // set_target_name_corr(). After call to this routine, the
 // target_name_corr pointer is set to the correlation specified in the
 // command line
-# define Command_Arg_Mandatory_Correlation(target_name)			\
-  Declare_Corr_Arg(target_name);					\
+# define Command_Arg_Mandatory_Correlation(CorrType, target_name)	\
+  Declare_Corr_Arg(CorrType, target_name);				\
   									\
   void set_##target_name##_corr()					\
   {									\
@@ -411,8 +421,8 @@ void set_correlation(ValueArg<string> & corr_name_arg,
 // target_name_corr pointer is set to the correlation specified in the
 // command line. If no correlation is specified in the command line,
 // then the pointer is set to the default value CorrName
-# define Command_Arg_Optional_Correlation(target_name, CorrName)	\
-  Declare_Corr_Arg(target_name);					\
+# define Command_Arg_Optional_Correlation(CorrType, target_name, CorrName) \
+  Declare_Corr_Arg(CorrType, target_name);				\
 									\
   void set_##target_name##_corr()					\
   {									\
@@ -439,39 +449,48 @@ void set_correlation(ValueArg<string> & corr_name_arg,
 
 // Defines a calibrated correlation along with its calibration
 // parameters. The command line argument is mandatory
-# define Command_Arg_Tuned_Correlation(target_name)	\
-  Command_Arg_Mandatory_Correlation(target_name);	\
-  Declare_c_par(target_name);				\
+# define Command_Arg_Tuned_Correlation(CorrType, target_name)	\
+  Command_Arg_Mandatory_Correlation(CorrType, target_name);	\
+  Declare_c_par(target_name);					\
   Declare_m_par(target_name);
 
-Command_Arg_Tuned_Correlation(pb);
-Command_Arg_Tuned_Correlation(rs);
-Command_Arg_Tuned_Correlation(bob);
-Command_Arg_Tuned_Correlation(boa);
-Command_Arg_Tuned_Correlation(uod);
-Command_Arg_Tuned_Correlation(cob);
-Command_Arg_Tuned_Correlation(coa);
-Command_Arg_Tuned_Correlation(uob);
-Command_Arg_Tuned_Correlation(uoa);
+Command_Arg_Tuned_Correlation(BubblePointPressure, pb);
+Command_Arg_Tuned_Correlation(SolutionGasOilRelation, rs);
+Command_Arg_Tuned_Correlation(SaturatedOilVolumeFactor, bob);
+Command_Arg_Tuned_Correlation(UndersaturatedOilVolumeFactor, boa);
+Command_Arg_Tuned_Correlation(DeadOilViscosity, uod);
+Command_Arg_Tuned_Correlation(SaturatedOilCompressibility, cob);
+Command_Arg_Tuned_Correlation(UndersaturatedOilCompressibility, coa);
+Command_Arg_Tuned_Correlation(SaturatedOilViscosity, uob);
+Command_Arg_Tuned_Correlation(UndersaturatedOilViscosity, uoa);
 
-Command_Arg_Optional_Correlation(ppchc, PpchcStanding);
-Command_Arg_Optional_Correlation(ppcm_mixing, PpcmKayMixingRule);
-Command_Arg_Optional_Correlation(adjustedppcm, AdjustedppcmWichertAziz);
-Command_Arg_Optional_Correlation(tpchc, TpchcStanding);
-Command_Arg_Optional_Correlation(tpcm_mixing, TpcmKayMixingRule);
-Command_Arg_Optional_Correlation(adjustedtpcm, AdjustedtpcmWichertAziz);
-Command_Arg_Optional_Correlation(zfactor, ZfactorDranchukAK);
-Command_Arg_Optional_Correlation(cg, CgMattarBA);
-Command_Arg_Optional_Correlation(ug, UgCarrKB);
-Command_Arg_Optional_Correlation(bwb, BwbSpiveyMN);
-Command_Arg_Optional_Correlation(bwa, BwaSpiveyMN);
-Command_Arg_Optional_Correlation(uw, UwMcCain);
-Command_Arg_Optional_Correlation(pw, PwSpiveyMN);
-Command_Arg_Optional_Correlation(cwb, CwbSpiveyMN);
-Command_Arg_Optional_Correlation(cwa, CwaSpiveyMN);
-Command_Arg_Optional_Correlation(rsw, RswSpiveyMN);
-Command_Arg_Optional_Correlation(sgo, SgoBakerSwerdloff);
-Command_Arg_Optional_Correlation(sgw, SgwJenningsNewman);
+Command_Arg_Optional_Correlation(HydrocarbonGasPseudocriticalPressure,
+				 ppchc, PpchcStanding);
+Command_Arg_Optional_Correlation(MixtureGasPseudocriticalPressure,
+				 ppcm_mixing, PpcmKayMixingRule);
+Command_Arg_Optional_Correlation(MixtureGasPseudocriticalPressure,
+				 adjustedppcm, AdjustedppcmWichertAziz);
+Command_Arg_Optional_Correlation(HydrocarbonGasPseudocriticalTemperature,
+				 tpchc, TpchcStanding);
+Command_Arg_Optional_Correlation(MixtureGasPseudocriticalTemperature,
+				 tpcm_mixing, TpcmKayMixingRule);
+Command_Arg_Optional_Correlation(MixtureGasPseudocriticalTemperature,
+				 adjustedtpcm, AdjustedtpcmWichertAziz);
+Command_Arg_Optional_Correlation(GasCompressibility, zfactor, ZfactorDranchukAK);
+Command_Arg_Optional_Correlation(GasIsothermalCompressibility, cg, CgMattarBA);
+Command_Arg_Optional_Correlation(GasViscosity, ug, UgCarrKB);
+Command_Arg_Optional_Correlation(SaturatedWaterVolumeFactor, bwb, BwbSpiveyMN);
+Command_Arg_Optional_Correlation(UndersaturatedWaterVolumeFactor,
+				 bwa, BwaSpiveyMN);
+Command_Arg_Optional_Correlation(WaterViscosity, uw, UwMcCain);
+Command_Arg_Optional_Correlation(WaterDensity, pw, PwSpiveyMN);
+Command_Arg_Optional_Correlation(SaturatedWaterIsothermalCompressibility,
+				 cwb, CwbSpiveyMN);
+Command_Arg_Optional_Correlation(UndersaturatedWaterIsothermalCompressibility,
+				 cwa, CwaSpiveyMN);
+Command_Arg_Optional_Correlation(SolutionGasWaterRelation, rsw, RswSpiveyMN);
+Command_Arg_Optional_Correlation(OilInterfacialTension, sgo, SgoBakerSwerdloff);
+Command_Arg_Optional_Correlation(WaterInterfacialTension, sgw, SgwJenningsNewman);
 
 vector<string> grid_types =
   { "blackoil", "wetgas", "drygas", "brine", "gascondensate", "simple" };
@@ -831,17 +850,17 @@ void store_exception(const string & corr_name, const exception & e)
    parameters previously inserted in the list are deleted and false is
    returned
 */
-inline bool set_par_in_correlation() { return true; }
+inline bool set_pars_in_correlation() { return true; }
 
 template <class Corr, typename ... Args> inline
-bool set_par_in_correlation(Corr * corr_ptr,
-			    const Correlation::NamedPar & par, Args & ... args)
+bool set_pars_in_correlation(Corr * corr_ptr, const Correlation::NamedPar & par,
+			    const Args & ... args)
 {
   if (get<2>(par) == Invalid_Value)
     return false;
  
   corr_ptr->set_par(par);
-  if (set_par_in_correlation(corr_ptr, args...))
+  if (set_pars_in_correlation(corr_ptr, args...))
     return true;
 
   return false;
@@ -867,11 +886,11 @@ bool set_par_in_correlation(Corr * corr_ptr,
 */
 template <class Corr, typename ... Args> inline
 VtlQuantity tcompute(Corr * corr_ptr, double c, double m,
-		     bool check, Args ... args)
+		     bool check, const Args & ... args)
 {
   try
     {
-      if (not set_par_in_correlation(corr_ptr, args...))
+      if (not set_pars_in_correlation(corr_ptr, args...))
 	return VtlQuantity();
 
       return corr_ptr->compute(c, m, check);
@@ -886,11 +905,11 @@ VtlQuantity tcompute(Corr * corr_ptr, double c, double m,
 }
 
 template <class Corr, typename ... Args> inline
-VtlQuantity compute(Corr * corr_ptr, bool check, Args ... args)
+VtlQuantity compute(Corr * corr_ptr, bool check, const Args & ... args)
 {
   try
     {
-      if (not set_par_in_correlation(corr_ptr, args...))
+      if (not set_pars_in_correlation(corr_ptr, args...))
 	return VtlQuantity();
 
       return corr_ptr->compute(check);
@@ -907,7 +926,7 @@ VtlQuantity compute(Corr * corr_ptr, bool check, Args ... args)
 // return true if all args... are valid
 inline bool valid_args() { return true; }
 template <typename ... Args> inline
-bool valid_args(const VtlQuantity & par, Args ... args)
+bool valid_args(const VtlQuantity & par, const Args & ... args)
 {
   if (par.is_null())
     return false;
@@ -917,7 +936,7 @@ bool valid_args(const VtlQuantity & par, Args ... args)
 // Builds a string describing the correlation signature call. Used for
 // errors' report
 template <typename ... Args> inline
-string correlation_call(const Correlation * corr_ptr, Args ... args)
+string correlation_call(const Correlation * corr_ptr, const Args & ... args)
 {
   DynList<Correlation::NamedPar> pars;
   append_in_container(pars, args...);
@@ -936,11 +955,11 @@ string correlation_call(const Correlation * corr_ptr, Args ... args)
 }
 
 template <class Corr, typename ... Args> inline
-VtlQuantity compute_exc(Corr * corr_ptr, bool check, Args ... args)
+VtlQuantity compute_exc(Corr * corr_ptr, bool check, const Args & ... args)
 {
   try
     {
-      if (not set_par_in_correlation(corr_ptr, args...))
+      if (not set_pars_in_correlation(corr_ptr, args...))
 	return VtlQuantity();
 
       return corr_ptr->compute(check);
@@ -970,14 +989,15 @@ VtlQuantity compute_exc(Corr * corr_ptr, bool check, Args ... args)
     }
 
 template <class Corr> inline
-bool set_par_in_correlation(Corr&, const VtlQuantity&)
+bool set_pars_in_correlation(Corr&, const VtlQuantity&)
 {
   return true;
 }
 
 template <class Corr, typename ... Args> inline
-bool set_par_in_correlation(Corr & corr, const VtlQuantity & p_q,
-			    const Correlation::NamedPar & par, Args & ... args)
+bool set_pars_in_correlation(Corr & corr, const VtlQuantity & p_q,
+			    const Correlation::NamedPar & par,
+			    const Args & ... args)
 {
   if (get<2>(par) == Invalid_Value)
     {
@@ -988,7 +1008,7 @@ bool set_par_in_correlation(Corr & corr, const VtlQuantity & p_q,
     }
 
   corr.set_par(par);
-  if (set_par_in_correlation(corr, p_q, args...))
+  if (set_pars_in_correlation(corr, p_q, args...))
     return true;
 
   return false;
@@ -996,7 +1016,7 @@ bool set_par_in_correlation(Corr & corr, const VtlQuantity & p_q,
 
 template <class Corr, typename ... Args> inline
 VtlQuantity dcompute(Corr & corr, bool check, const VtlQuantity & p_q,
-		     Args ... args)
+		     const Args & ... args)
 {
   if (not set_in_par_correlation(corr, p_q, args...))
     return VtlQuantity();
@@ -1038,18 +1058,11 @@ void set_constant_parameters(Corr & corr)
   test_parameter(corr, nacl);
 }
 
-template <class Container>
-void load_constant_parameters(const Container & l)
-{
-  for (auto it = l.get_it(); it.has_curr(); it.next())
-    set_constant_parameters(*it.get_curr());
-}
-
 void insert_in_row(FixedStack<const VtlQuantity*> &, size_t&) {}
 
 template <class ... Args>
 void insert_in_row(FixedStack<const VtlQuantity*> & row, size_t & n,
-		   const VtlQuantity & q, Args & ... args)
+		   const VtlQuantity & q, const Args & ... args)
 {
   row.insert(&q);
   ++n;
@@ -1058,7 +1071,7 @@ void insert_in_row(FixedStack<const VtlQuantity*> & row, size_t & n,
 
 template <class ... Args>
 size_t insert_in_row(FixedStack<const VtlQuantity*> & row,
-		     const VtlQuantity & q, Args & ... args)
+		     const VtlQuantity & q, const Args & ... args)
 {
   size_t n = 0;
   insert_in_row(row, n, q, args...);
@@ -1191,7 +1204,7 @@ Array<string> col_names;
 // Print out the csv header according to passed args and return a
 // stack of definitive units for each column. Also it sets row_fct
 template <typename ... Args>
-FixedStack<Unit_Convert_Fct_Ptr> print_csv_header(Args ... args)
+FixedStack<Unit_Convert_Fct_Ptr> print_csv_header(const Args & ... args)
 {
   FixedStack<pair<string, const Unit*>> header;
 
@@ -1424,15 +1437,131 @@ void print_transpose()
 
 void generate_grid_simple()
 {
-  Simple_Init();
+  set_api(); /* Initialization of constant data */
+  set_rsb();
+  set_yg();
+  set_tsep();
+  set_psep();
+  set_h2s();
+  set_co2();
+  set_n2();
+  set_nacl();
+
+  set_pb_corr(); /* Initialization of correlations */
+  set_rs_corr();
+  set_bob_corr();
+  set_boa_corr();
+  set_uod_corr();
+  set_cob_corr();
+  set_coa_corr();
+  set_uob_corr();
+  set_uoa_corr();
+  set_ppchc_corr();
+  set_tpchc_corr();
+  set_ppcm_mixing_corr();
+  set_tpcm_mixing_corr();
+  set_adjustedppcm_corr();
+  set_adjustedtpcm_corr();
+  set_zfactor_corr();
+
+  /* Calculation of constants for Z */
+  auto yghc = compute_exc(YghcWichertAziz::correlation(), true, NPAR(yg),
+			  NPAR(n2), NPAR(co2), NPAR(h2s));
+  auto ppchc = compute_exc(ppchc_corr, true, NPAR(yghc),
+			   NPAR(n2), NPAR(co2), NPAR(h2s));
+  auto ppcm = compute_exc(ppcm_mixing_corr, true, NPAR(ppchc),
+			  NPAR(n2), NPAR(co2), NPAR(h2s));
+  tpchc_corr->set_yghc(yghc);
+  auto tpchc = tpchc_corr->compute(check);
+  auto tpcm = compute_exc(tpcm_mixing_corr, true, NPAR(tpchc),
+			  NPAR(n2), NPAR(co2), NPAR(h2s));
+  auto adjustedppcm = compute_exc(adjustedppcm_corr, true, NPAR(ppcm),
+				  NPAR(tpcm), NPAR(co2), NPAR(h2s));
+  auto adjustedtpcm = compute_exc(adjustedtpcm_corr, true, NPAR(tpcm),
+				  NPAR(co2), NPAR(h2s));
+  /* End calculation constants for z */
+
+  /* Initialization of correlation parameter lists */
+  set_constant_parameters(pb_corr);
+  set_constant_parameters(rs_corr);
+  set_constant_parameters(uod_corr);
+  set_constant_parameters(bob_corr);
+  set_constant_parameters(boa_corr);
+  set_constant_parameters(cob_corr);
+  set_constant_parameters(coa_corr);
+  set_constant_parameters(uob_corr);
+  set_constant_parameters(uoa_corr);
+
+  using P = pair<string, const Unit*>;
+  auto row_units = print_csv_header(P("t", t_unit),
+				    P("pb", &pb_corr->unit),
+				    P("uod", &uod_corr->unit),
+				    P("p", p_unit),
+				    P("rs", &::rs_corr->unit),
+				    P("co", &cob_corr->unit),
+				    P("bo", &bob_corr->unit),
+				    P("uo", &uob_corr->unit),
+				    P("zfactor", &Zfactor::get_instance()),
+				    P("exception", &Unit::null_unit),
+				    P("pbrow", &Unit::null_unit));
+
+  auto rs_pb = npar("rs", rsb);
+
+  /* Here are the values. Ensure that the insertion order is the same*/
+  /* as for the csv header temperature loop */
+  FixedStack<const VtlQuantity*> row(25); 
+
+  //  Simple_Init();
 
   for (auto t_it = t_values.get_it(); t_it.has_curr(); t_it.next()) 
     {
-      Correlation::NamedPar t_par = t_it.get_curr();
-      Simple_Temperature_Calculations();
-      auto pb = pb_q.raw();
-      double next_pb = nextafter(pb, numeric_limits<double>::max());
-      VtlQuantity next_pb_q = { pb_q.unit, next_pb };
+      const VtlQuantity t = t_it.get_curr();
+      Correlation::NamedPar t_par = NPAR(t);
+      
+      //Simple_Temperature_Calculations();
+
+      temperature = t.raw();
+      CALL(Tpr, tpr, t, adjustedtpcm);
+      auto tpr_par = NPAR(tpr);
+
+      VtlQuantity pb = tcompute(pb_corr, c_pb_arg.getValue(), 1, check, t);
+      auto pb_par = NPAR(pb);
+      auto p_pb = npar("p", pb);
+
+      const VtlQuantity uod = compute(uod_corr, check, t_par, pb_par);
+
+      set_pars_in_correlation(rs_corr, t_par, pb_par);
+      RsCorr rs_corr(::rs_corr, &RsAbovePb::get_instance(), pb,
+		     c_rs_arg.getValue(), m_rs_arg.getValue(), 0, 1);
+
+      CoCorr co_corr(cob_corr, coa_corr, pb,
+		     c_cob_arg.getValue(), m_cob_arg.getValue(),
+		     c_coa_arg.getValue(), m_coa_arg.getValue());
+      set_pars_in_correlation(co_corr, pb, t_par, pb_par);
+
+      BoCorr bo_corr(bob_corr, boa_corr, pb,
+		     c_bob_arg.getValue(), m_bob_arg.getValue(),
+		     c_boa_arg.getValue(), m_boa_arg.getValue());
+
+      UoCorr uo_corr(uob_corr, uoa_corr, pb,
+		     c_uob_arg.getValue(), m_uob_arg.getValue(),
+		     c_uoa_arg.getValue(), m_uoa_arg.getValue());
+      set_pars_in_correlation(uo_corr, pb, t_par, pb_par, NPAR(uod));
+
+      const VtlQuantity bobp =
+	tcompute(bob_corr, c_bob_arg.getValue(), m_bob_arg.getValue(), check,
+		 pb_par, rs_pb);
+
+      const VtlQuantity uobp =
+	tcompute(uob_corr, c_uob_arg.getValue(), m_uob_arg.getValue(), check,
+		 p_pb, rs_pb);
+
+      set_pars_in_correlation(bo_corr, pb, NPAR(bobp));
+      set_pars_in_correlation(uo_corr, pb, NPAR(uobp));
+
+      size_t n = insert_in_row(row, t, pb, uod);
+
+      const VtlQuantity next_pb = next_value(pb);
 
       auto first_p_point = p_values.get_first();
       bool first_p_above_pb = VtlQuantity(*get<3>(first_p_point),
@@ -1470,20 +1599,118 @@ void generate_rows_simple()
 {
   assert(not tp_values.is_empty());
  
-  Simple_Init();
-  for (auto it = tp_values.get_it(); it.has_curr(); it.next())
-    {
-      auto & curr = it.get_curr();
-      Correlation::NamedPar t_par = curr.first;
-      Correlation::NamedPar p_par = curr.second;
-      Simple_Temperature_Calculations();
+  set_api(); /* Initialization of constant data */
+  set_rsb();
+  set_yg();
+  set_tsep();
+  set_psep();
+  set_h2s();
+  set_co2();
+  set_n2();
+  set_nacl();
 
-      VtlQuantity p_q = par(p_par);
-      {
-	Simple_Pressure_Calculations();
-	row_fct_pb(row, row_units, false);
-	row.popn(n);
-      }
+  set_pb_corr(); /* Initialization of correlations */
+  set_rs_corr();
+  set_bob_corr();
+  set_boa_corr();
+  set_uod_corr();
+  set_cob_corr();
+  set_coa_corr();
+  set_uob_corr();
+  set_uoa_corr();
+  set_ppchc_corr();
+  set_tpchc_corr();
+  set_ppcm_mixing_corr();
+  set_tpcm_mixing_corr();
+  set_adjustedppcm_corr();
+  set_adjustedtpcm_corr();
+  set_zfactor_corr();
+
+  /* Calculation of constants for Z */
+  auto yghc = compute_exc(YghcWichertAziz::correlation(), true, NPAR(yg),
+			  NPAR(n2), NPAR(co2), NPAR(h2s));
+  auto ppchc = compute_exc(ppchc_corr, true, NPAR(yghc),
+			   NPAR(n2), NPAR(co2), NPAR(h2s));
+  auto ppcm = compute_exc(ppcm_mixing_corr, true, NPAR(ppchc),
+			  NPAR(n2), NPAR(co2), NPAR(h2s));
+  tpchc_corr->set_yghc(yghc);
+  auto tpchc = tpchc_corr->compute(check);
+  auto tpcm = compute_exc(tpcm_mixing_corr, true, NPAR(tpchc),
+			  NPAR(n2), NPAR(co2), NPAR(h2s));
+  auto adjustedppcm = compute_exc(adjustedppcm_corr, true, NPAR(ppcm),
+				  NPAR(tpcm), NPAR(co2), NPAR(h2s));
+  auto adjustedtpcm = compute_exc(adjustedtpcm_corr, true, NPAR(tpcm),
+				  NPAR(co2), NPAR(h2s));
+  /* End calculation constants for z */
+
+  /* Initialization of correlation parameter lists */
+  set_constant_parameters(pb_corr);
+  set_constant_parameters(rs_corr);
+  set_constant_parameters(uod_corr);
+  set_constant_parameters(bob_corr);
+  set_constant_parameters(boa_corr);
+  set_constant_parameters(cob_corr);
+  set_constant_parameters(coa_corr);
+  set_constant_parameters(uob_corr);
+  set_constant_parameters(uoa_corr);
+
+  using P = pair<string, const Unit*>;
+  auto row_units = print_csv_header(P("t", t_unit),
+				    P("pb", &pb_corr->unit),
+				    P("uod", &uod_corr->unit),
+				    P("p", p_unit),
+				    P("rs", &::rs_corr->unit),
+				    P("co", &cob_corr->unit),
+				    P("bo", &bob_corr->unit),
+				    P("uo", &uob_corr->unit),
+				    P("zfactor", &Zfactor::get_instance()),
+				    P("exception", &Unit::null_unit),
+				    P("pbrow", &Unit::null_unit));
+
+  auto rs_pb = npar("rs", rsb);					
+
+  /* Here are the values. Ensure that the insertion order is the same*/
+  /* as for the csv header temperature loop */
+  for (auto t_it = t_values.get_it(); t_it.has_curr(); t_it.next()) 
+    {
+      const VtlQuantity t = t_it.get_curr();
+      Correlation::NamedPar t_par = NPAR(t);
+      //Simple_Temperature_Calculations();
+
+      
+
+      auto pb = pb_q.raw();
+      double next_pb = nextafter(pb, numeric_limits<double>::max());
+      VtlQuantity next_pb_q = { pb_q.unit, next_pb };
+
+      auto first_p_point = p_values.get_first();
+      bool first_p_above_pb = VtlQuantity(*get<3>(first_p_point),
+					  get<2>(first_p_point)) > pb_q; 
+
+      size_t i = 0;
+      for (auto p_it = p_values.get_it(); p_it.has_curr(); ) // pressure loop
+	{
+	  Correlation::NamedPar p_par = p_it.get_curr();
+	  VtlQuantity p_q = par(p_par);
+
+	  bool pb_row = false; /* true if this line concerns to bubble point */	
+
+	  /* WARNING: these predicates must be evaluated exactly in
+	     this order */
+	  if (p_q <= pb_q or (not (i < 2)) or first_p_above_pb)
+	    p_it.next();
+	  else
+	    {
+	      pb_row = true;
+	      p_par = npar("p", ++i == 1 ? pb_q : next_pb_q);
+	      p_q = par(p_par);
+	      assert(i <= 2);
+	    }		
+
+	  Simple_Pressure_Calculations();
+	  row_fct_pb(row, row_units, pb_row);
+	  row.popn(n);
+	}
       Simple_Pop_Temperature_Parameters();
     }
 }
