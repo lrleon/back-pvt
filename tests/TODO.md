@@ -90,3 +90,6 @@
 ## 29. considerar que las correlaciones no sean singletones a efectos de que el nuevo pase de parámetros sea reentrante
 - Created at   2017-05-21 11:12:15 -0400
 
+## 30. opción a cali con alto de linea en salida
+- Created at   2017-05-22 08:37:43 -0400
+

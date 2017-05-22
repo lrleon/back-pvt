@@ -6,15 +6,14 @@
 void
 YghcWichertAziz::precondition(const Quantity<MoleFraction> & n2,
 			      const Quantity<MoleFraction> & co2,
-			      const Quantity<MoleFraction> & h2s)
-  const
+			      const Quantity<MoleFraction> & h2s) const
 {
   if (n2.raw() + co2.raw() + h2s.raw() >= 1)
     {
-    ostringstream s;
-    s << "YghcWichertAziz::impl: invalid values for nonhydrocarbon concentrations"
-      << n2 << ", " << co2 << ", " << h2s;
-    ZENTHROW(WrongNonhydrocarbonsConcentrations, s.str());
+      ostringstream s;
+      s << "invalid values for nonhydrocarbon concentrations "
+	<< n2 << "+ " << co2 << " + " << h2s << " >= " << 1 << "";
+      ZENTHROW(WrongNonhydrocarbonsConcentrations, s.str());
     }
 }
 

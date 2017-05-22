@@ -984,6 +984,14 @@ VtlQuantity compute_exc(const Correlation * corr_ptr, bool check,
       if (not insert_in_pars_list(pars_list, args...))
 	return VtlQuantity();
 
+      cout << corr_ptr->name;
+      pars_list.tbl.for_each([] (auto &p)
+			 {
+			   cout << " " << p.first << " " << p.second.first << " "
+				<< p.second.second->name;
+			 });
+      cout << endl;
+      cout << "check = " << check << endl;
       auto ret = corr_ptr->compute_by_names(pars_list, check);
       remove_from_container(pars_list, args...);
       return ret;
@@ -993,7 +1001,7 @@ VtlQuantity compute_exc(const Correlation * corr_ptr, bool check,
     {
       remove_from_container(pars_list, args ...);
       cout << "ERROR initializing " << correlation_call(corr_ptr, args...)
-	   << "@ " << e.what();
+	   << "@ " << e.what() << endl;
       abort();
     }
   return VtlQuantity();

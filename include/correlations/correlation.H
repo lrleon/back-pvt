@@ -821,9 +821,8 @@ public:
   using ParByName = pair<string, double>;
 
   /// Compute correlation by receiving an unsorted list of pair par-name,value
-  VtlQuantity
-  compute_by_names(const DynList<ParByName> & pair_list,
-		   bool check = true) const
+  VtlQuantity compute_by_names(const DynList<ParByName> & pair_list,
+			       bool check = true) const
   {
     DynList<VtlQuantity> vals;
     for (auto it = preconditions.get_it(); it.has_curr(); it.next())
@@ -903,8 +902,7 @@ public:
     return compute(vals, check);
   }
 
-  template <typename ... Args>
-  VtlQuantity
+  template <typename ... Args> VtlQuantity
   compute_by_names(bool check, ParList & par_list, Args & ...  args) const
   {
     insert_in_container(par_list, args...);

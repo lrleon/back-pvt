@@ -962,18 +962,24 @@ string correlation_call(const Correlation * corr_ptr, const Args & ... args)
 template <class Corr, typename ... Args> inline
 VtlQuantity compute_exc(Corr * corr_ptr, bool check, const Args & ... args)
 {
+  cout << "Call to " << corr_ptr->name << endl;
   try
     {
       if (not set_pars_in_correlation(corr_ptr, args...))
 	return VtlQuantity();
-
-      return corr_ptr->compute(check);
+      //return corr_ptr->compute(check);
+      auto ret = corr_ptr->compute(check);
+      cout << corr_ptr->name << " " << ret << endl;
+      return ret;
     }
-  catch (UnitConversionNotFound) {}
+  catch (UnitConversionNotFound & e)
+    {
+      cout << corr_ptr->name << ": " << e.what() << endl;
+    }
   catch (exception & e)
     {
       cout << "ERROR initializing " << correlation_call(corr_ptr, args...)
-	   << "@ " << e.what();
+	   << "@ " << e.what() << endl;
       abort();
     }
   return VtlQuantity();
@@ -1443,7 +1449,8 @@ void print_transpose()
 
 void generate_grid_simple()
 {
-  //Simple_Init()						\
+  //Simple_Init()
+  cout << "**************** tplot" << endl << endl;
   set_api(); /* Initialization of constant data */
   set_rsb();
   set_yg();
