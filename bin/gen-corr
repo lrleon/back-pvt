@@ -494,7 +494,7 @@ class CorrelationSubtype
         "\n"\
         "public:\n"\
         "\n"\
-        "void set_par(const string & name, double val, const Unit & unit)\n"\
+        "void set_par(const string & name, const VtlQuantity & val)\n"\
         "{\n"\
         "  static AHDispatcher<string,\n"\
         "                      void (*)(#{@subtype_name}*, double, const Unit&)>\n"\
@@ -512,12 +512,12 @@ class CorrelationSubtype
     end
     s += "};\n"\
          "\n"\
-         "  dispatcher.run(name, this, val, unit);\n"\
+         "  dispatcher.run(name, this, val.raw(), val.unit);\n"\
          "};\n"\
          "\n"\
          "void set_par(const Correlation::NamedPar & par)\n"\
          "{\n"\
-         "  this->set_par(get<1>(par), get<2>(par), *get<3>(par));\n"\
+         "  this->set_par(get<1>(par), VtlQuantity(*get<3>(par), get<2>(par)));\n"\
          "}\n"\
          "\n"\
          "  #{@subtype_name}(const string & name, const Unit & result_unit,\n"\
