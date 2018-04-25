@@ -1,91 +1,80 @@
-# biblioteca PVT
+# `back-pvt`
 
-## Dependencias
+`back-pvt` is a C++ library for reservoir/production fluids characterization
+through the Black Oil Method.
 
-### GSL - GNU Scientific Library
+## Main Features
 
-Sobre una distribución basada en debian puede isstalarse con
+. Runtime entirely written in C++14.
 
-	sudo apt-get install libgsl-dev
-	
-En otra distro siga las instrucciones de la
-[página web de gsl](https://www.gnu.org/software/gsl/)
+. Fully reentrant code, which makes it multithreaded.
 
-### The GNU MPFR Library
+. Characterization of the following reservoir fluids: black oils, dry
+gases and wet gases. 
 
-Sobre una distribución basada en debian puede isstalarse con
+. Twenty-six PVT properties of crude oil, natural gas and formation
+brines.
 
-	sudo apt-get install libmpfr-dev libmpfrc++-dev
-	
-En otra distro siga las instrucciones de la
-[página web de MPFR](http://www.mpfr.org/)
+. Comprehensive set of correlations, methods and standard equations. 
 
-### Imake
+. Backend in command line interface for generating high-resolution,
+high-precision petroleum fluid datasets of twenty-six PVT properties
+of crude oil, natural gas and formation brines through
+high-performance processing. 
 
-Sobre una distribución basada en debian puede isstalarse con
+. Backend command line interface for generating high-resolution,
+high-precision petroleum fluid datasets by applying model calibration
+to Constant Composition Expansion (CCE) and Differential Liberation
+(DL) fluid experimental data at one or various temperatures. 
 
-	sudo apt-get install xutils-dev
-	
-En otra distro tendrá que seguir
-[estas instrucciones](http://www.snake.net/software/imake-stuff/imake-faq.html#where-to-get)
+## Building
 
-### Aleph-w
+### Dependencies
 
-Descargue la última versión de Aleph-w en [sourceorge](https://sourceforge.net/projects/aleph-w/)
+`back-pvt` requires having installed the following dependencies:
 
-Explótela en el directorio de su preferencia.
+. GSL (GNU Scientific Library).
 
-No es necesario compilar esta biblioteca. 
+. GNU MPFR Library.
 
-Los makefile buscarán una variable de ambiente llamada `ALEPHW`, la
-cual podría definirse del siguiente modo:
-	
-	ALEPHW = directorio-donde-esta-alephw
-	export $ALEPHW
-	
-Estas líneas pueden ponerse en el archivo `.bashrc`, de modo que cada
-vez que se abra una consola la variable ya esté definida. Para evitar
-reiniciar una nueva consola, haga
+. Imake (`xutils-dev` on ubuntu distributions). On others distro you
+could follow [these instrutions](http://www.snake.net/software/imake-stuff/imake-faq.html#where-to-get).
 
-	source ~/.bashrc
-	
-luego de haber editado el archivo `.bashrc`
+. `Aleph-w` <https://github.com/lrleon/Aleph-w>.
 
-## Directorios
+. `uconv` units conversion library <https://github.com/lrleon/uconv>.
 
-Al presente, los directorios de trabajo son:
+. Ruby and the following gems: `bibtex-ruby`, `calculus`, `citeproc`,
+`csl`, `csl-styles` and `citeproc-ruby`.
 
-1. `include`: declaraciones de la biblioteca
-2. 'units`: módulo de manejo de unidades
-3. `tests`: pruebas
+### Building
 
-Cada uno de estos directorios contiene su `README` explicativo de su contenido.
-
-## Generación de `makefiles`
-
-La 1ra vez que descargue los fuentes ejecute
+On the directory where you have the sources, perform:
 
 	xmkmf
 	make Makefiles
 	make depend
 	
-El comando `make depend` genera "dependencias" de compilación, las
-cuales permiten detectar cuando hay que recompilar fuentes.
+The command `make depend` generates compilation "dependencies", which
+allow you to detect when the sources have to be recompiled. Each time
+you add a new header file to the `include` directory, execute `make
+depend`. 
 
-Cada vez que añada un nuevo archivo header al directorio `include`
-ejecute `make depend`.
-
-## Generación de ejecutables (por ahora los tests)
-
-Ejecute
+To generate the backend executables:
 
 	make all
 	
-Para generar todos los ejecutables. 
+After building, the backends will be in the directories `tests` and
+`backend`. The first directory contains the backends without
+optimization. In the second one the backend are compiled with the most
+possible agressive optimizations. 
 
-Alternativamente se puede ejecuar
+## List of backends
 
-	make all -n num
+### `eval-corr`
+
+It contains all the defined correlations and allows to evaluate them.
+
+Examples:
+
 	
-donde `num` sería el número de procesadores del computador. Esto
-permite compilar más rápido
