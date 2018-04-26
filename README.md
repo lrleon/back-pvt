@@ -1,7 +1,7 @@
 # `back-pvt`
 
-`back-pvt` is a C++ library for reservoir/production fluids characterization
-through the Black Oil Method.
+`back-pvt` is a C++ library and backend tools for reservoir/production
+fluids characterization through the Black Oil Method.
 
 ## Main Features
 

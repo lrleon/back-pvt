@@ -391,8 +391,8 @@ struct VectorDesc
 	       " is not an unit for oil formation volume ratio");
 
     if (not is_sorted(p, std::less_equal<double>()))
-      ALEPHTHROW(SamplesUnsorted, "split_uo(): pressure values are not sorted "
-		 + join(p));
+      ALEPHTHROW(SamplesUnsorted, "split_uo(): pressure values are not sorted " +
+	       join(p));
 
     // First, we must determine (p,uo) corresponding to the inflection point
     size_t min_idx = 0;
@@ -1894,9 +1894,7 @@ public:
     const Quantity<CP> max_uo = CP::get_instance().max();
 
     DynList<double> p_list, uob_list;
-    p_list.append(0);
-    uob_list.append(uod_par.second.first); // First entry is uod
-    for (auto it = zip_it_pos(1, in.p, rs.y, bob.y); it.has_curr(); it.next())
+    for (auto it = zip_it(in.p, rs.y, bob.y); it.has_curr(); it.next())
       {
 	auto t = it.get_curr();
 	const double & p_val = get<0>(t);
@@ -1912,21 +1910,10 @@ public:
 	remove_from_container(pars, "p", "rs", "bob");
       }
 
-    try
-      {
-	VectorDesc result(pref.t, pb, PVT_INVALID_VALUE, uod_par.second.first,
+    VectorDesc result(pref.t, pb, PVT_INVALID_VALUE, uob_list.get_first(),
 		      uob_list.get_last(), p_list, pref.punit, "uob", uob_list,
 		      &corr_ptr->unit);
     return compute_epilogue(pref, result);
-      }
-    catch (exception & e)
-      {
-	cout << "P = " << join(in.p) << endl
-	     << "uob = " << join(uob_list) << endl
-	     << "bob = " << join(bob.y) << endl;
-	cout << corr_ptr->name << " " << e.what() << endl;
-	//	exit(0);
-      }
   }
 
   VectorStats uob_stats(const Correlation * corr_ptr) const
