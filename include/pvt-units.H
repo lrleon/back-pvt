@@ -1,6 +1,8 @@
 # ifndef PVT_UNITS_H
 # define PVT_UNITS_H
 
+# include <uconv.H>
+
 # include "temperature-unit.H"
 # include "pressure-unit.H"
 # include "isothermal-compressibility-unit.H"

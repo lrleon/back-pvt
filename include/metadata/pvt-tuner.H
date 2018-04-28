@@ -6,7 +6,7 @@
 # ifndef PVT_TUNER_H
 # define PVT_TUNER_H
 
-# include <json.hpp>
+# include <nlohmann/json.hpp>
 # include <ah-stl-utils.H>
 # include <ah-dispatcher.H>
 
@@ -21,7 +21,7 @@
 
 using Json = nlohmann::json;
 
-# define PVT_INVALID_VALUE UNIT_INVALID_VALUE
+# define PVT_INVALID_VALUE Unit_Invalid_Value
 
 /** Vector to be used for defining properties depending on the pressure.
    

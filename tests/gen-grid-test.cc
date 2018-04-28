@@ -7,7 +7,6 @@
 # include <tclap-utils.H>
 # include <pvt-grid-compute.H>
 # include <pvt-units.H>
-# include <dummy-unit.H>
 
 using namespace TCLAP;
 

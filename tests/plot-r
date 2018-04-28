@@ -9,13 +9,13 @@ class Table
   attr_reader :table
 
   def initialize(csv_name)
-    zen_rows = CSV.read(csv_name, headers: true)
+    pvt_rows = CSV.read(csv_name, headers: true)
 
-    headers = zen_rows.headers
+    headers = pvt_rows.headers
     @units = headers.map { |h| l = h.split; [l[0], l[1]] }.to_h
     @names = headers.map { |h| [h.split[0], h] }.to_h
 
-    @table = zen_rows.map do |row|
+    @table = pvt_rows.map do |row|
       t = row[@names['t']]
       p = row[@names['p']]
       [[t, p], row]

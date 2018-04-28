@@ -6,5 +6,8 @@
 -I/home/lrleon/googletest/googletest/include
 -I/home/lrleon/googletest/googlemock/include
 -I/home/lrleon/Aleph-w
--I/home/lrleon/zen/include
--I/home/lrleon/pvt/include
+-I/home/lrleon/uconv/include
+-I/home/lrleon/json/include
+-I/home/lrleon/back-pvt/include
+-I/home/lrleon/back-pvt/units
+

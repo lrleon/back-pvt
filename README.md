@@ -37,12 +37,14 @@ to Constant Composition Expansion (CCE) and Differential Liberation
 
 . GNU MPFR Library.
 
-. Imake (`xutils-dev` on ubuntu distributions). On others distro you
+. Imake (`xutils-dev` on Ubuntu distributions). On others distros you
 could follow [these instrutions](http://www.snake.net/software/imake-stuff/imake-faq.html#where-to-get).
 
 . `Aleph-w` <https://github.com/lrleon/Aleph-w>.
 
 . `uconv` units conversion library <https://github.com/lrleon/uconv>.
+
+. Niels Lohmann (nlohmann) json library <https://github.com/nlohmann/json>.
 
 . Ruby and the following gems: `bibtex-ruby`, `calculus`, `citeproc`,
 `csl`, `csl-styles` and `citeproc-ruby`.
@@ -67,7 +69,7 @@ To generate the backend executables:
 After building, the backends will be in the directories `tests` and
 `backend`. The first directory contains the backends without
 optimization. In the second one the backend are compiled with the most
-possible agressive optimizations. 
+possible aggressive optimizations. 
 
 ## List of backends
 

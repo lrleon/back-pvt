@@ -9,7 +9,7 @@
 # include <ah-string-utils.H>
 # include <tpl_array.H>
 # include <tpl_dynSetTree.H>
-# include <json.hpp>
+# include <nlohmann/json.hpp>
 # include <lfit.H>
 # include <correlations/pvt-correlations.H>
 # include <metadata/metadata-exceptions.H>

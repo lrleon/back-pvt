@@ -1,6 +1,6 @@
 DEPEND = sh ./depend.sh
 
-INCLUDES = -I$(TOP)/include -I$(ZEN)/include -I$(ALEPHW) 
+INCLUDES = -I$(UCONV)/include -I$(TOP)/units -I$(TOP)/include -I$(ALEPHW) -I$(JSON)/include
 WARN= -Wall -Wextra -Wcast-align -Wno-sign-compare -Wno-write-strings\
 	-Wno-parentheses
 
