@@ -6,3 +6,5 @@ libpvtunits.a: $(UNITSRC)
 
 all:: libpvtunits.a
 
+clean:: 
+	$(RM) libpvtunits.a
