@@ -1,4 +1,6 @@
--I/home/lrleon/pvt/include
+-I/home/lrleon/uconv/include
+-I/home/lrleon/back-pvt/include
+-I/home/lrleon/back-pvt/units
 -I/home/lrleon/Aleph-w
 -std=c++14
 -Wall

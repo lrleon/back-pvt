@@ -3,9 +3,9 @@
 # define PassCDebugFlags
 
 ALEPHW = $(shell echo $$ALEPHW)
-ZEN = $(shell echo $$ZEN)
+UCONV = $(shell echo $$UCONV)
 
-SUBDIRS = include lib tests backend profile
+SUBDIRS = units include lib tests backend profile
 
 MakeSubdirs($(SUBDIRS))
 DependSubdirs($(SUBDIRS))
