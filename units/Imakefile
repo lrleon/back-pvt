@@ -1,0 +1,8 @@
+
+UNITSRC = $(shell ls *-unit.H)
+
+libpvtunits.a: $(UNITSRC)
+	$(UCONV)/bin/buildunits -U $(TOP)/include/pvt-units.H -H $(UCONV)/include -c clang++ -l libpvtunits.a
+
+all:: libpvtunits.a
+
