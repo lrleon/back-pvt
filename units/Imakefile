@@ -1,10 +1,18 @@
+DEPEND = sh ./depend.sh
 
-UNITSRC = $(shell ls *-unit.H)
+INCLUDES = -I$(UCONV)/include -I$(TOP)/units -I$(TOP)/include -I$(ALEPHW) -I$(JSON)/include
+WARN= -Wall -Wextra -Wcast-align -Wno-sign-compare -Wno-write-strings\
+	-Wno-parentheses
+UNITSRC = $(shell ls *-unit.H) $(TOP)/include/pvt-units.H
 
-libpvtunits.a: $(UNITSRC)
+SRCS = $(UNITSRC)
+
+libpvtunits.a: $(SRCS)
 	$(UCONV)/bin/buildunits -U $(TOP)/include/pvt-units.H -H $(UCONV)/include -c clang++ -l libpvtunits.a
 
 all:: libpvtunits.a
 
 clean:: 
 	$(RM) libpvtunits.a
+
+DependTarget()
