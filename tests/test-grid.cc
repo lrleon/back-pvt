@@ -102,7 +102,7 @@ ValueArg<string> output = { "", "output", "output type", false,
 
 void process_output(const string & name, const DynList<DynList<double>> & l)
 {
-  static auto mapl = [] (const string & name, DynList<DynList<double>> & l)
+  static auto mapl = [] (const string & name, const DynList<DynList<double>> & l)
     {
       auto out = l.maps<DynList<string>>([] (auto & l)
       {
@@ -112,17 +112,17 @@ void process_output(const string & name, const DynList<DynList<double>> & l)
       return out;
     };
   
-  static auto mat = [] (const string & name, DynList<DynList<double>> & l)
+  static auto mat = [] (const string & name, const DynList<DynList<double>> & l)
     {
       cout << to_string(format_string(mapl(name, l))) << endl;
     };
 
-  static auto csv = [] (const string & name, DynList<DynList<double>> & l)
+  static auto csv = [] (const string & name, const DynList<DynList<double>> & l)
     {
       cout << to_string(format_string_csv(mapl(name, l))) << endl;
     };
 
-  static auto R = [] (const string & name, DynList<DynList<double>> & l)
+  static auto R = [] (const string & name, const DynList<DynList<double>> & l)
     { //          t        p and value
       DynMapTree<double, DynList<DynList<double>>> temps;
       for (auto it = l.get_it(); it.has_curr(); it.next())
@@ -187,7 +187,7 @@ void process_output(const string & name, const DynList<DynList<double>> & l)
     };
 
   static
-    AHDispatcher<string, void (*)(const string &, DynList<DynList<double>>&)>
+    AHDispatcher<string, void (*)(const string &, const DynList<DynList<double>>&)>
     dispatcher("mat", mat, "csv", csv, "R", R);
 
   dispatcher.run(output.getValue(), name, l);

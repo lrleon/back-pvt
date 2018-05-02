@@ -205,7 +205,7 @@ public:
   /// Return `true` if value `val` is valid according to specified
   /// parameter range. Conversion is done if `val` comes in another
   /// unit than `this->unit`
-  bool check(const BaseQuantity & val) const noexcept
+  bool check(const BaseQuantity & val) const
   {
     if (&val.unit == &unit)
       return val.raw() >= min_val.raw() - epsilon and
@@ -403,7 +403,7 @@ private:
   // helper function for searching a parameter according to its name
   CorrelationPar * search_parameter(const string & par_name) const
   {
-    auto par_ptr = preconditions.find_ptr([&par_name] (auto p)
+    auto par_ptr = preconditions.find_ptr([&par_name] (auto & p)
 					  { return p.name == par_name; });
     if (par_ptr == nullptr)
       {

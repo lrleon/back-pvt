@@ -1131,7 +1131,7 @@ VtlQuantity dcompute(const DefinedCorrelation & corr, bool check,
       remove_from_container(pars_list, args ...);
       return ret;
     }
-  catch (UnitConversionNotFound) {}
+  catch (UnitConversionNotFound&) {}
   catch (exception & e)
     {
       if (report_exceptions)
@@ -1307,6 +1307,7 @@ DynMapTree<string, string> name_to_precision;
 
 // Parallel array to col_names containing the precision formats
 Array<const char*> precisions;
+Array<string> precisions_comma;
 
 size_t ncol = 0; // number of columns 
 
@@ -1493,10 +1494,12 @@ FixedStack<Unit_Convert_Fct_Ptr> print_csv_header(Args ... args)
 	}
     }
 
-  precisions = header.maps<const char*>([] (auto & h)
+  for (auto it = header.get_it(); it.has_curr(); it.next())
     {
-      return name_to_precision[h.first].data();
-    });
+      auto & h = it.get_curr().first;
+      precisions.append(h.data());
+      precisions_comma.append(h + ",");
+    }
 
   auto ret = build_stack_of_property_units(header);
 
@@ -1576,7 +1579,7 @@ inline void print_column(size_t col_idx)
       assert(ncol == str_ncol + rows(0).second.size());
       const size_t j = col_idx - str_ncol;
       const char * format = precisions(ncol - col_idx - 1);
-      const char * format_comma = (string(format) + ",").data();
+      const char * format_comma = precisions_comma(ncol - col_idx - 1).data();
       for (size_t i = 0; i < nrow; ++i)
 	{
 	  const double & val = rows(i).second(j);

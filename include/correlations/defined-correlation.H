@@ -9,7 +9,7 @@ class DefinedCorrelation
   struct Interval
   {
     const Correlation * correlation_ptr = nullptr;
-    double start, end;
+    double start = 0, end = 0;
     const DynSetTree<string> * par_names = nullptr;
 
     double c = 0, m = 1; // set if the correlation is tuned
@@ -20,11 +20,16 @@ class DefinedCorrelation
 
     Interval() {}
 
-    Interval(const Correlation * ptr, double start, double end)
+    Interval(NoExceptionCtor, const Correlation * ptr, double start, double end)
       : correlation_ptr(ptr), start(start), end(end)
     {
       if (correlation_ptr)
 	par_names = &ptr->parameter_names();
+    }
+
+    Interval(const Correlation * ptr, double start, double end)
+      : Interval(no_exception_ctor, ptr, start, end)
+    {
       if (start <= end)
 	return;
       ostringstream s;
@@ -171,7 +176,7 @@ public:
   Interval * search_interval(double val) const noexcept
   {
     assert(unit_ptr);
-    Interval i(nullptr, val, val);
+    Interval i(no_exception_ctor, nullptr, val, val);
     return intervals.search(i);
   }
 
