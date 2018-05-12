@@ -126,3 +126,6 @@
 ## 42. verificar que en cplot se calcule el mínimo uob
 - Created at   2018-04-06 17:06:16 -0400
 
+## 43. fuzzy
+- Created at   2018-05-11 20:47:39 -0400
+
