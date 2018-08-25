@@ -27,6 +27,13 @@ high-precision petroleum fluid datasets by applying model calibration
 to Constant Composition Expansion (CCE) and Differential Liberation
 (DL) fluid experimental data at one or various temperatures. 
 
+. Tested on gcc, clang and Intel (icc), compilable on any platform
+that supports any of these.
+
+. Comprehensive set of correlations, methods and standard equations.
+
+. Compilable in Windows, OSX, Linux, and Solaris operating systems.
+
 ## Building
 
 ### Dependencies

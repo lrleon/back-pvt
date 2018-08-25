@@ -1,6 +1,6 @@
 /** This file contains the base machinery needed for calculating pvt
    correlations
-   
+
    Aleph-w Leandro Rabindranath Leon
  */
 # ifndef CORRELATION_H
@@ -39,7 +39,7 @@
       3. get<2>(par): a double containing the value of parameter.
 
       4. get<3>(par): a pointer to the unit in which the value is
-      represented. 
+      represented.
 
       @ingroup Correlations
       @author Leandro Rabindranath Leona
@@ -54,7 +54,7 @@ using NamedPar = tuple<bool, string, double, const Unit*>;
 struct CorrelationPar
 {
   const string name;  /// name of parameter
-  const string description; 
+  const string description;
   const Unit & unit;
   const VtlQuantity min_val;
   const VtlQuantity max_val;
@@ -74,10 +74,10 @@ private:
 
   DynList<P> names_list;
   DynList<P> synonyms;
-  
+
 public:
 
-  /// return a Ruby representation of parameter class 
+  /// return a Ruby representation of parameter class
   static string ruby_class()
   {
     return R"Ruby(
@@ -107,10 +107,10 @@ public:
   {
     if (not this->unit.is_sibling(unit))
       {
-	ostringstream s;
-	s << "CorrelationPar::add_synonym(): synonym unit " << unit.name
-	  << " is not physically related to parameter unit " << this->unit.name;
-	ALEPHTHROW(WrongSiblingUnit, s.str());
+        ostringstream s;
+        s << "CorrelationPar::add_synonym(): synonym unit " << unit.name
+          << " is not physically related to parameter unit " << this->unit.name;
+        ALEPHTHROW(WrongSiblingUnit, s.str());
       }
 
     auto p = make_pair(name, &unit);
@@ -124,10 +124,10 @@ public:
     auto ptr = Unit::search(unit_sym_name);
     if (ptr == nullptr)
       {
-	ostringstream s;
-	s << "add_synonym(): unit name or symbol " << unit_sym_name
-	  << " not found";
-	ALEPHTHROW(WrongSiblingUnit, s.str());
+        ostringstream s;
+        s << "add_synonym(): unit name or symbol " << unit_sym_name
+          << " not found";
+        ALEPHTHROW(WrongSiblingUnit, s.str());
       }
     add_synonym(name, *ptr);
   }
@@ -142,7 +142,7 @@ public:
   const DynList<P> & get_synonyms() const noexcept { return synonyms; }
 
   /// Returns a list of alias associated to this parameter (including
-  /// the name itself) 
+  /// the name itself)
   const DynList<P> & names() const { return names_list; }
 
   /// Return a stringfied version of `this`
@@ -176,8 +176,8 @@ public:
       exist.
       @exception bad_alloc if there is enough memory.
    */
-  CorrelationPar(const string & name, const Unit & unit, const string & desc, 
-		 const VtlQuantity & min, const VtlQuantity & max)
+  CorrelationPar(const string & name, const Unit & unit, const string & desc,
+                 const VtlQuantity & min, const VtlQuantity & max)
     : name(name), description(desc), unit(unit),
       min_val(unit, min), max_val(unit, max)
   {
@@ -199,8 +199,8 @@ public:
   */
   CorrelationPar(const string & name, const BaseQuantity q,
 		 const string & desc, double min, double max)
-    : CorrelationPar(name, q.unit, desc, 
-		     VtlQuantity(q.unit, min), VtlQuantity(q.unit, max)) {}
+    : CorrelationPar(name, q.unit, desc,
+                     VtlQuantity(q.unit, min), VtlQuantity(q.unit, max)) {}
 
   /// Return `true` if value `val` is valid according to specified
   /// parameter range. Conversion is done if `val` comes in another
@@ -209,11 +209,11 @@ public:
   {
     if (&val.unit == &unit)
       return val.raw() >= min_val.raw() - epsilon and
-	val.raw() <= max_val.raw() + epsilon;
+        val.raw() <= max_val.raw() + epsilon;
 
     VtlQuantity real_val(unit, val); // convert to unit for val.unit
     return real_val.raw() >= min_val.raw() - epsilon and
-	real_val.raw() <= max_val.raw() + epsilon;
+      real_val.raw() <= max_val.raw() + epsilon;
   }
 
   /// Return `true` if value `q` is valid according to specified
@@ -227,16 +227,16 @@ public:
     ostringstream s;
     if (q.get_value() < min_val.raw() - epsilon)
       {
-	s << "Value " << q.get_value() << " is lesser than the minimum value "
-	  << min_val << " for precondition ";
-	ALEPHTHROW(OutOfParameterRange, s.str());
+        s << "Value " << q.get_value() << " is lesser than the minimum value "
+          << min_val << " for precondition ";
+        ALEPHTHROW(OutOfParameterRange, s.str());
       }
 
     if (q.get_value() > max_val.raw() + epsilon)
       {
-	s << "Value " << q << " is greater than the maximum value "
-	  << max_val << " for precondition ";
-	ALEPHTHROW(OutOfParameterRange, s.str());
+        s << "Value " << q << " is greater than the maximum value "
+          << max_val << " for precondition ";
+        ALEPHTHROW(OutOfParameterRange, s.str());
       }
   }
 };
@@ -247,7 +247,7 @@ public:
     Correlation class is the base and main object used for defining a
     correlation. Although this class manages, contains and represents
     the most part of a correlation, this is not intended to be used as
-    the final correlation. 
+    the final correlation.
 
     A correlation correlation has a type and a subtype which define
     families of correlations. For example, correlations related to oil
@@ -262,12 +262,12 @@ public:
  */
 struct Correlation
 {
-  const string type_name; 
+  const string type_name;
   const string subtype_name;
   const string name = "NOT-DEFINED"; // Correlation name
   mutable string latex_symbol = "NOT-DEFINED";
   mutable string author = "NOT-DEFINED";
-  const Unit & unit; /// Return unit 
+  const Unit & unit; /// Return unit
   const double min_val; /// minimum value that can reach expressed in `unit`
   const double max_val; /// maximum value that can reach expressed in `unit`
   mutable bool min_from_author = false; /// 'true' if author specified minimum
@@ -281,9 +281,9 @@ struct Correlation
 
   /// Indicates that correlation must not be shown in front-end calculator
   mutable bool hidden_calc = false;
-  
+
   /// Indicates if correlation must be hidden in grid generation for blackoil
-  mutable bool hidden_blackoil_grid = false; 
+  mutable bool hidden_blackoil_grid = false;
 
   /// Indicates if correlation must be hidden in grid generation for drygas
   mutable bool hidden_drygas_grid = false;
@@ -373,11 +373,11 @@ public:
     DynList<DynList<string>> ret;
     for (auto it = preconditions.get_it(); it.has_curr(); it.next())
       {
-	auto par = it.get_curr();
-	DynList<string> col;
-	col.append(par.name);
-	par.get_synonyms().for_each([&col] (auto p) { col.append(p.first); });
-	ret.append(col);
+        auto par = it.get_curr();
+        DynList<string> col;
+        col.append(par.name);
+        par.get_synonyms().for_each([&col] (auto p) { col.append(p.first); });
+        ret.append(col);
       }
     return build_perms(ret);
   }
@@ -390,10 +390,10 @@ public:
   {
     for (auto it = preconditions.get_it(); it.has_curr(); it.next())
       {
-	const auto & par = it.get_curr();
-	if (par.names().exists([&name] (const auto & p)
-			       { return p.first == name; }))
-	  return &par;
+        const auto & par = it.get_curr();
+        if (par.names().exists([&name] (const auto & p)
+                               { return p.first == name; }))
+          return &par;
       }
     return nullptr;
   }
@@ -407,10 +407,10 @@ private:
 					  { return p.name == par_name; });
     if (par_ptr == nullptr)
       {
-	ostringstream s;
-	s << "Correlation::search_parameter(): par name " << par_name
-	  << " not found";
-	ALEPHTHROW(SynonymNotFound, s.str());
+        ostringstream s;
+        s << "Correlation::search_parameter(): par name " << par_name
+          << " not found";
+        ALEPHTHROW(SynonymNotFound, s.str());
       }
 
     return const_cast<CorrelationPar*>(par_ptr);
@@ -425,10 +425,10 @@ public:
     DynMapTree<string, string> sbltbl;
     correlations_tbl.for_each([&sbltbl] (auto p)
       {
-	p->get_preconditions().for_each([&sbltbl] (const auto & par)
+        p->get_preconditions().for_each([&sbltbl] (const auto & par)
           {
-	    sbltbl.emplace(par.name, par.latex_symbol);
-	  });
+            sbltbl.emplace(par.name, par.latex_symbol);
+          });
       });
     return sbltbl.items();
   }
@@ -440,7 +440,7 @@ public:
       @param[in] unit_name name of the unit for the alias
  */
   void add_par_synonym(const string & par_name, const string & synonym,
-		       const string & unit_name)
+                       const string & unit_name)
   {
     auto par_ptr = search_parameter(par_name);
     par_ptr->add_synonym(synonym, unit_name);
@@ -449,7 +449,7 @@ public:
 
   /// Defines `latex_symbol` as LaTeX symbol of parameter `par_name`
   void def_parameter_latex_symbol(const string & par_name,
-				  const string & latex_symbol)
+                                  const string & latex_symbol)
   {
     auto par_ptr = search_parameter(par_name);
     par_ptr->def_latex_symbol(latex_symbol);
@@ -494,7 +494,7 @@ public:
   /// Add a note to data bank list
   void add_db(const string & __db) { db.append(__db); }
 
-  /// Add a note 
+  /// Add a note
   void add_note(const string & note) { notes.append(note); }
 
   /// Add a reference for the correlation. `tag` parameter is the
@@ -504,19 +504,21 @@ public:
     refs.append(BibEntry::find(tag));
   }
 
-  /// Return a reference to the list of correlation parameters sorted by pass order
+  /// Return a reference to the list of correlation parameters sorted
+  /// by pass order
   const DynList<CorrelationPar> & get_preconditions() const noexcept
   {
     return preconditions;
   }
 
   /// Return a list of pointers to correlation parameters sorted by pass order
-  const DynList<const CorrelationPar * const> preconditions_list() const 
+  const DynList<const CorrelationPar * const> preconditions_list() const
   {
-    return preconditions.maps<const CorrelationPar * const>([] (const auto & par)
-      {
-	return &par;
-      });
+    return preconditions.
+      maps<const CorrelationPar * const>([] (const CorrelationPar & par)
+                                         {
+                                           return &par;
+                                         });
   }
 
   /// Returns the signature position of parameter `par_name`. If not
@@ -524,16 +526,16 @@ public:
   size_t parameter_pos(const string & par_name) const
   {
     return preconditions.find_index([&par_name] (const auto & par)
-				    {
-				      return par.name == par_name;
-				    });
+                                    {
+                                      return par.name == par_name;
+                                    });
   }
 
   /// Return a list with the units of correlation parameters
   DynList<const Unit *> get_par_types() const
   {
     return preconditions.maps<const Unit *>([] (const auto & par)
-						 { return &par.unit; });
+                                            { return &par.unit; });
   }
 
   /// Return the number of parameters
@@ -561,27 +563,27 @@ public:
     s << name << "Correlation(";
     zipEq(preconditions_list(), pointers_list(vals)).
       for_each([&s, &count] (auto p)
-      {
-	VtlQuantity q(p.first->unit, *p.second);
-	s << q.get_value();
-	if (--count)
-	  s << ", ";
-      });
+               {
+                 VtlQuantity q(p.first->unit, *p.second);
+                 s << q.get_value();
+                 if (--count)
+                   s << ", ";
+               });
     s << ")";
 
     return s.str();
-  }    
+  }
 
   /** Given a parameter list `vals', it builds a string with the
-      signature call. Some such as 
+      signature call. Some such as
 
           PbAlMarhoun(0.8 Sgg, 0.9 sg_do, 100 scf/STB, 550 degR)
 
       @note The unit types and the number of parameter are not validated
-      
+
       @param[in] vals a list of VtlQuantity with parameter names and
       their values
- */
+  */
   string call_string(const DynList<VtlQuantity> & vals) const
   {
     return name + "(" + join(vals, ", ") + ")";
@@ -593,7 +595,7 @@ public:
   {
     return call_string(zip_maps<VtlQuantity>([] (auto t)
       {
-	return VtlQuantity(get<0>(t).unit, get<1>(t));
+        return VtlQuantity(get<0>(t).unit, get<1>(t));
       }, preconditions, vals));
   }
 
@@ -655,15 +657,15 @@ public:
   }
 
   /// Return a list of `Correlation` pointers associated to subtype
-  /// `subtype_name` 
+  /// `subtype_name`
   static DynList<const Correlation*> list(const string & subtype_name)
   {
     DynSetTree<const Correlation*> s;
     for (auto it = tbl.get_it(); it.has_curr(); it.next())
       {
-	auto p = it.get_curr();
-	if (p.second->subtype_name == subtype_name)
-	  s.insert(p.second);
+        auto p = it.get_curr();
+        if (p.second->subtype_name == subtype_name)
+          s.insert(p.second);
       }
 
     return s.keys();
@@ -672,9 +674,9 @@ public:
 protected:
 
   Correlation(const string & type_name, const string & subtype_name,
-	      const string & name, const string & latex_symbol,
-	      const Unit & result_unit, double min_val, double max_val,
-	      bool min_from_author, bool  max_from_author)
+              const string & name, const string & latex_symbol,
+              const Unit & result_unit, double min_val, double max_val,
+              bool min_from_author, bool  max_from_author)
     : type_name(type_name), subtype_name(subtype_name), name(name),
       latex_symbol(latex_symbol), unit(result_unit),
       min_val(min_val), max_val(max_val),
@@ -682,9 +684,9 @@ protected:
   {
     if (tbl.has(name))
       {
-	ostringstream s;
-	s << "Correlation::Correlation: duplicated correlation name" << name;
-	ALEPHTHROW(DuplicatedCorrelationName, s.str());
+        ostringstream s;
+        s << "Correlation::Correlation: duplicated correlation name" << name;
+        ALEPHTHROW(DuplicatedCorrelationName, s.str());
       }
 
     tbl.insert(name, this);
@@ -694,14 +696,14 @@ protected:
   }
 
   Correlation(const string & type_name, const string & subtype_name,
-	      const string & name, const string & latex_symbol,
-	      const Unit & result_unit)
+              const string & name, const string & latex_symbol,
+              const Unit & result_unit)
     : Correlation(type_name, subtype_name, name, latex_symbol, result_unit,
 		  result_unit.min_val, result_unit.max_val, false, false) {}
 
   Correlation(const string & type_name, const string & subtype_name,
-	      const string & name, const string & latex_symbol,
-	      const Unit & result_unit, double min_val)
+              const string & name, const string & latex_symbol,
+              const Unit & result_unit, double min_val)
     : Correlation(type_name, subtype_name, name, latex_symbol,
 		  result_unit, min_val, result_unit.max_val, true, false)
   {
@@ -723,17 +725,17 @@ protected:
  */
   CorrelationPar &
   add_parameter(const string & name, const Unit & unit,
-		const string & description,
-		const VtlQuantity & min, const VtlQuantity & max)
+                const string & description,
+                const VtlQuantity & min, const VtlQuantity & max)
   {
     auto min_aux = VtlQuantity(unit, min);
     auto max_aux = VtlQuantity(unit, max);
     if (min_aux > max_aux)
       {
-	ostringstream s;
-	s << "minimum value " << min_aux << " is greater than maximum value "
-	  << max_aux << " for parameter " << name;
-	ALEPHTHROW(OutOfParameterRange, s.str());
+        ostringstream s;
+        s << "minimum value " << min_aux << " is greater than maximum value "
+          << max_aux << " for parameter " << name;
+        ALEPHTHROW(OutOfParameterRange, s.str());
       }
 
     CorrelationPar par(name, unit, description, min, max);
@@ -744,8 +746,8 @@ protected:
   }
 
   CorrelationPar &  add_parameter(const string & name, const Unit & unit,
-				  const string & description,
-				  const VtlQuantity & min)
+                                  const string & description,
+                                  const VtlQuantity & min)
   {
     CorrelationPar & ret = add_parameter(name, unit, description,
 					 min, VtlQuantity(unit, unit.max_val));
@@ -756,21 +758,21 @@ protected:
   /// Insert a new parameter whose minimum and maximum values are the
   /// unit limits
   CorrelationPar & add_parameter(const string & name, const Unit & unit,
-				 const string & description)
+                                 const string & description)
   {
     CorrelationPar & ret = add_parameter(name, unit, description,
-					 VtlQuantity(unit, unit.min_val),
-					 VtlQuantity(unit, unit.max_val));
+                                         VtlQuantity(unit, unit.min_val),
+                                         VtlQuantity(unit, unit.max_val));
     ret.min_from_author = ret.max_from_author = false;
     return ret;
   }
 
   CorrelationPar add_parameter(const string & name, const Unit & unit,
-			       const string & description,
-			       double min, double max)
+                               const string & description,
+                               double min, double max)
   {
     return add_parameter(name, unit, description,
-			 VtlQuantity(unit, min), VtlQuantity(unit, max));
+                         VtlQuantity(unit, min), VtlQuantity(unit, max));
   }
 
 public:
@@ -781,10 +783,10 @@ public:
     size_t i = 1;
     auto prows = preconditions.maps<DynList<string>>([&i] (const auto & c)
       {
-	DynList<string> ret = { "    " };
-	ret.append(c.to_list_string());
-	ret.append(std::to_string(i++));
-	return ret;
+        DynList<string> ret = { "    " };
+        ret.append(c.to_list_string());
+        ret.append(std::to_string(i++));
+        return ret;
       });
 
     prows.insert(rep<string>(6, ""));
@@ -807,7 +809,8 @@ public:
   DynList<string> to_dynlist() const
   {
     DynList<string> ret = { name };
-    ret.append(preconditions.maps<string>([] (auto & p) { return p.to_string(); }));
+    ret.append(preconditions.maps<string>([] (auto & p)
+                                          { return p.to_string(); }));
     return ret;
   }
 
@@ -829,7 +832,7 @@ public:
   }
 
   /// Generate a ruby specification for all the registered correlations
-  static string to_ruby_def() 
+  static string to_ruby_def()
   {
     ostringstream s;
 
@@ -844,18 +847,18 @@ public:
     for (auto corr_it = correlations_tbl.get_it();
 	 corr_it.has_curr(); corr_it.next())
       {
-	auto corr = corr_it.get_curr();
-	s << "'" << corr->name << "' => Correlation.new('" << corr->name << "', "
-	  << "'" << corr->unit.name << "', " << corr->min_val << ", "
-	  << corr->max_val;
-	for (auto it = corr->preconditions.get_it(); it.has_curr(); it.next())
-	  {
-	    const auto & par = it.get_curr();
-	    s << ", " << par.to_ruby_class();
-	  }
-	s << ")";
-	if (corr != last_corr)
-	  s << ", " << endl;
+        auto corr = corr_it.get_curr();
+        s << "'" << corr->name << "' => Correlation.new('" << corr->name << "', "
+          << "'" << corr->unit.name << "', " << corr->min_val << ", "
+          << corr->max_val;
+        for (auto it = corr->preconditions.get_it(); it.has_curr(); it.next())
+          {
+            const auto & par = it.get_curr();
+            s << ", " << par.to_ruby_class();
+          }
+        s << ")";
+        if (corr != last_corr)
+          s << ", " << endl;
       }
 
     s << "  }" << endl;
@@ -864,40 +867,40 @@ public:
   }
 
   /** Print out a full description for the correlation.
-  
+
       @param[in] width used for justifying notes and data bank
-      @param[in] left_margin 
+      @param[in] left_margin
    */
   string full_desc(size_t width = 60, size_t left_margin = 4) const
   {
     ostringstream s;
     if (not title.empty())
       s << align_text_to_left(title, 60) << endl
-	<< endl;
+        << endl;
     s << to_string() << endl;
 
     if (not db.is_empty())
       s << "  DATA BANK:" << endl
-	<< endl;
+        << endl;
     for (auto it = db.get_it(); it.has_curr(); it.next())
       s << align_text_to_left(it.get_curr(), width, left_margin) << endl
-	<< endl;
+        << endl;
 
     if (not notes.is_empty())
       s << "  Notes:" << endl
-	<< endl;
+        << endl;
 
     for (auto it = notes.get_it(); it.has_curr(); it.next())
       s << align_text_to_left(it.get_curr(), width, left_margin) << endl
-	<< endl;
+        << endl;
 
     if (not refs.is_empty())
       s << "  References:" << endl
-	<< endl;
+        << endl;
 
     for (auto it = refs.get_it(); it.has_curr(); it.next())
       s << shift_lines_to_left(it.get_curr()->to_string(), left_margin) << endl
-	<< endl;
+        << endl;
 
     return s.str();
   }
@@ -963,8 +966,8 @@ public:
 
       Now, you could directly call it as follows:
 
-          auto ret = corr_ptr->compute({Quantity<Sgg>(.8), Quantity<Sg_do>(.9), 
-	                                Quantity<SCF_STB>(28), 
+          auto ret = corr_ptr->compute({Quantity<Sgg>(.8), Quantity<Sg_do>(.9),
+	                                Quantity<SCF_STB>(28),
 					Quantity<Rankine>(560)});
 
       Since the `DynList` type has a constructor receiving the
@@ -982,7 +985,7 @@ public:
   /** Meta-wrapper to `compute()` method.
 
       This flavor of `compute()` automatically builds the parameter
-      list according to the passing order. 
+      list according to the passing order.
 
       Example of use
       --------------
@@ -995,7 +998,7 @@ public:
       In this variant the parameter `check` comes first. This is an
       essential condition to be able of generate the meta call. Next,
       the parameters come exactly in the same specification order
-      ((`yg`, `yo`, `rsb` and `t`). 
+      ((`yg`, `yo`, `rsb` and `t`).
 
       @param[in] check indicates whether the parameter bounds must be
       or not checked.
@@ -1069,21 +1072,21 @@ public:
   {
     try
       {
-	const auto result = compute(pars, check);
-	auto status = check_result(VtlQuantity(unit, result));
-	if (status)
-	  return make_tuple(result.raw(), unit.name, true, "");
+        const auto result = compute(pars, check);
+        auto status = check_result(VtlQuantity(unit, result));
+        if (status)
+          return make_tuple(result.raw(), unit.name, true, "");
 
-	ostringstream s;
-	s << "Correlation result " << result << " is out of range ["
-	  << min_val << ", " << max_val << "]";
-	OutOfCorrelationRange e(__LINE__, __FILE__, "OutOfCorrelationRange",
-				s.str().c_str());
-	return make_tuple(result.raw(), unit.name, false, e.what());
+        ostringstream s;
+        s << "Correlation result " << result << " is out of range ["
+          << min_val << ", " << max_val << "]";
+        OutOfCorrelationRange e(__LINE__, __FILE__, "OutOfCorrelationRange",
+                                s.str().c_str());
+        return make_tuple(result.raw(), unit.name, false, e.what());
       }
     catch (exception &e)
       {
-	return make_tuple(0, unit.name, false, e.what());
+        return make_tuple(0, unit.name, false, e.what());
       }
   }
 
@@ -1094,7 +1097,7 @@ public:
       their parameters as doubles, without units. In this case, it is
       assumed that the parameter are expressed in the same units for
       which the correlation parameters were specified.
-      
+
       Example of use
       --------------
 
@@ -1121,18 +1124,18 @@ public:
     auto it = get_pair_it(preconditions, values);
     for (;it.has_curr(); it.next())
       {
-	auto p = it.get_curr();
-	pars.append(VtlQuantity(p.first.unit, p.second));
+        auto p = it.get_curr();
+        pars.append(VtlQuantity(p.first.unit, p.second));
       }
 
     if (it.has_curr())
       {
-	ostringstream s;
-	s << "Correlation::compute: number of effective arguments "
-	  << values.size()
-	  << " is different from number of declared parameters "
-	  << get_num_pars();
-	ALEPHTHROW(InvalidNumberOfParameters, s.str());
+        ostringstream s;
+        s << "Correlation::compute: number of effective arguments "
+          << values.size()
+          << " is different from number of declared parameters "
+          << get_num_pars();
+        ALEPHTHROW(InvalidNumberOfParameters, s.str());
       }
 
     VtlQuantity ret = { unit, compute(pars, check) }; // here conversion is done
@@ -1177,7 +1180,7 @@ public:
 
       Note that in this version the units are not considered. It is
       assumed that every parameter is specified in the same unit in
-      which this was specified.      
+      which this was specified.
 
       @param[in] pair_list a list of pairs everyone containing the
       parameter value and its name.
@@ -1198,24 +1201,24 @@ public:
     DynList<VtlQuantity> vals;
     for (auto it = preconditions.get_it(); it.has_curr(); it.next())
       {
-	const auto & par = it.get_curr();
-	auto ptr_val = pair_list.find_ptr([&par] (auto p)
+        const auto & par = it.get_curr();
+        auto ptr_val = pair_list.find_ptr([&par] (auto p)
           {
-	    return par.names().exists([&p] (const auto & pp)
-	      {
-		return p.first == pp.first;
-	      });
+            return par.names().exists([&p] (const auto & pp)
+              {
+                return p.first == pp.first;
+              });
 
-	  });
-	
-	if (ptr_val == nullptr)
-	  {
-	    ostringstream s;
-	    s << "compute_by_names() for correlation " << name
-	      << ": parameter name " << par.name << " was not found";
-	    ALEPHTHROW(ParameterNameNotFound, s.str());
-	  }
-	vals.append(VtlQuantity(par.unit, ptr_val->second));
+          });
+
+        if (ptr_val == nullptr)
+          {
+            ostringstream s;
+            s << "compute_by_names() for correlation " << name
+              << ": parameter name " << par.name << " was not found";
+            ALEPHTHROW(ParameterNameNotFound, s.str());
+          }
+        vals.append(VtlQuantity(par.unit, ptr_val->second));
       }
 
     return compute(vals, check);
@@ -1238,7 +1241,7 @@ public:
   }
 
   /** Compute the correlation by receiving an unsorted list of `NamedPar`
-      objects. 
+      objects.
 
       In this method the parameters list could be in any order. They
       are identified by their names.
@@ -1259,39 +1262,39 @@ public:
       @exception ParameterNameNotFound if a parameter name does not
       match with the specified name.
       @exception ParameterNameNotSet if any parameter has the field
-      `get<0>(par)` in `false`. 
-   */  
+      `get<0>(par)` in `false`.
+   */
   VtlQuantity compute_by_names(const DynList<NamedPar> & pair_list,
 			       bool check = true) const
   {
     DynList<VtlQuantity> vals;
     for (auto it = preconditions.get_it(); it.has_curr(); it.next())
       {
-	const auto & par = it.get_curr();
-	auto ptr_val = pair_list.find_ptr([&par] (auto t)
+        const auto & par = it.get_curr();
+        auto ptr_val = pair_list.find_ptr([&par] (auto t)
           {
-	    return par.names().exists([&t] (const auto & p)
-	      {
-		return p.first == get<1>(t); 
-	      });
-	  });
-	
-	if (ptr_val == nullptr)
-	  {
-	    ostringstream s;
-	    s << "compute_by_names() for correlation " << name
-	      << ": parameter name " << par.name << " was not found";
-	    ALEPHTHROW(ParameterNameNotFound, s.str());
-	  }
-	
-	if (not get<0>(*ptr_val))
-	  {
-	    ostringstream s;
-	    s << "compute_by_names() for correlation " << name
-	      << ": parameter name " << par.name << " is not set";
-	    ALEPHTHROW(ParameterNameNotSet, s.str());
-	  }
-	vals.append(VtlQuantity(*get<3>(*ptr_val), get<2>(*ptr_val)));
+            return par.names().exists([&t] (const auto & p)
+              {
+                return p.first == get<1>(t);
+              });
+          });
+
+        if (ptr_val == nullptr)
+          {
+            ostringstream s;
+            s << "compute_by_names() for correlation " << name
+              << ": parameter name " << par.name << " was not found";
+            ALEPHTHROW(ParameterNameNotFound, s.str());
+          }
+
+        if (not get<0>(*ptr_val))
+          {
+            ostringstream s;
+            s << "compute_by_names() for correlation " << name
+              << ": parameter name " << par.name << " is not set";
+            ALEPHTHROW(ParameterNameNotSet, s.str());
+          }
+        vals.append(VtlQuantity(*get<3>(*ptr_val), get<2>(*ptr_val)));
       }
 
     return compute(vals, check);
@@ -1300,7 +1303,7 @@ public:
   /** Compute the correlation by receiving a `ParList` object.
 
       This is the fastest way for computing a correlation using
-      parameters by name. 
+      parameters by name.
 
       The `ParList` object must contain the parameters of type
       `ParPair`. A `ParPair` is defined as a `pair<string, ValPair>`
@@ -1328,9 +1331,9 @@ public:
     DynList<VtlQuantity> vals;
     for (auto it = preconditions.get_it(); it.has_curr(); it.next())
       {
-	auto & par = it.get_curr();
-	VtlQuantity val = par_list.search(par.names());
-	vals.append(val);
+        auto & par = it.get_curr();
+        VtlQuantity val = par_list.search(par.names());
+        vals.append(val);
       }
 
     return compute(vals, check);
@@ -1339,9 +1342,9 @@ public:
   /** Meta-wrapper for building a call to 'compute()" which passes
       correlation parameters by name and uses a `ParList` object.
 
-      Since this method receives a `ParList` object, you could 
-      avoid the costs of its construction and destruction by previously
-      allocating it. 
+      Since this method receives a `ParList` object, you could avoid
+      the costs of its construction and destruction by previously
+      allocating it.
 
       The method first inserts the parameters, next it invokes the
       correlation, and finally it removes the parameters from the
@@ -1361,7 +1364,7 @@ public:
       `NPAR(yo)' build an parameter with name "yo" and the value
       stored in a `VtlQuantity` object `yo`. Please note that since
       units are required, you must use `VtlQuantity` or `Quantity`
-      objects. 
+      objects.
 
       @param[in] check indicates whether the parameter bounds must be
       or not checked.
@@ -1370,7 +1373,7 @@ public:
       @param[in] args parameters of type `ParPair`. You could pass as
       many as you require.
 
-      @see par, npar, NPAR 
+      @see par, npar, NPAR
    */
   template <typename ... Args>
   VtlQuantity
@@ -1379,37 +1382,37 @@ public:
     insert_in_container(par_list, args...);
     try
       {
-	VtlQuantity ret = compute_by_names(par_list, check);
-	remove_from_container(par_list, args...);
-	return ret;
+        VtlQuantity ret = compute_by_names(par_list, check);
+        remove_from_container(par_list, args...);
+        return ret;
       }
     catch (...)
       {
-	remove_from_container(par_list, args...);
-	throw ;
+        remove_from_container(par_list, args...);
+        throw;
       }
   }
 
   /** Helper function for adjusting a correlation computed value
-     according to a linear tuning.
+      according to a linear tuning.
 
-     @param[in] val a `VtlQuantity` representing the correlation
-     computed result.  
-     @param[in] c the tuning c parameter.
-     @param[in] m the tuning m parameter.
-     @param[in] tuned_unit a pointer to the unit that was used when
-     the tuning was done.
-     @exception UnitConversionNotFound if `tuned_unit` is not a
-     sibling unit of `val.unit`.
-     @exception OutOfUnitRange if the tuned value is out of some of
-     the involved units. 
-   */
+      @param[in] val a `VtlQuantity` representing the correlation
+      computed result.
+      @param[in] c the tuning c parameter.
+      @param[in] m the tuning m parameter.
+      @param[in] tuned_unit a pointer to the unit that was used when
+      the tuning was done.
+      @exception UnitConversionNotFound if `tuned_unit` is not a
+      sibling unit of `val.unit`.
+      @exception OutOfUnitRange if the tuned value is out of some of
+      the involved units.
+  */
   static VtlQuantity tune(const VtlQuantity & val,
-			  double c, double m, const Unit & tuned_unit)
+                          double c, double m, const Unit & tuned_unit)
   {
     const double r =
       bind_to_unit_limits(c + m*VtlQuantity(tuned_unit, val).raw(), tuned_unit);
-    return VtlQuantity(val.unit, VtlQuantity(tuned_unit, r));    
+    return VtlQuantity(val.unit, VtlQuantity(tuned_unit, r));
   }
 
   /** Compute the correlation receiving a list of `VtlQuantity`s,
@@ -1434,9 +1437,9 @@ public:
       list is less than the number of expected parameters.
    */
   VtlQuantity tuned_compute_and_check(const DynList<VtlQuantity> & pars,
-				      double c, double m,
-				      const Unit & tuned_unit,
-				      bool check = true) const
+                                      double c, double m,
+                                      const Unit & tuned_unit,
+                                      bool check = true) const
   {
     return tune(compute(pars, check), c, m, tuned_unit);
   }
@@ -1498,24 +1501,24 @@ public:
       list is less than the number of expected parameters.
    */
   double tuned_compute(const DynList<double> & values, double c, double m,
-		       const Unit & tuned_unit, bool check = true) const
+                       const Unit & tuned_unit, bool check = true) const
   {
     DynList<VtlQuantity> pars;
     auto it = get_pair_it(preconditions, values);
     for (;it.has_curr(); it.next())
       {
-	auto p = it.get_curr();
-	pars.append(VtlQuantity(p.first.unit, p.second));
+        auto p = it.get_curr();
+        pars.append(VtlQuantity(p.first.unit, p.second));
       }
 
     if (it.has_curr())
       {
-	ostringstream s;
-	s << "Correlation::compute: number of effective arguments "
-	  << values.size()
-	  << " is different from number of declared parameters "
-	  << get_num_pars();
-	ALEPHTHROW(InvalidNumberOfParameters, s.str());
+        ostringstream s;
+        s << "Correlation::compute: number of effective arguments "
+          << values.size()
+          << " is different from number of declared parameters "
+          << get_num_pars();
+        ALEPHTHROW(InvalidNumberOfParameters, s.str());
       }
 
     VtlQuantity ret = tune(compute(pars, check), c, m, tuned_unit);
@@ -1530,7 +1533,7 @@ public:
 
       Note that in this version the units are not considered. It is
       assumed that every parameter is specified in the same unit in
-      which this was specified.      
+      which this was specified.
 
       @param[in] pair_list a list of pairs everyone containing the
       parameter value and its name.
@@ -1546,11 +1549,11 @@ public:
       range.
       @exception ParameterNameNotFound if a parameter name does not
       match with the specified name.
-    */  
+    */
   VtlQuantity
   tuned_compute_by_names(const DynList<ParByName> & pair_list,
-			 double c, double m, const Unit & tuned_unit,
-			 bool check = true) const
+                         double c, double m, const Unit & tuned_unit,
+                         bool check = true) const
   {
     return tune(compute_by_names(pair_list, check), c, m, tuned_unit);
   }
@@ -1580,12 +1583,12 @@ public:
       @exception ParameterNameNotFound if a parameter name does not
       match with the specified name.
       @exception ParameterNameNotSet if any parameter has the field
-      `get<0>(par)` in `false`. 
+      `get<0>(par)` in `false`.
    */
   VtlQuantity
   tuned_compute_by_names(const DynList<NamedPar> & pair_list,
-			 double c, double m, const Unit & tuned_unit,
-			 bool check = true) const
+                         double c, double m, const Unit & tuned_unit,
+                         bool check = true) const
   {
     return tune(compute_by_names(pair_list, check), c, m, tuned_unit);
   }
@@ -1594,7 +1597,7 @@ public:
       applies a linear tuning.
 
       This is the fastest way for computing a correlation using
-      parameters by name. 
+      parameters by name.
 
       The `ParList` object must contain the parameters of type
       `ParPair`. A `ParPair` is defined as a `pair<string, ValPair>`
@@ -1620,10 +1623,10 @@ public:
 
       @see ParList
    */
-  VtlQuantity
-  tuned_compute_by_names(const ParList & par_list,
-			 double c, double m, const Unit & tuned_unit,
-			 bool check = true) const
+  VtlQuantity tuned_compute_by_names(const ParList & par_list,
+                                     double c, double m,
+                                     const Unit & tuned_unit,
+                                     bool check = true) const
   {
     return tune(compute_by_names(par_list, check), c, m, tuned_unit);
   }
@@ -1643,7 +1646,7 @@ public:
 
       Note that in this version the units are not considered. It is
       assumed that every parameter is specified in the same unit in
-      which this was specified.      
+      which this was specified.
 
       @param[in] pair_list a list of pairs everyone containing the
       parameter value and its name.
@@ -1664,10 +1667,10 @@ public:
    */
   VtlQuantity
   bounded_tuned_compute_by_names(const DynList<ParByName> & par_list,
-				 const VtlQuantity & min_val,
-				 const VtlQuantity & max_val,
-				 double c, double m, const Unit & tuned_unit,
-				 bool check = true) const
+                                 const VtlQuantity & min_val,
+                                 const VtlQuantity & max_val,
+                                 double c, double m, const Unit & tuned_unit,
+                                 bool check = true) const
   {
     const double result =
       tune(compute_by_names(par_list, check), c, m, tuned_unit).raw();
@@ -1680,7 +1683,7 @@ public:
 
   /** Compute the correlation by receiving an unsorted list of `NamedPar`
       objects, applies a linear tuning, and check the result for specified
-      bounds. 
+      bounds.
 
       First this method performs everything what
       `tuned_compute_by_names()` does and then check the result
@@ -1712,14 +1715,14 @@ public:
       @exception ParameterNameNotFound if a parameter name does not
       match with the specified name.
       @exception ParameterNameNotSet if any parameter has the field
-      `get<0>(par)` in `false`. 
+      `get<0>(par)` in `false`.
    */
   VtlQuantity
   bounded_tuned_compute_by_names(const DynList<NamedPar> & par_list,
-				 const VtlQuantity & min_val,
-				 const VtlQuantity & max_val,
-				 double c, double m, const Unit & tuned_unit,
-				 bool check = true) const
+                                 const VtlQuantity & min_val,
+                                 const VtlQuantity & max_val,
+                                 double c, double m, const Unit & tuned_unit,
+                                 bool check = true) const
   {
     const double result =
       tune(compute_by_names(par_list, check), c, m, tuned_unit).raw();
@@ -1767,10 +1770,10 @@ public:
    */
   VtlQuantity
   bounded_tuned_compute_by_names(const ParList & par_list,
-				 const VtlQuantity & min_val,
-				 const VtlQuantity & max_val,
-				 double c, double m, const Unit & tuned_unit,
-				 bool check = true) const
+                                 const VtlQuantity & min_val,
+                                 const VtlQuantity & max_val,
+                                 double c, double m, const Unit & tuned_unit,
+                                 bool check = true) const
   {
     const double result =
       tune(compute_by_names(par_list, check), c, m, tuned_unit).raw();
@@ -1785,8 +1788,8 @@ public:
    */
   VtlQuantity
   bounded_tuned_compute_by_names(const ParList & par_list,
-				 double c, double m, const Unit & tuned_unit,
-				 bool check = true) const
+                                 double c, double m, const Unit & tuned_unit,
+                                 bool check = true) const
   {
     return bounded_tuned_compute_by_names(par_list, unit.min(), unit.max(),
 					  c, m, tuned_unit, check);
@@ -1797,8 +1800,8 @@ public:
 
       @param[in] pars a list of `VtlQuantity` objects containing the
       parameters in the same order than the expected for the
-      correlation. 
-      
+      correlation.
+
       @throw OutOfParameterRange if one of parameters is out of
       correlation range.
       @throw UnitConversionNotFound if there conversion does not
@@ -1811,29 +1814,29 @@ public:
     auto it = get_enum_zip_it(preconditions, pars);
     for (/* already initialized */; it.has_curr(); it.next())
       {
-	auto p = it.get_curr();
-	const auto & precondition = get<0>(p);
-	const string & par_name = precondition.name;
-	const VtlQuantity & par = get<1>(p);
-	if (not (par_name == "p" or par_name == "t") and // TODO lista hash
-	    not precondition.check(par))
-	  {
-	    auto i = get<2>(p) + 1;
-	    ostringstream s;
-	    s << "Parameter " << i << " (" << par_name << " = " << par.raw()
-	      << " " << par.unit.name << ") in correlation " << name 
-	      << " does not satisfy application development range ["
-	      << precondition.min_val << ", " << precondition.max_val << "]";
-	    ALEPHTHROW(OutOfParameterRange, s.str());
-	  }
+        auto p = it.get_curr();
+        const auto & precondition = get<0>(p);
+        const string & par_name = precondition.name;
+        const VtlQuantity & par = get<1>(p);
+        if (not (par_name == "p" or par_name == "t") and // TODO lista hash
+            not precondition.check(par))
+          {
+            auto i = get<2>(p) + 1;
+            ostringstream s;
+            s << "Parameter " << i << " (" << par_name << " = " << par.raw()
+              << " " << par.unit.name << ") in correlation " << name
+              << " does not satisfy application development range ["
+              << precondition.min_val << ", " << precondition.max_val << "]";
+            ALEPHTHROW(OutOfParameterRange, s.str());
+          }
       }
 
     if (not it.completed())
       {
-	ostringstream s;
-	s << "number of preconditions " << preconditions.size()
-	  << " is different than number of parameters " << pars.size();
-	ALEPHTHROW(InvalidNumberOfParameters, s.str());
+        ostringstream s;
+        s << "number of preconditions " << preconditions.size()
+          << " is different than number of parameters " << pars.size();
+        ALEPHTHROW(InvalidNumberOfParameters, s.str());
       }
 
     return pars;
@@ -1852,12 +1855,12 @@ public:
     assert(&result.unit == &unit);
     if (result.get_value() < min_val or result.get_value() > max_val)
       {
-	ostringstream s;
-	s << "In correlation " << name << " " << subtype_name << " "
-	  << type_name << " : return value (" << result.get_value() << " "
-	  << result.unit.name << ") is out of range ["
-	  << min_val << ", " << max_val << "] defined for the correlation";
-	ALEPHTHROW(OutOfCorrelationRange, s.str());
+        ostringstream s;
+        s << "In correlation " << name << " " << subtype_name << " "
+          << type_name << " : return value (" << result.get_value() << " "
+          << result.unit.name << ") is out of range ["
+          << min_val << ", " << max_val << "] defined for the correlation";
+        ALEPHTHROW(OutOfCorrelationRange, s.str());
       }
 
     return result;
@@ -1877,9 +1880,9 @@ public:
     DynSetTree<string> names;
     for (auto it = correlations_tbl.get_it(); it.has_curr(); it.next())
       it.get_curr()->preconditions.for_each([&names] (auto p)
-					    {
-					      names.insert(p.name);
-					    });
+                                            {
+                                              names.insert(p.name);
+                                            });
     return names.keys();
   }
 
@@ -1889,19 +1892,19 @@ public:
   {
     const DynList<const Correlation*> corr_list =
       correlations_tbl.filter([&target_name] (auto ptr)
-			      {
-				return ptr->target_name() == target_name;
-			      });
+                              {
+                                return ptr->target_name() == target_name;
+                              });
     DynSetTree<string> names;
     for (auto i = corr_list.get_it(); i.has_curr(); i.next())
       for (auto it = i.get_curr()->par_names.get_it(); it.has_curr(); it.next())
-	names.append(it.get_curr());
+        names.append(it.get_curr());
     return names.keys();
   }
 };
 
 /** Convert a `NamedPar` to a `VtlQuantity`.
-   
+
    @ingroup Correlations
    @author Leandro Rabindranath Leon
  */
@@ -1960,13 +1963,13 @@ npar(const string & name, double v, const Unit * unit_ptr)
     @author Leandro Rabindranath Leon
 */
 inline Correlation::NamedPar npar(const string & name,
-				  const Correlation::NamedPar & par)
+                                  const Correlation::NamedPar & par)
 {
   return Correlation::NamedPar(true, name, get<2>(par), get<3>(par));
 }
 
 /** Macro that constructs a parameter by name homonym to a
-    `VtlQuantity` variable name. 
+    `VtlQuantity` variable name.
 
     Example of use
     --------------
@@ -1975,9 +1978,9 @@ inline Correlation::NamedPar npar(const string & name,
     yo. Some such as:
 
         Quantity<Fahrenheit> t = // temperature
-	Quantity<Sgg> yg = ...
-	Quantity<SCF_STB> rsb = ...
-	Quantity<Sg_do> yo = ...
+        Quantity<Sgg> yg = ...
+        Quantity<SCF_STB> rsb = ...
+        Quantity<Sg_do> yo = ...
 
     Now, we could compute the PbAlMarhoun correlation thus:
 
@@ -1988,7 +1991,7 @@ inline Correlation::NamedPar npar(const string & name,
 
     @param[in] par variable of type `VtlQuantity` or `Quantity`
     representing some physical magnitude required to compute the
-    correlation. 
+    correlation.
 
     @ingroup Correlations
     @author Leandro Rabindranath Leon
@@ -1999,21 +2002,21 @@ inline Correlation::NamedPar npar(const string & name,
 
 inline Correlation::~Correlation() {}
 
-# define Header_Correlation_Type(type_name, hidden)			\
-  struct type_name : public Correlation					\
-  {									\
-    type_name(const string & subtype_name,				\
-	      const string & name, const string & latex_symbol,		\
-	      const Unit & result_unit, double min_val, double max_val,	\
-	      bool min_from_author, bool max_from_author)		\
-      : Correlation(#type_name, subtype_name, name, latex_symbol,	\
-		    result_unit, min_val, max_val,			\
-		    min_from_author, max_from_author) {}		\
-    virtual ~type_name() = 0;						\
-    using Correlation::add_parameter;					\
-    bool is_hidden = hidden;						\
-  };									\
-									\
+# define Header_Correlation_Type(type_name, hidden) \
+  struct type_name : public Correlation             \
+  {                                                 \
+    type_name(const string & subtype_name,                  \
+              const string & name, const string & latex_symbol,		\
+              const Unit & result_unit, double min_val, double max_val,	\
+              bool min_from_author, bool max_from_author)               \
+      : Correlation(#type_name, subtype_name, name, latex_symbol,       \
+                    result_unit, min_val, max_val,                      \
+                    min_from_author, max_from_author) {}                \
+    virtual ~type_name() = 0;                                           \
+    using Correlation::add_parameter;                                   \
+    bool is_hidden = hidden;                                            \
+  };                                                                    \
+                                                                        \
   inline type_name::~type_name() {}
 
 /** Declare a correlation type.
@@ -2024,7 +2027,7 @@ inline Correlation::~Correlation() {}
 
     @param[in] type_name name of type of correlation.
 
-    @see Correlation, 
+    @see Correlation
 
     @ingroup Correlations, Declare_Correlation_Subtype
     @author Leandro Rabindranath Leon
@@ -2041,13 +2044,13 @@ Declare_Hidden_Correlation_Type(TmpFunction)
 
     This class define an entire family of deterministic functions
     associated to oil as fluid.
-   
+
    @author Leandro Rabindranath Leon
    @ingroup Correlations
  */
 Declare_Correlation_Type(OilFunction)
 
-/** Correlation 
+/** Correlation
 
     \class OilCorrelation
     @ingroup Correlations
@@ -2073,33 +2076,33 @@ Declare_Correlation_Type(WaterCorrelation);
     for representing the physical property associated to the
     correlation family.
 
-    @see Correlation, 
+    @see Correlation
 
     @ingroup Correlations, Declare_Correlation_Subtype
     @author Leandro Rabindranath Leon
  */
 # define Declare_Correlation_Subtype(subtype_name, type_name, symbol)	\
-  struct subtype_name : public type_name				\
-  {									\
-    subtype_name(const string & name, const Unit & result_unit,		\
-		 double min_val, double max_val)			\
-      : type_name(#subtype_name, name, symbol, result_unit,		\
-		  min_val, max_val, true, true) {}			\
-									\
+  struct subtype_name : public type_name                              \
+  {                                                                   \
+    subtype_name(const string & name, const Unit & result_unit,       \
+                 double min_val, double max_val)                      \
+      : type_name(#subtype_name, name, symbol, result_unit,           \
+                  min_val, max_val, true, true) {}                    \
+                                                                        \
     subtype_name(const string & name, const Unit & unit, double min_val) \
-      : type_name(#subtype_name, name, symbol, unit,			\
-		  min_val, unit.max_val, true, false) {}		\
-									\
-    subtype_name(const string & name, const Unit & unit)		\
-      : type_name(#subtype_name, name, symbol, unit, unit.min_val,	\
-		  unit.max_val, false, false) {}			\
-    virtual ~subtype_name() = 0;					\
-									\
-  protected:								\
-									\
-    using type_name::add_parameter;					\
-  };									\
-									\
+      : type_name(#subtype_name, name, symbol, unit,                    \
+                  min_val, unit.max_val, true, false) {}                \
+                                                                        \
+    subtype_name(const string & name, const Unit & unit)                \
+      : type_name(#subtype_name, name, symbol, unit, unit.min_val,      \
+                  unit.max_val, false, false) {}                        \
+    virtual ~subtype_name() = 0;                                        \
+                                                                        \
+  protected:                                                            \
+                                                                        \
+    using type_name::add_parameter;                                     \
+  };                                                                    \
+                                                                        \
   inline subtype_name::~subtype_name() {}
 
 template <typename F> struct compute_arity;
@@ -2114,27 +2117,27 @@ decltype(auto)
   call_compute(Func&& f, const DynList<T>& pars, std::index_sequence<Is...>)
 {
   std::vector<T> v = to_vector(pars);
- 
+
   return std::forward<Func>(f)(v.at(Is)...);
 }
- 
-# define Correlation_Singleton(name)					\
-  public:								\
-									\
-  static const name & get_instance()					\
-  {									\
-    static name instance;						\
-    return instance;							\
-  }									\
-									\
-  static const Correlation * correlation()				\
-  {									\
-    return & get_instance();						\
-  }									\
-									\
-  name(const name&) = delete;						\
+
+# define Correlation_Singleton(name)            \
+  public:                                       \
+	                                              \
+  static const name & get_instance()            \
+  {                                             \
+    static name instance;                       \
+    return instance;                            \
+  }                                             \
+	                                              \
+  static const Correlation * correlation()      \
+  {                                             \
+    return & get_instance();                    \
+  }                                             \
+	                                              \
+  name(const name&) = delete;                   \
   void operator = (const name&) = delete;				\
-  									\
+                                                \
 private:
 
 template <class CorrType, typename ... Args>
