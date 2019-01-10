@@ -14,7 +14,7 @@ SYS_LIBRARIES = -L$(ZEN)/lib -L$(ALEPHW) -lAleph -lstdc++ -lgsl -lgslcblas -lm -
 
 DEPLIBS	= $(TOP)/lib/libpvt-op.a
 
-LOCAL_LIBRARIES = $(TOP)/lib/libpvt-op.a $(TOP)/lib/libpvtunits.a
+LOCAL_LIBRARIES = $(TOP)/lib/libpvt-op.a $(TOP)/units/libpvtunits.a
 
 TESTSRCS = test-conversion.cc test-corr.cc ttuner.cc ztuner.cc cplot.cc \
 	vector-conversion.cc
