@@ -5,7 +5,8 @@
 ALEPHW = $(shell echo $$ALEPHW)
 UCONV = $(shell echo $$UCONV)
 
-SUBDIRS = include units lib tests backend profile
+SUBDIRS = include units lib tests
+#SUBDIRS = include units lib tests backend profile
 
 MakeSubdirs($(SUBDIRS))
 DependSubdirs($(SUBDIRS))
