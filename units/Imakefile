@@ -12,7 +12,7 @@ libpvtunits.a: $(SRCS)
 
 all:: libpvtunits.a
 
-clean:: 
+clean::
 	$(RM) libpvtunits.a
 
 DependTarget()

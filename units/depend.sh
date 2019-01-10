@@ -12,7 +12,7 @@
 #
 
 TMP=mdep$$.tmp
-CC=gcc 
+CC=gcc
 RM="rm -f"
 LN=ln
 MV=mv

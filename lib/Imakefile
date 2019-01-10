@@ -4,10 +4,10 @@ INCLUDES = -I../include -I../units -I$(UCONV)/include -I$(ALEPHW) -I$(JSON)/incl
 WARN= -Wall -Wextra -Wcast-align -Wno-sign-compare -Wno-write-strings -Wno-parentheses
 #OPTFLAGS = -Ofast -DNDEBUG
 OPTFLAGS = -O0 -g
-FLAGS = -std=c++14 $(WARN) $(OPTFLAGS)
+FLAGS = -std=c++17 $(WARN) $(OPTFLAGS)
 
 OPTIONS = $(FLAGS)
-CXXFLAGS= -std=c++14 $(INCLUDES) $(OPTIONS)
+CXXFLAGS= -std=c++17 $(INCLUDES) $(OPTIONS)
 
 .SUFFIXES: .rb .H .cc
 
@@ -63,20 +63,20 @@ clean::
 
 libpvt.so: pvt.cc
 	$(RM) -f $@;		\	@@\
-	$(CXX) -c -std=c++14 $(INCLUDES) $(OPT) -fpic pvt.cc -o aux1.o;\	@@\
+	$(CXX) -c -std=c++17 $(INCLUDES) $(OPT) -fpic pvt.cc -o aux1.o;\	@@\
 	gcc -shared -o libpvt.so aux1.o; \	@@\
 	$(RM) -f aux1.o
 
 libpvt-op.a: pvt.cc
 	$(RM) -f $@;		\	@@\
-	$(CXX) -c -std=c++14 $(INCLUDES) $(OPT) pvt.cc -o aux2.o;\	@@\
+	$(CXX) -c -std=c++17 $(INCLUDES) $(OPT) pvt.cc -o aux2.o;\	@@\
 	ar clq libpvt-op.a aux2.o; \	@@\
 	ranlib libpvt-op.a; \	@@\
 	$(RM) -f aux2.o
 
 libpvtp.a: pvt.cc
 	$(RM) -f $@;		\	@@\
-	$(CXX) -c -std=c++14 $(INCLUDES) -pg -g -O0 pvt.cc -o aux3.o;\	@@\
+	$(CXX) -c -std=c++17 $(INCLUDES) -pg -g -O0 pvt.cc -o aux3.o;\	@@\
 	ar clq libpvtp.a aux3.o; \	@@\
 	ranlib libpvtp.a; \	@@\
 	$(RM) -f aux3.o

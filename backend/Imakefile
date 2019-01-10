@@ -5,16 +5,16 @@ WARN= -Wall -Wextra -Wcast-align -Wno-sign-compare -Wno-write-strings\
 	-Wno-parentheses
 
 OPTFLAGS = -O2 -DNDEBUG
-FLAGS = -std=c++14 $(WARN) $(OPTFLAGS)
+FLAGS = -std=c++17 $(WARN) $(OPTFLAGS)
 
 OPTIONS = $(FLAGS)
-CXXFLAGS= -std=c++14 $(INCLUDES) $(OPTIONS)
+CXXFLAGS= -std=c++17 $(INCLUDES) $(OPTIONS)
 
 SYS_LIBRARIES = -L$(ZEN)/lib -L$(ALEPHW) -lAleph -lstdc++ -lgsl -lgslcblas -lm -lc
 
 DEPLIBS	= $(TOP)/lib/libpvt-op.a
 
-LOCAL_LIBRARIES = $(TOP)/lib/libpvt-op.a $(TOP)/lib/libpvtunits.a 
+LOCAL_LIBRARIES = $(TOP)/lib/libpvt-op.a $(TOP)/lib/libpvtunits.a
 
 TESTSRCS = test-conversion.cc test-corr.cc ttuner.cc ztuner.cc cplot.cc \
 	vector-conversion.cc

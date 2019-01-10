@@ -515,7 +515,7 @@ public:
   const DynList<const CorrelationPar * const> preconditions_list() const
   {
     return preconditions.
-      maps<const CorrelationPar * const>([] (const CorrelationPar & par)
+      maps<const CorrelationPar * const>([] (const auto & par)
                                          {
                                            return &par;
                                          });

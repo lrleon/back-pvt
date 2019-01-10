@@ -1,6 +1,6 @@
 /** This file contains the base machinery needed for smoothing bo and
-   uo properties of a grid pvt 
-   
+   uo properties of a grid pvt
+
    Aleph-w Leandro Rabindranath Leon
  */
 
@@ -20,7 +20,7 @@ DEFINE_ALEPH_EXCEPTION(UnsortedPressureValues,
 DEFINE_ALEPH_EXCEPTION(PropertyNotFound, "Essential property not found");
 
 /**
-   
+
    @ingroup Correlations
    @author Leandro Rabindranath Leon
 */
@@ -32,7 +32,7 @@ struct PvtGrid
 
   // names and units alphabetically ordered by name as read in the
   // csv's header except t and p
-  Array<pair<string, const Unit*>> var_names; 
+  Array<pair<string, const Unit*>> var_names;
 
   struct Desc
   {
@@ -59,7 +59,7 @@ struct PvtGrid
     }
   };
 
-  Array<Tdesc> temps; 
+  Array<Tdesc> temps;
 
   //                   t,     pb
   mutable DynMapTree<double, double> pb_table;

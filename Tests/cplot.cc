@@ -1,5 +1,4 @@
 
-
 # include <gmock/gmock.h>
 
 # include <iostream>

@@ -1,13 +1,13 @@
 
-INCLUDES = -I$(TOP)/include -I$(ALEPHW) 
+INCLUDES = -I$(TOP)/include -I$(ALEPHW)
 WARN= -Wall -Wextra -Wcast-align -Wno-sign-compare -Wno-write-strings\
 	-Wno-parentheses
 
-FLAGS = -std=c++14 $(WARN) -O0 -g
-#FLAGS = -std=c++14 $(WARN) -Ofast -DNDEBUG
+FLAGS = -std=c++17 $(WARN) -O0 -g
+#FLAGS = -std=c++17 $(WARN) -Ofast -DNDEBUG
 
 OPTIONS = $(FLAGS)
-CXXFLAGS= -std=c++14 $(INCLUDES) $(OPTIONS)
+CXXFLAGS= -std=c++17 $(INCLUDES) $(OPTIONS)
 
 GENCORR = $(TOP)/bin/gen-corr
 
