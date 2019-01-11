@@ -12,6 +12,7 @@
     Aleph-w Leandro Rabindranath Leon
 */
 # include <istream>
+# include <experimental/filesystem>
 
 # include <ah-dispatcher.H>
 # include <ah-stl-utils.H>
@@ -1474,19 +1475,17 @@ void process_R()
   const string plot = plot_cmd() + " > tmp.csv";
 
   cout << plot << endl;
+  system(plot.c_str());
 
   const string & type = R.getValue();
   const string plotr = "./plot-r -f tmp.csv -P " + type + " -R -D \"" +
     join(points_dispatcher.run(type), " ") + "\"";
 
-  // cout << endl
-  //      << "P = " << join(points_dispatcher.run(type), " ") << endl;
-  // terminate_app();
-
   cout << endl
        << plotr << endl;
 
   system(plotr.c_str());
+  experimental::filesystem::path("./tmp.csv").remove_filename();
   terminate_app();
 }
 
@@ -1570,7 +1569,8 @@ void process_grid()
   const RangeDesc & prange = p.getValue();
 
   ostringstream s;
-  s << "./cplot --grid simple " << pvt_data.cplot_consts() << pvt_data.cplot_corrs()
+  s << "./cplot --grid simple " << pvt_data.cplot_consts()
+    << pvt_data.cplot_corrs()
     << " --zfactor ZfactorDranchukAK "
     << "--t \"" << trange.min << " " << trange.max << " " << trange.n << "\" "
     << "--p \"" << prange.min << " " << prange.max << " " << prange.n << "\"";
